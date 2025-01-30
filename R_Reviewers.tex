@@ -1,0 +1,277 @@
+\documentclass[review,12pt]{report}
+\usepackage[switch]{lineno} % numeración de lineas de redacción
+%____________________________ soporte gráfico ___________________________
+\usepackage{graphicx,color} % Soporte gráfico
+%\usepackage{float}
+\usepackage[caption=false]{subfig}
+\usepackage[format=hang]{caption}
+\usepackage[noend]{algorithmic}
+\usepackage{algorithm}
+\algsetup{linenosize=\small}
+\usepackage{colortbl}
+\usepackage{pgfplots}
+\usepackage{epstopdf}
+\usepackage{epsfig}
+\usepackage{tikz}
+\captionsetup{compatibility=false}
+%\usepackage{pgfplots}
+%\usepackage{pgfplotstable}
+\usepackage{tikz}
+\usepackage{adjustbox}
+\usepackage{booktabs}
+
+\usepackage{multirow}
+%\usepackage{cite}
+\usepackage{natbib}
+%_____________________________ soporte de fuentes
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{enumerate}
+\usepackage{amsfonts,dsfont,bm}
+\usepackage[tbtags]{amsmath}
+\usepackage[mathscr]{euscript}
+\usepackage{hyperref}
+\usepackage[capitalise]{cleveref}
+\setlength{\parskip}{4mm}
+\usepackage{graphics,graphicx,color}
+\usepackage{float}
+\usepackage{epstopdf}
+\usepackage{color,colortbl}                 % Creación de fondo y texto en color
+\usepackage{enumerate,multirow}
+%\usepackage{subcaption}
+
+
+
+%\usepackage[ansinew]{inputenc}              % Reconocimiento de caracteres nacionales
+% la tilde y la ñ
+%\input EightPt                              % To use small fonts.
+%\usepackage{geometry}                       % Soporte gráfico
+%\usepackage{rotating}                       % Soporte  
+% \usepackage{floatrow}
+%\usepackage[algo2e]{algorithm2e}
+%\usepackage[normal]{subfigure}
+
+\usepackage{subfigure}
+%\usepackage{titlesec}
+%\usepackage{fancyhdr}
+%\usepackage[pdfstartview=FitB,pdfstartpage=1,backref=true,pagebackref=true,linkbordercolor=0 0 0]{hyperref}
+
+
+
+%%% Put your definitions there:
+\providecommand{\ve}[1]{{\bm{#1}}} %
+\providecommand{\mat}[1]{{\bm{#1}}} %
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\providecommand{\norm}[1]{\lVert#1\rVert}
+%\providecommand{\promed}[1]{\mathds{E}\left\lbrace #1\right\rbrace}% operador de promedio
+\providecommand{\cov}[2]{\ensuremath{cov}\{#1, #2\}}% operador de covarianza
+\providecommand{\s}[1]{\negthickspace#1\negthickspace}%
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}%shrinkage operator
+\newcommand{\C}{\mathbb{C}}
+\providecommand{\est}[1]{{\widetilde {#1}}}
+\providecommand{\var}[1]{{\operatorname{var}}\{#1\}}
+%%%
+\DeclareMathOperator{\subconj}{\negthinspace\subset\negthinspace }
+\DeclareMathOperator{\en}{\negthinspace\in\negthinspace }
+\DeclareMathOperator{\igual}{ \negthinspace=\negthinspace}
+\DeclareMathOperator{\x}{ \negthinspace\times\negthinspace}
+%%%
+\newcommand{\initresponses}{\newcounter{pointcounter}}
+\newenvironment{reviewer}{\setcounter{pointcounter}{1}}{}
+\newcommand{\point}[1]{\medskip \noindent
+ \textsl{{\fontseries{b}\selectfont Point \thepointcounter}.
+ \stepcounter{pointcounter} #1}}
+\newcommand{\reply}{\medskip \noindent \textbf{Response}.\ }
+\providecommand{\gc}[1]{\textcolor{blue}{\slshape {#1}}}
+\newcommand{\dc}[1]{{\textcolor[rgb]{1.00,0.00,0.00}{\upshape{#1}}}}
+\providecommand{\cm}[1]{\textcolor{blue}{#1}}
+\newlength\figureheight
+\newlength\figurewidth
+
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+
+\newcommand{\comentCAJ}[1]{\textcolor[rgb]{0.8,0.00,0.8}{#1}}
+\newcommand{\caj}[1]{\textcolor{blue}{#1}}
+\begin{document}
+\linenumbers
+
+\textbf{Dear Reviewer},
+ 
+We truly appreciate all your valuable comments. After a careful review, we have adopted the observations in our revised manuscript, entitled ``\textsl{A Deep Learning Approach for Image-based Semantic Segmentation with Preserved Interpretability}''. Our point-to-point responses to the reviewers’ comments are given below: 
+\initresponses
+
+\begin{reviewer}
+
+
+\point{Comments on Orthography and Typos}
+
+\reply{Thank you for providing valuable suggestions regarding orthography and typos. We have carefully considered all of them and genuinely appreciate your feedback, which will undoubtedly contribute to the enhancement of our academic product.}
+
+\point{Comments on clarity of the document}
+
+\reply{
+\begin{itemize}
+    \item To enhance clarity, we have incorporated maternal health into the motivation section by establishing stronger sentence connections, as previously mentioned in the same section. 
+    \item Moreover, we expand the possible impact of the developed semantic segmentation techniques at the SES Hospital Universitario de Caldas as follows: 
+    
+        ``... effectively developing and implementing these techniques has the potential to yield subsequent tools that can enhance maternal health at SES Hospital de Caldas. For instance, in the context of monitoring anesthesia effectiveness, a shift from subjective assessment to objective evaluation can be achieved by characterizing changes in temperature within a region of interest in the human body. This change not only enhances the quality of service but also ensures more accurate assessments.''
+
+    \item We have rectified the erroneous labeling of CAMs as 'model-agnostic'. 
+
+    \item Regarding the alternative of Random Fourier Features mapping, we have mentioned the combination of sines and cosines \cite{sutherland2015error}, as follows:
+
+
+        ``
+        ...
+        Then our $z$ mapping can be set as Equation \ref{equ:z_mapping} or Equation \ref{equ:z_mapping_sin_cosin}. For simplicity, in this work, we use the mapping using the Equation \ref{equ:z_mapping}.
+
+        \begin{align}
+        z_{\boldsymbol{\omega}}(\mathbf{x}) &= \sqrt{2} \cos(\boldsymbol{\omega}^{\top}\mathbf{x} + b) \label{equ:z_mapping}
+        \end{align}
+        \begin{align}
+        z_{\boldsymbol{\omega}}(\mathbf{x}) &= \begin{bmatrix}
+        \cos(\boldsymbol{\omega}^{\top}\mathbf{x}) \\
+        \sin(\boldsymbol{\omega}^{\top}\mathbf{x})
+        \end{bmatrix}
+        \label{equ:z_mapping_sin_cosin}
+        \end{align}
+
+
+        where $\boldsymbol{\omega} \sim p(\boldsymbol{\omega})$ and
+        $b \sim \text{Uniform}(0, 2\pi)$.''
+
+        Moreover, in future work, the use of different mapping is proposed.
+
+    \item  Regarding the mention of the properties of transformers for capturing long-range dependencies, we have added to the future work the consideration of "... the substitution of convolutions with transformers as a fundamental operation that could be advantageous to better capture large-range context."
+
+
+    \item We have removed the wrong description of the phenomena of the learning curves as double descent \cite{nakkiran2019deep} and instead we have mentioned 
+    
+    "... In the validation partition, when data augmentation is not applied, certain models display a pattern of initial loss increase followed by a subsequent decrease. This phenomenon can be attributed to the impact of the momentum within the Adam optimizer. Such behavior can lead the optimization process towards local minima...``
+
+
+    \item Regarding the mention of alternative loss functions for our experiment, since this wasn't our primary focus, we plan to explore these alternatives in future work
+
+    ''..addressing the issue of class imbalance among pixels may warrant the adoption of different loss functions \cite{YEUNG2022102026}...``
+
+
+    \item Concerning the addition of the means of the models with and without CRFFg on the plot of proposed measures we have the next enhanced images: 
+
+    \begin{figure}%[H]
+    \begin{centering}
+    \includegraphics[width=1\textwidth]{Cap4/Figures/interpretability_results_infrared_thermal_feet_both1.pdf}
+    \par\end{centering}
+    \caption[Results of interpretability measures on ThermalFeet]{Results of interpretability measures on ThermalFeet. The black markers symbolize the mean of CRFFg model, the start symbol, and the mean of models without CRFFg,  the square symbol.}
+    \label{fig:interpreThermal}
+\end{figure}
+
+
+    \begin{figure}%[H]
+    \begin{centering}
+    \includegraphics[width=1\linewidth]{Cap4/Figures/interpretability_results_oxford_iiit_pet1.pdf}
+    \end{centering}
+    \caption[Results of interpretability measures on Oxford IIIt Pet]{Results of interpretability measures on Oxford IIIt Pet. The black markers symbolize the mean of CRFFg model, the start symbol, and the mean of models without CRFFg,  the square symbol.}
+    \label{fig:interpreOxford}
+\end{figure}
+
+\end{itemize}
+
+
+}
+
+
+\point{Comments on Mathematical definitions}
+
+\reply{
+We have extended the equations that have an expected value operator $\mathbb{E}$ to the sample mean, for example: 
+
+ \begin{align}
+     \Theta^* &= \arg \min_{\Theta} \mathbb{E} \big\{ \mathcal{L}(\mathbf{y}_n, \hat{\mathbf{y}}_n | \Theta) \ : \ \ \forall \ n \in \{1,2,\dots,N\} \big\} \\
+     &\approx \arg \min_{\Theta} \frac{1}{N} \sum_{n=1}^N \mathcal{L}(\mathbf{y}_n, \hat{\mathbf{y}}_n | \Theta) 
+     \label{equ:optimizationProblem_classification}
+ \end{align}
+
+}
+
+\point{Empirical evaluation of the equivariant characterization property of the CRFFg}
+
+
+\reply{
+Regarding the empirical evaluation of the Equivariant characterization, we add an experiment with the next results to the document:
+
+`` Figure \ref{fig:CRFFg_equivariant} vividly illustrates the input-output relationship within the context of the CRFFg. Evidently, the output features faithfully mirror the input translations across all scenarios, highlighting a remarkable property of translation equivariance inherent in the CRFFg. This entwining of input and output underscores the CRFFg's ability to maintain consistent characteristics amidst varying translations.
+
+Furthermore, we can observe the locality property.  Even when the circle's translation varies across different locations, the structural integrity of regions distant from the circle remains unaffected. 
+
+\begin{figure}[H]
+\begin{centering}
+\includegraphics[width=1\textwidth]{Cap2/Figures/equivarian_cha.pdf}
+\par\end{centering}
+\caption{Translation equivariant characterization property of CRFFg. The input and output are interleaved by the translation equivariant property of CRFFg}
+\label{fig:CRFFg_equivariant}
+\end{figure}
+''
+
+}
+
+
+
+\point{Experiments around the variation of the size of the training dataset of Oxford Iiit Pet}
+
+\reply{
+
+We have conducted the experiment and show the result in the document as follows: 
+
+`` For further experimentation, we present Figures \ref{fig:FCN_training_size}, \ref{fig:RESUNET_training_size}, and \ref{fig:UNET_training_size}, which depict the performance metrics as we vary the size of the training dataset. Upon initial examination, in general, there are no significant disparities between the different models. This can be attributed to the high variability inherent in the dataset, which prevents any single model from gaining a decisive advantage over the others. However, when focusing on the FCN architecture, an interesting trend emerges. It is apparent that models incorporating CRFFg face challenges when provided with less than 50\% of the training data. This phenomenon may be attributed to the influence of the CRFFg activation function, particularly in the latter stages of the model. With a reduced amount of training data, the remaining layers struggle to adapt to the sinusoidal activation pattern, leading to a decline in overall performance. Moreover, future improvement can be training the scale parameter $\sigma$ and using a full encoder-decoder architecture with CRFFg.
+
+
+\begin{figure}
+ \centering
+ \captionsetup{justification=centering}
+ \begin{minipage}[b]{\textwidth}
+ \centering
+ \includegraphics[width=0.95\linewidth]{Cap3/Figures/training_partition_oxford_FCN.pdf}
+ \captionof{figure}{Performance metrics at different training dataset sizes of FCN models.}
+ \label{fig:FCN_training_size}
+ \end{minipage}\vspace{0.4cm}
+ 
+ \begin{minipage}[b]{\textwidth}
+ \centering
+ \includegraphics[width=0.95\linewidth]{Cap3/Figures/training_partition_oxford_ResUNet.pdf}
+ \captionof{figure}{Performance metrics at different training dataset sizes of ResUNet models.}
+ \label{fig:RESUNET_training_size}
+ \end{minipage}\vspace{0.4cm}
+ 
+ \begin{minipage}[b]{\textwidth}
+ \centering
+ \includegraphics[width=0.95\linewidth]{Cap3/Figures/training_partition_oxford_U-Net.pdf}
+ \captionof{figure}{Performance metrics at different training dataset sizes of U-Net models.}
+ \label{fig:UNET_training_size}
+ \end{minipage}
+
+\end{figure}
+''
+
+}
+
+
+
+
+\end{reviewer}
+
+\clearpage
+
+
+
+
+%\bibliographystyle{BibTeXtran}
+\bibliographystyle{unsrt}
+%\bibliographystyle{elsarticle-num}
+\bibliography{References, bibliography}
+
+
+\end{document}

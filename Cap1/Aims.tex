@@ -1,0 +1,46 @@
+
+\section{Aims}\label{sec:objectives}
+
+With the mentioned considerations in section \ref{sec:state_of_art}
+mind, this work proposes a novel approach for \gls{ISS} tasks in
+medical images, which aims to train a model whose learning approach
+is adaptive to the labeler performance. This is done by introducing a
+loss function capable of inferring the best possible segmentation
+without needing separate inputs about the labeler performance. This
+loss function is designed to implicitly weigh the labelers based on
+their performance, with the presence of an intermediate reliability
+map allowing the model to learn from the most reliable labelers and
+ignore the noisy labels. This approach differs from existing
+\gls{CNN}-based segmentation models, as it does not require explicit
+supervision of the labeler performance, making it more generalizable
+and adaptable to different datasets and labelers.
+\subsection{General Aim}
+
+The main purpose of this work is to develop a novel approach for
+\gls{ISS} tasks in medical images, which can adaptively infer the best
+possible segmentation without needing separate inputs about the
+labeler performance. This approach is expected to outperform the
+segmentation performance of other state of the art approaches,
+eliminate the need for explicit labeler supervision, and enhance
+automation in medical image analysis.
+
+%----------------------------------------------------------------------
+\subsection{Specific Aims}
+
+\begin{itemize}
+
+  \item To develop a novel loss function for \gls{ISS} tasks in
+    medical images, capable of inferring the best possible
+    segmentation without needing separate inputs about the labeler
+    performance.
+
+  \item Introducing a tensor map which codifies the reliability of
+    each labeler, allowing the model to implicitly weigh the labelers
+    based on their performance across the mask and classes space.
+
+  \item To develop and test a deep learning model for \gls{ISS} tasks
+    in medical images, which can learn from inconsistent labels and
+    improve the segmentation performance compared to other solutions
+    in state of the art.
+
+\end{itemize}

@@ -1,0 +1,159 @@
+\section{Literature review}\label{sec:state_of_art}
+
+Certainly, in general \gls{ML} classification tasks \footnote{In this
+  work, image segmentation is considered as a particular case of classification
+in which target classes are assigned pixel-wise.} where multiple
+annotators are involved, \gls{MV} is by far the simplest
+possible approach to implement. This concept was born multiple times
+and divergently in multiple fields, but it was described as relevant
+for \gls{ML} and pattern recognition labeling for classification in
+\cite{LamAndSuen1997}, in which the approach is exposed as simple,
+yet powerful. The authors describe the \gls{MV} as a method that can
+be used to improve the accuracy of classification tasks by combining
+the labels of multiple annotators. The method is based on the
+assumption that the majority vote of the annotators is more likely to
+be correct than the vote of a single annotator. The authors also
+describe the method as a straightforward way to improve the accuracy
+of classification tasks without the need for complex algorithms or
+additional data. The authors also prove this method to deliver very
+similar results to more complicated approaches (Bayesian, logistic
+regression, fuzzy integral, and neural network) in the
+particular task of \gls{OCR}. Despite its simplicity, modern
+solutions for delivering accurate medical image segmentation models
+still rely on Majority Voting at some stage, like \cite{Elnakib2020},
+which uses a majority voting strategy for delivering a final output
+based on the labels of multiple models (VGG16-Segnet, Resnet-18 and
+Alexnet) in \gls{CT} images for Liver Tumor Segmentation, or
+\cite{Lopez2023}, which uses \gls{MV} for combining noisy annotations
+as an additional annotator to be included in the deep learning solution.
+Majority voting as a technique for setting a pseudo ground truth label
+is a powerful approach for its simplicity in many use cases in which
+the target to be labeled is not tied to an expertise related task,
+otherwise, the assumption of equal expertise among the labelers can
+be a source of bias in the final label, which is not desirable in the
+case of highly technical annotations like medical images.
+In subsection \ref{subsec:expertise_levels_lit_review}, we will be
+reviewing literature which no longer assumes the naive approach of
+equal expertise among labelers and face the challenge of learning
+from inconsistent labels.
+
+\subsection{Facing annotation variability in medical
+images}\label{subsec:expertise_levels_lit_review}
+
+Learning from crowds approaches in general face the challenge of
+not having a ground truth label and hence, an intrinsic difficulty in
+measuring the real reliability of the labelers annotations. Some
+approaches assume beforehand a certain level of expertise for each
+labeler based on experience as an input, like in
+\cite{TianEtZhu2015}, which introduce the concept of max margin
+majority voting, using the reliability vector as weights for the
+weights for the binary and multiclass classifier. The crowdsourcing
+margin is the minimal difference between the aggregated score of the
+potential true label and the scores for other alternative labels.
+Accordingly, the annotators' reliability is estimated as generating
+the largest margin between the potential true labels and other
+alternatives. The problem introduced in this approach is assuming an
+stationary reliability per expert across the whole input space, which
+is imprecise since annotators performance may change between
+different tasks or even between different regions of the same image.
+
+% REVIEW
+\subsubsection{STAPLE Mechanism}
+
+The \gls{STAPLE} algorithm, introduced in \cite{WarfieldEtAl2004}
+is a probabilistic framework that estimates a hidden true
+segmentation from multiple segmentations provided by
+different raters. It also estimates the reliability of each rater by
+computing their sensitivity and specificity.
+
+The \gls{STAPLE} algorithm's goal is to maximize the log likelihood function:
+
+\begin{equation}\label{eq:staple_likelilhood}
+  (\mathbf{\hat{p}}, \mathbf{\hat{q}}) = \arg\max_{\mathbf{p}, \mathbf{q}} \ln
+  f(\mathbf{D},
+  \mathbf{T} \mid \mathbf{p}, \mathbf{q}).
+\end{equation}
+
+Where $\mathbf{D}$ is the set of segmentations provided by the raters,
+$\mathbf{T}$ is the hidden true segmentation, $p$ is the sensitivity
+and $q$ is the specificity of the raters.
+
+This is achieved by using the Expectation-Maximization algorithm to
+maximize the log likelihood function in equation, which is done iteratively
+with step computations:
+
+\begin{equation}
+  \begin{split}
+    (p_j^{(k)}, q_j^{(k)}) = \arg\max_{p_j, q_j} \sum_{i:D_{ij}=1}
+    W_i^{(k-1)} \ln p_j \\
+    &+ \sum_{i:D_{ij}=1} \left(1 - W_i^{(k-1)}\right) \ln (1 - q_j) \\
+    &+ \sum_{i:D_{ij}=0} W_i^{(k-1)} \ln (1 - p_j) \\
+    &+ \sum_{i:D_{ij}=0} \left(1 - W_i^{(k-1)}\right) \ln q_j.
+  \end{split}
+\end{equation}
+
+The capacity of STAPLE to accurately estimate the true segmentation,
+even in the presence of a majority of raters generating correlated
+errors, was demonstrated, which makes it theoretically a strong
+choice for setting a ground-truth in binary or multiclass medical
+\gls{ISS} tasks.
+
+The popularity and performance of \gls{STAPLE} has led to its
+usage in modern applications medical image, 3d spatial images due to
+its assumption of decision space being based on voxel-wise decisions,
+like the authors in \cite{GrefveEtAl2024} which applied the algorithm
+on \gls{PET} images. Other authors still rely heavily on STAPLE for
+setting a ground truth consensus for histopathological images, like
+\cite{QiuEtAl2022}.
+
+However, the \gls{STAPLE} algorithm has some limitations. It
+assumes independent rater errors, which may not hold in practice,
+leading to biased estimates. STAPLE is also sensitive to low-quality
+annotations, potentially degrading final segmentations if the weights
+are not initialized correctly. The algorithm tends to over-smooth
+results, blurring fine details, and struggles with multi-class
+segmentation. Computationally, it is expensive due to its iterative
+EM approach. Additionally, STAPLE cannot correct systematic biases in
+annotations and depends on initial estimates, impacting accuracy.
+Lastly, the estimated performance levels lack interpretability,
+making it difficult to assess annotator reliability effectively.
+
+Finally, this work contemplates \gls{STAPLE} as useful for ground
+truth estimation given the existence of multiple labelers for an
+input \gls{WSI}, but not that useful for providing annotations of structures on
+new and unlabeled images, hence being a good support for other methods.
+
+\subsubsection{Chained Gaussian Processes}
+
+Other works like \cite{GilGonzalesEtAl2025} proposed a novel approach
+
+\subsection{Strategies for handling low-quality images}
+
+The problem of low-quality images and noisy annotations has been
+tackled with various strategies. One such approach is the use of deep
+learning models that incorporate loss functions designed to mitigate
+the effects of unreliable labels. Traditional methods such as
+Majority Voting (MV) or Expectation-Maximization (EM) have been
+widely used for aggregating multiple annotators' inputs. However,
+they assume a homogeneous reliability of annotators, which may not
+hold in real-world scenarios.
+
+A more recent approach was proposed by \cite{TrianaEtAl2023},
+introducing a Generalized Cross-Entropy-based Chained Deep Learning
+(GCECDL) framework. This method addresses the limitations of
+traditional label aggregation techniques by modeling each annotator's
+reliability as a function of the input data. The approach effectively
+mitigates the impact of noisy labels by using a noise-robust loss
+function, balancing Mean Absolute Error (MAE) and Categorical
+Cross-Entropy (CE). Unlike prior approaches, GCECDL accounts for the
+dependencies among annotators while encoding their non-stationary
+behavior across different image regions. Their experiments on
+multiple datasets demonstrated superior predictive performance
+compared to state-of-the-art methods, particularly in cases where
+annotations were highly inconsistent.
+
+This strategy is especially relevant for handling low-quality medical
+images, where expert annotations may be inconsistent, and traditional
+consensus-based approaches fail to account for varying expertise
+levels. By leveraging deep learning with robust noise-handling loss
+functions, the reliability of segmentation models can be significantly improved.

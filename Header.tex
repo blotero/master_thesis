@@ -1,0 +1,312 @@
+\newcommand{\thesistitle}{Medical image segmentation in a multiple labelers
+context: Application to the study of histopathology.}
+\newcommand{\thesistitlees}{Segmentación de imágenes médicas en un
+contexto de múltiples anotadores: Aplicación al estudio de histopatologías}
+
+% Packages
+\usepackage[pagebackref=true]{hyperref}
+%\usepackage{hyperref}
+\usepackage[subfigure]{tocloft}
+%\usepackage[subfig]{tocloft}
+%\usepackage{tocloft}
+%\usepackage{tocloft}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage{epsfig}
+\usepackage{epic}
+\usepackage{eepic}
+\usepackage{threeparttable}
+\usepackage{amscd}
+\usepackage{here}
+\usepackage{graphicx}
+\usepackage{lscape}
+%\usepackage{subfigure}
+\usepackage{longtable}
+\usepackage{setspace}
+\usepackage{array}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{svg}
+\usepackage{minted}
+\usepackage{listings}
+\usepackage{xparse}
+\usepackage{xstring}
+\usepackage[titletoc]{appendix}
+%\usepackage{subfig}
+\usepackage{enumitem}
+\usepackage{cancel}
+\usepackage{multirow}
+\usepackage{longtable}
+%\usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{subfig}
+\usepackage{breakcites}
+
+\raggedbottom
+
+% Show margins
+% \usepackage{showframe}
+% \renewcommand*\ShowFrameLinethickness{0.1pt}
+% \renewcommand*\ShowFrameColor{\color{black!10!white}}
+
+\usepackage{caption}
+%\usepackage{subcaption}
+
+% Math
+\usepackage{amstext,amsbsy,amsopn,amsmath,eucal,amsfonts,amssymb,amsthm}
+
+% Fonts
+\usepackage{fontspec}
+\setmainfont[
+  Path=Fonts/Ancizar/,
+  BoldFont={Ancizar-Serif-Bold.otf},
+  ItalicFont={Ancizar-Serif-Regular-Italic.otf},
+  BoldItalicFont={Ancizar-Serif-Bold-Italic.otf},
+  %  SmallCapsFont={Ancizar-Serif-Light.otf},
+  %  SlantedFont={Ancizar-Serif-Light.otf},
+  %  UprightFont={Ancizar-Serif-Light.otf}
+]{Ancizar-Serif-Regular.otf}
+\setmonofont[
+  Path=Fonts/Noto Sans Mono/,
+  %  Scale=0.5
+]{NotoSansMono-Regular.ttf}
+
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+
+% Titles
+% \fontsize{<size>}{<bskip>}
+% \titleformat{command}[shape]{format}{label}{sep}{before}[after]
+\usepackage{titlesec}
+% \titleformat{\chapter}{\normalfont\fontsize{200}{30}\bfseries}{\thechapter}{1em}{}
+\titleformat{\section}{\normalfont\fontsize{20}{20}\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\fontsize{17}{17}\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\fontsize{14}{14}\bfseries}{\thesubsubsection}{1em}{}
+
+% \titlespacing{command}{left spacing}{before spacing}{after spacing}[right]
+\titlespacing{\section}{0pt}{2em}{1em}
+\titlespacing{\subsection}{0pt}{2em}{1em}
+\titlespacing{\subsubsection}{0pt}{1em}{0.5em}
+
+% UN colors
+% http://identidad.unal.edu.co/identidad-visual/b-directrices-y-especificaciones/b1-elementos-de-identidad-visual/#c1998
+\usepackage{xcolor}
+\definecolor{UN_primary}{RGB}{148,180,59}
+\definecolor{UN_secondary}{RGB}{166,28,49}
+\definecolor{UN_comp1}{RGB}{70,107,63}
+\definecolor{UN_comp2}{RGB}{118,35,47}
+\definecolor{UN_comp3}{RGB}{86,90,92}
+\definecolor{UN_comp4}{RGB}{177,178,176}
+% \definecolor{Nessa}{RGB}{1,87,155}
+
+% Inline source code
+\NewDocumentCommand{\quottable}{m}{\texttt{\bfseries\textcolor{UN_secondary}{#1}}}
+\NewDocumentCommand{\quot}{m}{\texttt{\fontsize{\footnotesize}{\footnotesize}\bfseries\textcolor{UN_secondary}{#1}}}
+
+% Block of Python code
+\BeforeBeginEnvironment{minted}{\medskip}
+\AfterEndEnvironment{minted}{\medskip}
+\newminted[python]{python}{
+  mathescape=true,
+  xleftmargin=1cm,
+  fontsize=\scriptsize,
+  baselinestretch=1.2,
+  python3=true,
+  %  samepage=true,
+  %  linenos=true,
+  %  highlightlines={1,2-3,5-10},
+  style=emacs
+}
+
+% Remove \fcolorbox inside the minted environment
+\AtBeginEnvironment{minted}{\dontdofcolorbox}
+\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+
+% Cite in footer
+\NewDocumentCommand{\footcite}{mm}{\textit{#1}\footnote{\href{#2}{#2}}}
+
+% Tables font size
+\AtBeginEnvironment{tabular}{
+  \scriptsize
+}
+
+\AtBeginDocument{
+
+  % Rename lists
+  % \renewcommand{\contentsname}{\hfill\normalfont\Large CONTENTS}
+  \renewcommand{\listfigurename}{\hfill\normalfont\Large LIST OF FIGURES}
+  \renewcommand{\listtablename}{\hfill\normalfont\Large LIST OF TABLES}
+
+  % Labels
+  \renewcommand{\theequation}{\thechapter-\arabic{equation}}
+  \renewcommand{\thefigure}{\textbf{\thechapter-\arabic{figure}}}
+  \renewcommand{\thetable}{\textbf{\thechapter-\arabic{table}}}
+  \renewcommand{\thesubfigure}{\alph{subfigure}}
+
+  % Justify without hyphenation
+  \tolerance=1
+  \emergencystretch=\maxdimen
+  \hyphenpenalty=10000
+  \hbadness=10000
+}
+
+% Table of contents depth
+\setcounter{tocdepth}{2}
+
+% Title numeration depth
+\setcounter{secnumdepth}{2}
+
+% Captions
+\usepackage{caption}
+\DeclareCaptionLabelSeparator{none}{ }
+\captionsetup{labelsep=none, font=small}
+
+\newcommand\quotcaption[1]{
+  \captionsetup{font=footnotesize}
+\caption{#1}}
+
+% Bibliography with backref
+\renewcommand*{\backrefalt}[4]{\hspace*{\fill}\normalsize{
+    \ifcase #1 (Not cited.)   % not cited
+    \or (page~#2)             % cited once
+    \else (\mbox{pages~#2})   % cited multiple pages
+    \fi
+}}
+
+% Link colors
+\hypersetup{
+  colorlinks=true,
+  linkcolor=UN_comp1,
+  urlcolor=UN_comp1,
+  filecolor=magenta,
+  citecolor=UN_secondary,
+  pdftitle={\thesistitle - Brandon Lotero Londoño}
+}
+
+% Abbreviations
+\usepackage[acronym=true,
+  toc=true,
+  numberline=false,
+  nopostdot=true,
+  section=chapter,
+nomain=true]{glossaries-extra}
+\setabbreviationstyle[acronym]{long-short}
+\renewcommand{\glsnamefont}[1]{\textsc{\normalfont\large\bfseries #1}}
+\glssetcategoryattribute{acronym}{hyperoutside}{false}
+
+% Fonts used in table of contents
+\renewcommand{\cfttoctitlefont}{\normalfont\ssfamily\Large}
+% \renewcommand{\cftpartfont}{\bfseries}
+\renewcommand{\cftchapfont}{\normalfont\ssfamily\bfseries}
+\renewcommand{\cftsecfont}{\normalfont\ssfamily}
+\renewcommand{\cftsubsecfont}{\normalfont\ssfamily}
+\renewcommand{\cftsubsubsecfont}{\normalfont\ssfamily\small}
+
+% Fancy chapters
+\usepackage[Bjarne]{fncychap}
+\ChRuleWidth{1pt}
+\ChNameUpperCase\ChNameVar{\raggedleft\normalsize\rm}
+\ChTitleUpperCase\ChNumVar{\raggedleft \bfseries\Large}
+\ChTitleVar{\raggedleft \Large\rm}
+
+% Page margins
+\usepackage{geometry}
+\geometry{
+  inner=37.125mm,
+  outer=33.4125mm,
+  top=37.125mm,
+  bottom=37.125mm,
+  headsep=24pt,
+  footnotesep=24pt,
+  marginparwidth=50pt,
+}
+
+% Page Style
+\pagestyle{fancyplain}
+% \renewcommand{\chaptermark}[1]{\markboth{\thechapter\; #1}{}}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\; #1}}
+\lhead[\fancyplain{}{\thepage}]{\fancyplain{}{\rightmark}}
+\rhead[\fancyplain{}{\leftmark}]{\fancyplain{}{\thepage}}
+\fancyfoot{}
+\thispagestyle{fancy}
+
+% space between paragraph and preceding text
+\setlength{\parskip}{1em plus1em minus1em}
+
+% paragraph indentation
+\setlength{\parindent}{0em}
+
+% line spacing
+\renewcommand{\baselinestretch}{1.3}
+
+% Linespace description
+\AtBeginEnvironment{description}{\linespread{0}\small\selectfont}
+
+% Change fontsize
+\renewcommand{\UrlFont}{\ttfamily\footnotesize}
+
+\newsavebox\mtbox
+\newcommand{\mtgraphics}[2][]{%
+  \sbox\mtbox{\includegraphics[#1]{#2}}%
+  \null%
+  \dimen255=\dimexpr\pagegoal-\pagetotal-\baselineskip\relax%
+  \ifdim\dimen255>\ht\mtbox
+  \usebox\mtbox
+  \else
+  \dimen254=\dimen255%
+  \dimen255=\dimexpr\ht\mtbox-\dimen254\relax%
+  \includegraphics[trim=0mm 1.\dimen255 0mm 0mm, clip=true, #1]{#2}
+  \par
+  \includegraphics[trim=0mm 0mm 0mm \dimen254, clip=true, #1]{#2}
+\fi}
+
+\usepackage{pdfpages}
+
+\newcommand{\ssfamily}{\sffamily}
+
+\tcbuselibrary{many}
+\tcbset{
+  enhanced,
+  breakable,
+  attach boxed title to top left={
+    xshift=0.5cm,
+    yshift= -3.5mm, % What do I put here? I'd like to have something like:
+    %       yshift= -0.5\titleboxheight
+  },
+  top=4mm,
+  coltitle=black,
+  beforeafter skip=\baselineskip,
+}
+
+\newenvironment{mybox}[1]{%
+  \begin{tcolorbox}[title={#1}]%
+  }{
+  \end{tcolorbox}
+}
+
+\usepackage{bm}
+\providecommand{\mat}[1]{{\bm{#1}}}
+\providecommand{\ve}[1]{{\bm{#1}}} %vector format
+\providecommand{\mat}[1]{{\bm{#1}}} %matrix format
+\providecommand{\promed}[1]{\ensuremath{\mathds{E}\left\lbrace#1\right\rbrace}}
+%Expected value
+\providecommand{\norm}[1]{\ensuremath{\left\lVert#1\right\rVert}} %l-norm
+\providecommand{\oper}[1]{{\operatorname{#1}}\!} %operator name
+\providecommand{\Real}{\displaystyle\mathbb{R}} %R
+\providecommand{\N}{\displaystyle\mathbb{N}} %N
+\providecommand{\abs}[1]{\ensuremath{\left\lvert#1\right\rvert}} %||
+\DeclareMathOperator{\en}{\displaystyle\negthinspace\in\negthinspace} %∈
+\DeclareMathOperator{\igual}{\displaystyle\negthinspace=\negthinspace} %=
+\DeclareMathOperator{\x}{\displaystyle\negthinspace\times\negthinspace} %x
+\DeclareMathOperator{\tire}{\displaystyle\negthinspace--\negthinspace} %
+\providecommand{\s}[1]{\negthickspace#1\negthickspace} %
+\DeclareMathOperator*{\argmax}{argmax} %argmax
+
+\captionsetup{format=plain}

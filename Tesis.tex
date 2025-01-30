@@ -1,0 +1,74 @@
+% !TeX root = Tesis.tex
+\documentclass[12pt,fleqn,letterpaper]{scrbook}
+
+\input{Header}
+
+\input{Notations/notations}
+\input{Abbreviations/abbreviations}
+
+\makeglossaries
+
+\newcommand{\researchquestion}[1]{
+  \begin{tcolorbox}[
+      colframe=blue!50!black,   % Border color
+      colback=blue!5,           % Background color
+      coltitle=black,           % Title color
+      sharp corners,            % No rounded corners
+      fonttitle=\bfseries\large, % Title styling
+      boxrule=1pt,              % Border thickness
+      title=Research Question
+    ]
+    \textit{#1}
+  \end{tcolorbox}
+}
+
+\begin{document}
+\linenumbers
+
+\begingroup
+\pagenumbering{roman}
+
+% \pagestyle{fancy}
+% \pagestyle{plain}
+
+\include{Protocol/Titles}
+\include{Protocol/Acknowledgements}
+\include{Protocol/Abstract}
+\include{Protocol/Resumen}
+
+% Contents
+\cleardoublepage
+\tableofcontents
+\addcontentsline{toc}{chapter}{Contents}
+
+% List of figure
+\cleardoublepage
+\listoffigures
+\addcontentsline{toc}{chapter}{List of figures}
+
+% List of tables
+\cleardoublepage
+\listoftables
+\addcontentsline{toc}{chapter}{List of tables}
+
+% SYMBOLS
+% \printglossary[type=symbols, title=Notations]
+% \glsresetall
+% \cleardoublepage
+
+% Abbreviations
+\printglossary[type=\acronymtype, title=Abbreviations]
+\glsresetall
+\cleardoublepage
+\endgroup
+
+\pagenumbering{arabic}
+\include{Cap1/Cap1}
+
+% Bibliography
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{apalike}
+%\bibliographystyle{ieeetr}
+\bibliography{References,bibliography}
+
+\end{document}

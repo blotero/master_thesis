@@ -1,0 +1,101 @@
+{
+  "latex-workshop.latex.search.rootFiles.include": ["Tesis.tex"],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "lualatexmk -> bibtex -> makeglossaries -> lualatexmk*2",
+      "tools": [
+        "lualatexmk",
+        "bibtex",
+        "makeglossaries",
+        "lualatexmk",
+        "lualatexmk"
+      ]
+    },
+    {
+      "name": "lualatexmk",
+      "tools": ["lualatexmk"]
+    },
+    {
+      "name": "bibtex",
+      "tools": ["bibtex"]
+    },
+    {
+      "name": "makeglossaries",
+      "tools": ["makeglossaries"]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "lualatexmk",
+      "command": "lualatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-shell-escape",
+        "%DOC%"
+      ]
+    },
+    {
+      "name": "latexmk",
+      "command": "latexmk",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-pdf",
+        "-outdir=%OUTDIR%",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "pdflatex",
+      "command": "pdflatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "bibtex",
+      "command": "bibtex",
+      "args": ["%DOCFILE%"],
+      "env": {}
+    },
+    {
+      "name": "makeglossaries",
+      "command": "makeglossaries",
+      "args": ["%DOCFILE%"],
+      "env": {}
+    }
+  ],
+  "latex-workshop.formatting.latex": "tex-fmt",
+  "latex-workshop.formatting.tex-fmt.args": ["-l", "80"],
+  "latex-workshop.view.pdf.external.viewer.command": "zathura",
+  "latex-workshop.view.pdf.external.viewer.args": ["%PDF%"],
+  "editor.formatOnSave": true,
+  "[latex]": {
+    "editor.rulers": [80]
+  },
+  "cSpell.enabledLanguageIds": ["latex"],
+  "cSpell.words": [
+    "crowdsourcing",
+    "histopathological",
+    "interpretability",
+    "multiclass",
+    "segmentations",
+    "Segnet"
+  ],
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.rulers": [80],
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    }
+  }
+}
