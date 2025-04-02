@@ -97,5 +97,6 @@
       "source.fixAll": "explicit",
       "source.organizeImports": "explicit"
     }
-  }
+  },
+  "workbench.colorTheme": "Gruvbox Light Medium"
 }

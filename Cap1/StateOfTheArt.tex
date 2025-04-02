@@ -125,7 +125,12 @@ new and unlabeled images, hence being a good support for other methods.
 
 \subsubsection{Chained Gaussian Processes}
 
-Other works like \cite{GilGonzalesEtAl2025} proposed a novel approach
+Other works like \cite{GilGonzalesEtAl2025} proposed a novel approach from
+Gaussian Processes to model the relationship between the annotators'
+reliability and the input data. The authors propose a method to
+estimate the reliability of each annotator based on their performance
+on a set of validation images. The reliability is then used to weight
+the contribution of each annotator to the final segmentation.
 
 \subsection{Strategies for handling low-quality images}
 
@@ -138,7 +143,7 @@ widely used for aggregating multiple annotators' inputs. However,
 they assume a homogeneous reliability of annotators, which may not
 hold in real-world scenarios.
 
-A more recent approach was proposed by \cite{TrianaEtAl2023},
+A more recent approach was proposed by~\cite{TrianaEtAl2023},
 introducing a Generalized Cross-Entropy-based Chained Deep Learning
 (GCECDL) framework. This method addresses the limitations of
 traditional label aggregation techniques by modeling each annotator's
@@ -157,3 +162,124 @@ images, where expert annotations may be inconsistent, and traditional
 consensus-based approaches fail to account for varying expertise
 levels. By leveraging deep learning with robust noise-handling loss
 functions, the reliability of segmentation models can be significantly improved.
+
+\subsection{U-shaped \gls{CNN}s}
+Since the introduction of U-Net \cite{RonnebergerEtAl2015} in 2015
+for biomedical image segmentation, U-shaped \gls{CNN}s have become a
+prevalent architecture in medical image segmentation tasks. The
+U-Net's success stems from its ability to capture both global and
+local information through its contracting and expanding paths, making
+it particularly effective for complex and heterogeneous structures,
+even with limited annotated data. This architecture has been
+successfully applied to various medical image segmentation tasks,
+including organ segmentation, tumor segmentation, and brain structure
+segmentation.
+
+The U-Net architecture consists of a symmetric encoder-decoder
+structure with skip connections. The encoder path progressively
+reduces spatial dimensions while increasing feature channels through
+a series of convolutional and max-pooling layers, capturing
+high-level semantic information. The decoder path uses transposed
+convolutions to gradually recover spatial resolution while reducing
+feature channels. Skip connections between corresponding encoder and
+decoder layers preserve fine-grained details by concatenating
+high-resolution features from the encoder with upsampled features in
+the decoder, enabling precise localization of structures. The
+architecture overview can bee seen in figure \ref{fig:unet_architecture}.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.7\textwidth]{Cap1/Figures/unet_architecture.png}
+  \caption{Original U-Net architecture.}
+  \label{fig:unet_architecture}
+\end{figure}
+
+\subsubsection{U-Net based approaches}
+
+In \cite{LopezEtAl2024} two networks are trained for delivering a final
+segmentation. One network is trained to aggregate the annotations of
+the labelers and another one is trained to segment the image. The
+first network is a U-Net that takes as input the image and the
+annotations of the labelers and outputs a reliability map. This map
+is then used to weight the contribution of each annotator to the
+final segmentation. The second network is the U-Net used for segmentation.
+
+In this approach, it is assumed that the images are labeled for at least one
+labeler and not all of them, which is closer to a real world scenario, in which
+it is common to have images with variability in the amount of
+annotations, per patch. Hence, the input data can be modeled as:
+
+\begin{equation}
+  \label{eq:input_data}
+  \mathcal{D} = (\mathbf{X}, \tilde{\mathbf{Y}}) = \{ (\mathbf{x}_n,
+  \tilde{\mathbf{y}}_n^r) : n = 1, \dots, N; r \in R_n \},
+\end{equation}
+
+Where every $\vecx_n$ is an input patch from a ROI in one \gls{WSI},
+$\tilde{\vecy}_n$ is the noisy annotation from the $r$ labeler, $N$
+is the number of patches in the dataset and $R_n \subset \{1, \dots,
+R\}$ is the set of labelers that annotated the image $\vecx_n$.
+
+The authors then assume the annotator network to deliver a
+reliability map $\{\hat{\mathbf{A}}^{(r)}_{\phi}(\mathbf{x}) \}_{r
+\in R_n}$ with different dimensions:
+
+\begin{itemize}
+  \item CR global: a single reliability vector per labeler with
+    dimensions $C$ which represent global reliability of the labeler
+    across all input space.
+  \item CR image: a single reliability vector per image per labeler
+    with dimensions $C$ which represent local reliability of the labeler
+    across the image.
+  \item CR pixel: a reliability matrix per image per labeler,
+    with dimensions $C$ which represent local reliability of the labeler
+    across all the pixels in the image.
+\end{itemize}
+
+Being $\mathbf{p}_\theta(\vecx_n)$ the estimation of the latent (ground
+truth) segmentation delivered by the segmentation UNet network, then,
+the estimated segmentation probability mask for each annotator is
+given by the product:
+
+\begin{equation}
+  \label{eq:estimated_segmentation}
+  \mathbf{p}^{(r)}_{\theta,\phi}(\vecx_n) :=
+  \mathbf{A}^{(r)}_{\phi}(\mathbf{x}) \odot \mathbf{p}(\vecx_n),
+\end{equation}
+
+where $\odot$ is the element-wise product and $\theta$ and $\phi$ are
+the parameters of the annotator network and the segmentation UNet
+network, respectively, being the latter initialized with a ResNet34 backbone
+pre-trained on ImageNet.
+
+The authors propose a loss function involving cross-entropy and a trace based
+regularization on the reliability map, originally proposed in
+\cite{ZhangEtAl2020} which combined, looks like:
+
+\begin{equation}
+  \mathcal{L}(\theta, \phi) : = \sum_{n=1}^{N} \sum_{r=1}^{R}
+  \mathbb{I} \left( \tilde{\mathbf{y}}_{n}^{(r)} \in R_n \right)
+  \cdot \left[ \text{CE} \left( \mathbf{A}_{\phi}^{(r)}
+      (\mathbf{x}_n) \cdot \mathbf{p}_{\theta} (\mathbf{x}_n),
+    \tilde{\mathbf{y}}_{n}^{(r)} \right) + \lambda \cdot \text{tr}
+  \left( \mathbf{A}_{\phi}^{(r)} (\mathbf{x}_n) \right) \right]
+\end{equation}
+
+Being $\mathbb{I}$ the indicator function, $\text{CE}$ the cross-entropy loss,
+and $\lambda$ the regularization parameter.
+
+When trained against a Triple Negative Breast Cancer images dataset,
+this approach achieves a Dice coefficient of 0.7827, outperforming
+the well-known STAPLE (0.7039) and being competitive with the
+supervised method with expert labels (0.7723). The reliability
+modeling approach which gave the best results was the CR image, the
+authors explain that CR pixel could have a deeper understanding of
+the labelers reliability per image but requires a much larger amount
+of data to be trained, hence CR image offers a balanced solution.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.7\textwidth]{Cap1/Figures/lopez_2024_proposed_framework.png}
+  \caption{Proposed framework for the approach in \cite{LopezEtAl2024}.}
+  \label{fig:lopez_2024_proposed_framework}
+\end{figure}

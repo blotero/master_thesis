@@ -543,3 +543,35 @@
   issn     = {2234-943X},
   abstract = {<sec><title>Purpose</title><p>Prostate biopsy histopathology and immunohistochemistry are important in the differential diagnosis of the disease and can be used to assess the degree of prostate cancer differentiation. Today, prostate biopsy is increasing the demand for experienced uropathologists, which puts a lot of pressure on pathologists. In addition, the grades of different observations had an indicating effect on the treatment of the patients with cancer, but the grades were highly changeable, and excessive treatment and insufficient treatment often occurred. To alleviate these problems, an artificial intelligence system with clinically acceptable prostate cancer detection and Gleason grade accuracy was developed.</p></sec><sec><title>Methods</title><p>Deep learning algorithms have been proved to outperform other algorithms in the analysis of large data and show great potential with respect to the analysis of pathological sections. Inspired by the classical semantic segmentation network, we propose a pyramid semantic parsing network (PSPNet) for automatic prostate Gleason grading. To boost the segmentation performance, we get an auxiliary prediction output, which is mainly the optimization of auxiliary objective function in the process of network training. The network not only includes effective global prior representations but also achieves good results in tissue micro-array (TMA) image segmentation.</p></sec><sec><title>Results</title><p>Our method is validated using 321 biopsies from the Vancouver Prostate Centre and ranks the first on the MICCAI 2019 prostate segmentation and classification benchmark and the Vancouver Prostate Centre data. To prove the reliability of the proposed method, we also conduct an experiment to test the consistency with the diagnosis of pathologists. It demonstrates that the well-designed method in our study can achieve good results. The experiment also focused on the distinction between high-risk cancer (Gleason pattern 4, 5) and low-risk cancer (Gleason pattern 3). Our proposed method also achieves the best performance with respect to various evaluation metrics for distinguishing benign from malignant.</p></sec><sec><title>Availability</title><p>The Python source code of the proposed method is publicly available at <uri xlink:href="https://github.com/hubutui/Gleason" xmlns:xlink="http://www.w3.org/1999/xlink">https://github.com/hubutui/Gleason</uri>. All implementation details are presented in this paper.</p></sec><sec><title>Conclusion</title><p>These works prove that the Gleason grading results obtained from our method are effective and accurate.</p></sec>}
 }
+
+@inproceedings{RonnebergerEtAl2015,
+  author    = {Ronneberger, Olaf
+               and Fischer, Philipp
+               and Brox, Thomas},
+  editor    = {Navab, Nassir
+               and Hornegger, Joachim
+               and Wells, William M.
+               and Frangi, Alejandro F.},
+  title     = {U-Net: Convolutional Networks for Biomedical Image Segmentation},
+  booktitle = {Medical Image Computing and Computer-Assisted Intervention -- MICCAI 2015},
+  year      = {2015},
+  publisher = {Springer International Publishing},
+  address   = {Cham},
+  pages     = {234--241},
+  abstract  = {There is large consent that successful training of deep networks requires many thousand annotated training samples. In this paper, we present a network and training strategy that relies on the strong use of data augmentation to use the available annotated samples more efficiently. The architecture consists of a contracting path to capture context and a symmetric expanding path that enables precise localization. We show that such a network can be trained end-to-end from very few images and outperforms the prior best method (a sliding-window convolutional network) on the ISBI challenge for segmentation of neuronal structures in electron microscopic stacks. Using the same network trained on transmitted light microscopy images (phase contrast and DIC) we won the ISBI cell tracking challenge 2015 in these categories by a large margin. Moreover, the network is fast. Segmentation of a 512x512 image takes less than a second on a recent GPU. The full implementation (based on Caffe) and the trained networks are available at http://lmb.informatik.uni-freiburg.de/people/ronneber/u-net.},
+  isbn      = {978-3-319-24574-4}
+}
+
+
+
+@inproceedings{ZhangEtAl2020,
+  author    = {Zhang, Le and Tanno, Ryutaro and Xu, Mou-Cheng and Jin, Chen and Jacob, Joseph and Cicarrelli, Olga and Barkhof, Frederik and Alexander, Daniel},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {H. Larochelle and M. Ranzato and R. Hadsell and M.F. Balcan and H. Lin},
+  pages     = {15750--15762},
+  publisher = {Curran Associates, Inc.},
+  title     = {Disentangling Human Error from Ground Truth in Segmentation of Medical Images},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2020/file/b5d17ed2b502da15aa727af0d51508d6-Paper.pdf},
+  volume    = {33},
+  year      = {2020}
+}
