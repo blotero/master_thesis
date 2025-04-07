@@ -123,47 +123,7 @@ truth estimation given the existence of multiple labelers for an
 input \gls{WSI}, but not that useful for providing annotations of structures on
 new and unlabeled images, hence being a good support for other methods.
 
-\subsubsection{Chained Gaussian Processes}
-
-Other works like \cite{GilGonzalesEtAl2025} proposed a novel approach from
-Gaussian Processes to model the relationship between the annotators'
-reliability and the input data. The authors propose a method to
-estimate the reliability of each annotator based on their performance
-on a set of validation images. The reliability is then used to weight
-the contribution of each annotator to the final segmentation.
-
-\subsection{Strategies for handling low-quality images}
-
-The problem of low-quality images and noisy annotations has been
-tackled with various strategies. One such approach is the use of deep
-learning models that incorporate loss functions designed to mitigate
-the effects of unreliable labels. Traditional methods such as
-Majority Voting (MV) or Expectation-Maximization (EM) have been
-widely used for aggregating multiple annotators' inputs. However,
-they assume a homogeneous reliability of annotators, which may not
-hold in real-world scenarios.
-
-A more recent approach was proposed by~\cite{TrianaEtAl2023},
-introducing a Generalized Cross-Entropy-based Chained Deep Learning
-(GCECDL) framework. This method addresses the limitations of
-traditional label aggregation techniques by modeling each annotator's
-reliability as a function of the input data. The approach effectively
-mitigates the impact of noisy labels by using a noise-robust loss
-function, balancing Mean Absolute Error (MAE) and Categorical
-Cross-Entropy (CE). Unlike prior approaches, GCECDL accounts for the
-dependencies among annotators while encoding their non-stationary
-behavior across different image regions. Their experiments on
-multiple datasets demonstrated superior predictive performance
-compared to state-of-the-art methods, particularly in cases where
-annotations were highly inconsistent.
-
-This strategy is especially relevant for handling low-quality medical
-images, where expert annotations may be inconsistent, and traditional
-consensus-based approaches fail to account for varying expertise
-levels. By leveraging deep learning with robust noise-handling loss
-functions, the reliability of segmentation models can be significantly improved.
-
-\subsection{U-shaped \gls{CNN}s}
+\subsubsection{U-shaped \gls{CNN}s}
 Since the introduction of U-Net \cite{RonnebergerEtAl2015} in 2015
 for biomedical image segmentation, U-shaped \gls{CNN}s have become a
 prevalent architecture in medical image segmentation tasks. The
@@ -197,12 +157,13 @@ architecture overview can bee seen in figure \ref{fig:unet_architecture}.
 \subsubsection{U-Net based approaches}
 
 In \cite{LopezEtAl2024} two networks are trained for delivering a final
-segmentation. One network is trained to aggregate the annotations of
-the labelers and another one is trained to segment the image. The
-first network is a U-Net that takes as input the image and the
-annotations of the labelers and outputs a reliability map. This map
-is then used to weight the contribution of each annotator to the
-final segmentation. The second network is the U-Net used for segmentation.
+segmentation. One network is trained to estimate the annotators reliability
+and another one is trained to segment the image. The
+first network is a deep neural network that takes as input features of
+image and the labelers id endoded as one-hot and outputs a reliability
+map across the image feature space. This map is then used to weight
+the contribution of each annotator to the final segmentation. The
+second network is the U-Net used for segmentation.
 
 In this approach, it is assumed that the images are labeled for at least one
 labeler and not all of them, which is closer to a real world scenario, in which
@@ -236,8 +197,12 @@ reliability map $\{\hat{\mathbf{A}}^{(r)}_{\phi}(\mathbf{x}) \}_{r
     across all the pixels in the image.
 \end{itemize}
 
+These differences in dimensions are determined by the feature
+extraction space from segmentation network which feed the input of the
+annotator network, which the authors vary for experimentation purposes.
+
 Being $\mathbf{p}_\theta(\vecx_n)$ the estimation of the latent (ground
-truth) segmentation delivered by the segmentation UNet network, then,
+truth) segmentation delivered by the segmentation UNet network, thus,
 the estimated segmentation probability mask for each annotator is
 given by the product:
 
@@ -247,7 +212,7 @@ given by the product:
   \mathbf{A}^{(r)}_{\phi}(\mathbf{x}) \odot \mathbf{p}(\vecx_n),
 \end{equation}
 
-where $\odot$ is the element-wise product and $\theta$ and $\phi$ are
+where $\odot$ is the element-wise product and $\phi$ and $\theta$ are
 the parameters of the annotator network and the segmentation UNet
 network, respectively, being the latter initialized with a ResNet34 backbone
 pre-trained on ImageNet.
@@ -268,14 +233,12 @@ regularization on the reliability map, originally proposed in
 Being $\mathbb{I}$ the indicator function, $\text{CE}$ the cross-entropy loss,
 and $\lambda$ the regularization parameter.
 
-When trained against a Triple Negative Breast Cancer images dataset,
-this approach achieves a Dice coefficient of 0.7827, outperforming
-the well-known STAPLE (0.7039) and being competitive with the
-supervised method with expert labels (0.7723). The reliability
-modeling approach which gave the best results was the CR image, the
-authors explain that CR pixel could have a deeper understanding of
-the labelers reliability per image but requires a much larger amount
-of data to be trained, hence CR image offers a balanced solution.
+When evaluated on a Triple Negative Breast Cancer dataset, this
+approach achieves a Dice coefficient of 0.7827, outperforming STAPLE
+(0.7039) and matching expert-supervised performance (0.7723). The CR
+image reliability modeling proved most effective, as CR pixel, while
+potentially offering finer-grained reliability estimation, requires
+significantly more training data.
 
 \begin{figure}
   \centering
@@ -283,3 +246,92 @@ of data to be trained, hence CR image offers a balanced solution.
   \caption{Proposed framework for the approach in \cite{LopezEtAl2024}.}
   \label{fig:lopez_2024_proposed_framework}
 \end{figure}
+
+\subsubsection{Bayesian models}
+
+Bayesian approaches are a good choice for handling label noise
+and uncertainty in the labelers. In \cite{GilEtAlvarez2023CCGPMA} the
+authors propose a novel approach from Gaussian Processes to model the
+relationship between the annotators' reliability and the input data,
+while also preserving the interdependencies among the annotators.
+This is achieved by introducing \gls{CCGPMA}, a framework based on
+the well known \gls{CGP}.
+\gls{CGP} on itself cannot consider inter-annotator dependencies,
+thus, the authors introduce the \gls{CCGP} to model correlations
+between the GP latent functions, which are supposed to be generated
+from a \gls{SLFM}:
+
+\begin{equation}
+  f_j(\mathbf{x}_n) = \sum_{q=1}^{Q} w_{j,q} \mu_q(\mathbf{x}_n),
+\end{equation}
+
+where $f_j : \mathcal{X} \to \mathbb{R}$ is a \gls{LF}, $\mu_q(\cdot) \sim
+\mathcal{GP}(0, k_q(\cdot, \cdot))$ with $k_q : \mathcal{X} \times
+\mathcal{X} \to \mathbb{R}$ being a kernel function, and $w_{j,q} \in
+\mathbb{R}$ is a combination coefficient ($Q \in \mathbb{N}$). This leads
+to a joint distribution of the form:
+
+\begin{equation}
+  p(\mathbf{y}, \hat{\mathbf{f}}, u | \mathbf{X}) = p(\mathbf{y} |
+  \boldsymbol{\theta}) \prod_{j=1}^{J} p(\mathbf{f}_j | \mathbf{u})
+  p(\mathbf{u}),
+\end{equation}
+
+where $\mathbf{y}$ is the vector of noisy labels, $\hat{\mathbf{f}}$
+is the vector of latent functions, $u$ represents the inducing points,
+and $\mathbf{X}$ is the input data.
+
+Combined with inducing-variables based methods for sparse GP
+approximations, and maximizing an \gls{ELBO} for the estimation of the
+variational parameters, the authors reach a model whose variational
+expectations are not analytically tractable, and hence, the authors
+derive a Gaussian-Hermite quadrature approach.
+
+Finally, the authors extend this approach for being applied to
+classification an regression, reaching the only known approach to
+involve chained gaussian processes in multiple annotators
+classification and regression tasks while preserving the
+interdependencies among the annotators, and also outperforming
+GPC-MV\footnote{A GPC using the MV of the labels as the ground truth.},
+MA-LFC-C\footnote{A LRC with constant parameters across the input space.},
+MA-DGRL\footnote{A multi-labeler approach that considers as latent
+variables the annotator performance.},
+MA-GPC\footnote{A multi-labeler GPC, which is an extension of MA-LFC.},
+MA-GPCV\footnote{An extension of MA-GPC that includes variational
+inference and priors over the labelers’ parameters.},
+MA-DL\footnote{A Crowd Layer for DL, where the annotators’ parameters
+are constant across the input space.},
+KAAR\footnote{A kernel-based approach that employs a convex
+combination of classifiers and codes labelers dependencies.},
+
+\subsection{Strategies for handling low-quality images}
+
+The problem of low-quality images and noisy annotations has been
+tackled with various strategies. One such approach is the use of deep
+learning models that incorporate loss functions designed to mitigate
+the effects of unreliable labels. Traditional methods such as
+Majority Voting (MV) or Expectation-Maximization (EM) have been
+widely used for aggregating multiple annotators' inputs. However,
+they assume a homogeneous reliability of annotators, which may not
+hold in real-world scenarios.
+
+A more recent approach was proposed by~\cite{TrianaEtAl2023},
+introducing a \gls{GCECDL} framework. This method addresses the limitations of
+traditional label aggregation techniques by modeling each annotator's
+reliability as a function of the input data. The approach effectively
+mitigates the impact of noisy labels by using a noise-robust loss
+function, balancing Mean Absolute Error (MAE) and Categorical
+Cross-Entropy (CE). Unlike prior approaches, \gls{GCECDL} accounts for the
+dependencies among annotators while encoding their non-stationary
+behavior across different image regions. Their experiments on
+multiple datasets demonstrated superior predictive performance
+compared to state-of-the-art methods, particularly in cases where
+annotations were highly inconsistent.
+
+This strategy is especially relevant for handling low-quality medical
+images, where expert annotations may be inconsistent, and traditional
+consensus-based approaches fail to account for varying expertise
+levels. By leveraging deep learning with robust noise-handling loss
+functions, the reliability of segmentation models can be significantly improved.
+
+% State of the art summary table
