@@ -1,7 +1,198 @@
-
 \chapter{Truncated Generalized Cross Entropy for
 segmentation}\label{ch:seg_tgce}
 
 \section{Proposed Loss Function}
 
+The development of our proposed loss function stems from the need to
+handle multiple annotators' segmentation masks while accounting for
+their varying reliability across different regions of the image. We
+begin by examining the foundation of our approach: the Generalized
+Cross Entropy (GCE).
+
+\subsection{Generalized Cross Entropy}
+
+The Generalized Cross Entropy (GCE) loss function was introduced as a
+robust alternative to the standard cross-entropy loss, particularly
+effective in handling noisy labels. The GCE loss for a single
+annotator can be expressed as:
+
+\begin{equation}
+  GCE(\mathbf{Y}, f(\mathbf{X};\theta)) = \frac{1}{q}\left(1 -
+  \sum_{k=1}^K \mathbf{Y}_k f(\mathbf{X};\theta)_k^q\right)
+\end{equation}
+
+where $q \in (0,1)$ is a hyperparameter that controls the truncation
+level, $\mathbf{Y}$ is the ground truth label, and
+$f(\mathbf{X};\theta)$ is the model's prediction. The GCE loss
+exhibits several desirable properties:
+
+\begin{itemize}
+  \item It is more robust to label noise compared to standard cross-entropy
+  \item The truncation parameter $q$ allows for controlling the
+    sensitivity to outliers
+  \item It maintains the convexity property for optimization
+\end{itemize}
+
+\subsection{Extension to Multiple Annotators}
+
+In the context of multiple annotators, we need to consider the
+varying reliability of each annotator across different regions of the
+image. Let's consider a $k$-class multiple annotators segmentation
+problem with the following data representation:
+
+\begin{equation}
+  \mathbf X \in \mathbb{R}^{W \times H}, \{ \mathbf Y_r \in
+  \{0,1\}^{W \times H \times K} \}_{r=1}^R; \;\; \mathbf {\hat Y} \in
+  [0,1]^{W\times H \times K} = f(\mathbf X)
+\end{equation}
+
+where the segmentation mask function maps the input to output as:
+
+\begin{equation}
+  f: \mathbb  R ^{W\times H} \to [0,1]^{W\times H\times K}
+\end{equation}
+
+The segmentation masks $\mathbf Y_r$ satisfy the following condition
+for being a softmax-like representation:
+
+\begin{equation}
+  \mathbf Y_r[w,h,:] \mathbf{1} ^ \top _ k = 1; \;\; w \in W, h \in H
+\end{equation}
+
+\subsection{Reliability Maps and Truncated GCE}
+
+The key innovation in our approach is the introduction of reliability
+maps $\Lambda_r$ for each annotator:
+
+\begin{equation}
+  \bigg\{ \Lambda_r (\mathbf X; \theta ) \in [0,1] ^{W\times H} \bigg\}_{r=1}^R
+\end{equation}
+
+These reliability maps estimate the confidence of each annotator at
+every spatial location $(w,h)$ in the image. The maps are learned
+jointly with the segmentation model, allowing the network to:
+
+\begin{itemize}
+  \item Weight the contribution of each annotator differently across the image
+  \item Adapt to varying levels of expertise in different regions
+  \item Handle cases where annotators might be more reliable in
+    certain areas than others
+\end{itemize}
+
+The proposed Truncated Generalized Cross Entropy for Semantic
+Segmentation (TGCE$_{SS}$) combines the robustness of GCE with the
+flexibility of reliability maps:
+
+\begin{equation}
+  \begin{split}
+    TGCE_{SS}(\mathbf{Y}_r,f(\mathbf X;\theta) | \mathbf{\Lambda}_r
+    (\mathbf X;\theta)) = \mathbb E_{r} \Bigg\{ \mathbb E_{w,h}
+      \Bigg\{ \Lambda_r (\mathbf X; \theta) \circ \mathbb E_k \bigg\{
+          \mathbf Y_r \circ \bigg( \frac{\mathbf 1 _{W\times H \times
+        K} - f(\mathbf X;\theta) ^{\circ q }}{q} \bigg); k \in K  \bigg\}  + \\
+        \left(\mathbf 1 _{W \times H } - \Lambda _r (\mathbf
+        X;\theta)\right) \circ \bigg(   \frac{\mathbf 1_{W\times H} -
+        (\frac {1}{k} \mathbf 1_{W\times H})^{\circ q}}{q} \bigg); w \in
+    W, h \in H \Bigg\};r\in R\Bigg\}
+  \end{split}
+\end{equation}
+
+where $q \in (0,1)$ controls the truncation level. The loss function
+consists of two main components:
+
+\begin{itemize}
+  \item The first term weighted by $\Lambda_r$ represents the GCE
+    loss for regions where the annotator is considered reliable
+  \item The second term weighted by $(1-\Lambda_r)$ provides a
+    uniform prior for regions where the annotator is considered unreliable
+\end{itemize}
+
+For a batch containing $N$ samples, the total loss is computed as:
+
+\begin{equation}
+  \mathscr{L}\left(\mathbf{Y}_r[n],f(\mathbf X[n];\theta) |
+  \mathbf{\Lambda}_r (\mathbf X[n];\theta)\right)  = \frac{1}{N}
+  \sum_{n}^NTGCE_{SS}(\mathbf{Y}_r[n],f(\mathbf X[n];\theta) |
+  \mathbf{\Lambda}_r (\mathbf X[n];\theta))
+\end{equation}
+
 \section{Proposed Model}
+
+Our proposed model architecture combines the strengths of UNET with a
+ResNet-34 backbone, specifically designed to work with the
+TGCE$_{SS}$ loss function. The architecture is illustrated in Figure
+\ref{fig:model_architecture}.
+
+\subsection{Backbone Architecture}
+
+The model uses a pre-trained ResNet-34 as its encoder backbone.
+ResNet-34's deep residual learning framework provides several advantages:
+
+\begin{itemize}
+  \item Efficient feature extraction through residual connections
+  \item Pre-trained weights that capture rich visual representations
+  \item Stable gradient flow during training
+\end{itemize}
+
+The ResNet-34 backbone is modified to serve as the encoder in our
+UNET architecture. We remove the final fully connected layer and use
+the feature maps from different stages of the network for skip connections.
+
+\subsection{UNET Architecture}
+
+The UNET architecture consists of an encoder-decoder structure with
+skip connections. The encoder path follows the ResNet-34 structure,
+while the decoder path uses transposed convolutions for upsampling.
+The architecture includes:
+
+\begin{itemize}
+  \item Four downsampling stages in the encoder (ResNet-34 blocks)
+  \item Four upsampling stages in the decoder
+  \item Skip connections between corresponding encoder and decoder stages
+  \item Batch normalization and ReLU activation after each convolution
+\end{itemize}
+
+\subsection{Reliability Map Branch}
+
+A key innovation in our architecture is the addition of a parallel
+branch for estimating reliability maps. This branch:
+
+\begin{itemize}
+  \item Takes the same encoder features as input
+  \item Uses a series of $1 \times 1$ convolutions to reduce channel dimensions
+  \item Produces $R$ reliability maps $\Lambda_r$ for each annotator
+  \item Applies a sigmoid activation to ensure values in $[0,1]$
+\end{itemize}
+
+\subsection{Integration with TGCE$_{SS}$ Loss}
+
+The model outputs two components:
+
+\begin{itemize}
+  \item Segmentation masks $\mathbf{\hat{Y}} = f(\mathbf{X};\theta)$
+  \item Reliability maps $\{\Lambda_r(\mathbf{X};\theta)\}_{r=1}^R$
+\end{itemize}
+
+These outputs are used to compute the TGCE$_{SS}$ loss as described
+in Section \ref{sec:proposed_loss}. The loss function guides the
+learning of both the segmentation masks and reliability maps simultaneously.
+
+\subsection{Training Process}
+
+The training process involves:
+
+\begin{itemize}
+  \item Initializing the ResNet-34 backbone with pre-trained weights
+  \item Training the entire network end-to-end
+  \item Using the Adam optimizer with a learning rate of $10^{-4}$
+  \item Applying the TGCE$_{SS}$ loss to update both the segmentation
+    and reliability branches
+\end{itemize}
+
+The model's architecture allows it to:
+\begin{itemize}
+  \item Learn robust segmentation features through the ResNet-34 backbone
+  \item Capture fine-grained details through UNET's skip connections
+  \item Adapt to annotator reliability through the parallel reliability branch
+  \item Handle multiple annotators' inputs effectively
+\end{itemize}
