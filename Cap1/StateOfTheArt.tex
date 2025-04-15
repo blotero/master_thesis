@@ -118,10 +118,10 @@ annotations and depends on initial estimates, impacting accuracy.
 Lastly, the estimated performance levels lack interpretability,
 making it difficult to assess annotator reliability effectively.
 
-Finally, this work contemplates \gls{STAPLE} as useful for ground
-truth estimation given the existence of multiple labelers for an
-input \gls{WSI}, but not that useful for providing annotations of structures on
-new and unlabeled images, hence being a good support for other methods.
+Finally, this work contemplates \gls{STAPLE} as useful for label
+aggregation,hence being a good support for other methods, but not
+that useful for providing annotations of structures on
+new and unlabeled images.
 
 \subsubsection{U-shaped \gls{CNN}s}
 Since the introduction of U-Net \cite{RonnebergerEtAl2015} in 2015
@@ -247,6 +247,11 @@ significantly more training data.
   \label{fig:lopez_2024_proposed_framework}
 \end{figure}
 
+Despite the decent performance of the approach, solving the problem
+of multiple labelers with two networks can be overwhelming for the
+optimization process, requiring large amounts of annotated data to
+properly codify the annotators spatial reliabilities, which could be
+managed by a single model with an appropriate loss function.
 \subsubsection{Bayesian models}
 
 Bayesian approaches are a good choice for handling label noise
@@ -298,15 +303,25 @@ MA-DGRL\footnote{A multi-labeler approach that considers as latent
 variables the annotator performance.},
 MA-GPC\footnote{A multi-labeler GPC, which is an extension of MA-LFC.},
 MA-GPCV\footnote{An extension of MA-GPC that includes variational
-inference and priors over the labelers’ parameters.},
-MA-DL\footnote{A Crowd Layer for DL, where the annotators’ parameters
+inference and priors over the labelers' parameters.},
+MA-DL\footnote{A Crowd Layer for DL, where the annotators' parameters
 are constant across the input space.},
 KAAR\footnote{A kernel-based approach that employs a convex
-combination of classifiers and codes labelers dependencies.},
+combination of classifiers and codes labelers dependencies.}.
 
-\subsection{Strategies for handling low-quality images}
+\gls{CCGPMA} on itself proposes a good approach for handling label
+noise and uncertainty in the labelers for regression and
+classification tasks, while also preserving the interdependencies
+among the annotators, however, it does not face the image segmentation
+problem, which is the main focus of this wors, however, it does not
+face the image segmentation problem, which is the main focus of this
+work. Besides, handling so many latent functions during the
+optimization process is computationally expensive, making it on itself
+infeasible for large and high resolution datasets.
 
-The problem of low-quality images and noisy annotations has been
+\subsection{Facing noisy annotations and low-quality data}
+
+The problem of low-quality data and noisy annotations has been
 tackled with various strategies. One such approach is the use of deep
 learning models that incorporate loss functions designed to mitigate
 the effects of unreliable labels. Traditional methods such as
@@ -314,6 +329,37 @@ Majority Voting (MV) or Expectation-Maximization (EM) have been
 widely used for aggregating multiple annotators' inputs. However,
 they assume a homogeneous reliability of annotators, which may not
 hold in real-world scenarios.
+
+\subsubsection{Loss functions in deep learning models}
+
+Loss functions are fundamental components in deep learning models
+that quantify how well a model's predictions match the ground truth.
+They serve as the objective function that guides the learning process
+by measuring the discrepancy between predicted and actual values. In
+classification tasks, the most common loss functions are
+Cross-Entropy (CE) and Mean Absolute Error (MAE). CE is particularly
+effective for classification as it heavily penalizes confident but
+wrong predictions, though it can be sensitive to noisy labels. MAE,
+on the other hand, is more robust to outliers and assigns equal
+weights to all mistakes, but typically requires more training
+iterations. For image segmentation tasks, specialized loss functions
+have been developed to handle the unique challenges of pixel-wise
+classification. The Dice loss, which measures the overlap between
+predicted and ground truth regions, is widely used in medical image
+segmentation. More recently, the Generalized Cross Entropy (GCE) loss
+has emerged as a robust alternative that combines the benefits of
+both CE and MAE, allowing for better handling of noisy labels through
+a tunable parameter that controls sensitivity to outliers. In
+multi-annotator scenarios, where multiple experts provide potentially
+inconsistent segmentations, novel loss functions like the Truncated
+Generalized Cross Entropy for Semantic Segmentation (TGCE$_{SS}$)
+have been developed to account for varying annotator reliability
+across different image regions. These loss functions are crucial for
+training accurate segmentation models, especially in medical imaging
+where precise delineation of anatomical structures is essential for
+diagnosis and treatment planning.
+
+\subsubsection{Generalized Cross-Entropy for multiple annotators classification}
 
 A more recent approach was proposed by~\cite{TrianaEtAl2023},
 introducing a \gls{GCECDL} framework. This method addresses the limitations of
@@ -323,15 +369,12 @@ mitigates the impact of noisy labels by using a noise-robust loss
 function, balancing Mean Absolute Error (MAE) and Categorical
 Cross-Entropy (CE). Unlike prior approaches, \gls{GCECDL} accounts for the
 dependencies among annotators while encoding their non-stationary
-behavior across different image regions. Their experiments on
+behavior across different data samples. Their experiments on
 multiple datasets demonstrated superior predictive performance
 compared to state-of-the-art methods, particularly in cases where
 annotations were highly inconsistent.
 
-This strategy is especially relevant for handling low-quality medical
-images, where expert annotations may be inconsistent, and traditional
-consensus-based approaches fail to account for varying expertise
-levels. By leveraging deep learning with robust noise-handling loss
-functions, the reliability of segmentation models can be significantly improved.
-
-% State of the art summary table
+The strategy of the authors effectively unlocks the potential of
+\gls{ML} models to handle low-quality data and noisy annotations, but
+it is bounded to classifications tasks only, not being by itself applicable to
+segmentation tasks.
