@@ -144,15 +144,7 @@ convolutions to gradually recover spatial resolution while reducing
 feature channels. Skip connections between corresponding encoder and
 decoder layers preserve fine-grained details by concatenating
 high-resolution features from the encoder with upsampled features in
-the decoder, enabling precise localization of structures. The
-architecture overview can bee seen in figure \ref{fig:unet_architecture}.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.7\textwidth]{Cap1/Figures/unet_architecture.png}
-  \caption{Original U-Net architecture.}
-  \label{fig:unet_architecture}
-\end{figure}
+the decoder, enabling precise localization of structures.
 
 \subsubsection{U-Net based approaches}
 
@@ -377,4 +369,17 @@ annotations were highly inconsistent.
 The strategy of the authors effectively unlocks the potential of
 \gls{ML} models to handle low-quality data and noisy annotations, but
 it is bounded to classifications tasks only, not being by itself applicable to
-segmentation tasks.
+segmentation tasks. The TGCE equation for handling multiple
+annotators is defined as:
+
+\begin{equation}
+  \text{TGCE}(\mathbf{y}, f(\mathbf{x}); \tilde{\lambda}_x,
+  \tilde{C}) = \tilde{\lambda}_x \frac{1-(\mathbf{1}^\top(\mathbf{y}
+  \odot f(\mathbf{x})))^q}{q} + (1-\tilde{\lambda}_x)\frac{1-(\tilde{C})^q}{q},
+\end{equation}
+
+where $\tilde{\lambda}_x$ represents the annotator reliability,
+$\tilde{C}$ is a constant, $q$ is a parameter that controls the
+balance between MAE and CE behavior, $\mathbf{y}$ is the annotation
+vector, and $f(\mathbf{x})$ is the model prediction. This approach is
+more deeply discussed in chapter \ref{ch:seg_tgce}.
