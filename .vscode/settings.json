@@ -80,15 +80,26 @@
   "[latex]": {
     "editor.rulers": [80]
   },
-  "cSpell.enabledLanguageIds": ["latex"],
+  "cSpell.enabledFileTypes": {
+    "latex": true
+  },
   "cSpell.words": [
+    "convolutional",
     "crowdsourcing",
+    "DGRL",
+    "downsampling",
+    "GPCV",
     "histopathological",
     "interpretability",
+    "KAAR",
     "multiclass",
     "segmentations",
     "Segnet",
-    "softmax"
+    "softmax",
+    "TGCE",
+    "UNET",
+    "upsampled",
+    "upsampling"
   ],
   "[python]": {
     "editor.formatOnSave": true,
