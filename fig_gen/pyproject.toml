@@ -2,18 +2,18 @@
 name = "thesis-figures"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Brandon Lotero",email = "blotero@gmail.com"}
-]
-readme = "README.md"
+authors = [{ name = "Brandon Lotero", email = "blotero@gmail.com" }]
 requires-python = ">=3.12"
 dependencies = [
     "graphviz (>=0.20.3,<0.21.0)",
     "pandas (>=2.2.3,<3.0.0)",
     "numpy (>=2.2.4,<3.0.0)",
-    "matplotlib (>=3.10.1,<4.0.0)"
+    "matplotlib (>=3.10.1,<4.0.0)",
+    "seaborn (>=0.13.2,<0.14.0)",
 ]
 
+[tool.poetry]
+package-mode = false
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]

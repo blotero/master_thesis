@@ -172,74 +172,73 @@ TGCE$_{SS}$ loss function. The architecture is illustrated in Figure
 
 \subsection{Backbone Architecture}
 
-The model uses a pre-trained ResNet-34 as its encoder backbone.
-ResNet-34's deep residual learning framework provides several advantages:
-
-\begin{itemize}
-  \item Efficient feature extraction through residual connections
-  \item Pre-trained weights that capture rich visual representations
-  \item Stable gradient flow during training
-\end{itemize}
-
-The ResNet-34 backbone is modified to serve as the encoder in our
-UNET architecture. We remove the final fully connected layer and use
-the feature maps from different stages of the network for skip connections.
+The model employs a pre-trained ResNet-34 as its encoder backbone,
+leveraging its deep residual learning framework for efficient feature
+extraction. The choice of ResNet-34 provides several key advantages:
+efficient feature extraction through residual connections,
+pre-trained weights that capture rich visual representations, and
+stable gradient flow during training. We modify the ResNet-34
+backbone to serve as the encoder in our UNET architecture by removing
+the final fully connected layer and utilizing the feature maps from
+different stages of the network for skip connections.
 
 \subsection{UNET Architecture}
 
-The UNET architecture consists of an encoder-decoder structure with
-skip connections. The encoder path follows the ResNet-34 structure,
-while the decoder path uses transposed convolutions for upsampling.
-The architecture includes:
-
-\begin{itemize}
-  \item Four downsampling stages in the encoder (ResNet-34 blocks)
-  \item Four upsampling stages in the decoder
-  \item Skip connections between corresponding encoder and decoder stages
-  \item Batch normalization and ReLU activation after each convolution
-\end{itemize}
+The UNET architecture follows a traditional encoder-decoder structure
+with skip connections, where the encoder path implements the
+ResNet-34 structure. The decoder path employs transposed convolutions
+for upsampling, creating a symmetrical architecture that effectively
+captures both high-level and low-level features. The architecture
+incorporates four downsampling stages in the encoder, corresponding
+to the ResNet-34 blocks, and four upsampling stages in the decoder.
+These stages are connected through skip connections that bridge
+corresponding encoder and decoder stages, allowing the network to
+preserve fine-grained details. Each convolution operation is followed
+by batch normalization and ReLU activation to ensure stable training
+and effective feature learning.
 
 \subsection{Reliability Map Branch}
 
-A key innovation in our architecture is the addition of a parallel
-branch for estimating reliability maps. This branch:
-
-\begin{itemize}
-  \item Takes the same encoder features as input
-  \item Uses a series of $1 \times 1$ convolutions to reduce channel dimensions
-  \item Produces $R$ reliability maps $\Lambda_r$ for each annotator
-  \item Applies a sigmoid activation to ensure values in $[0,1]$
-\end{itemize}
+A key innovation in our architecture is the parallel branch dedicated
+to estimating reliability maps. This branch processes the same
+encoder features as the main segmentation path but focuses on
+learning the confidence of each annotator. Through a series of $1
+\times 1$ convolutions, the branch reduces channel dimensions while
+maintaining spatial information. The final output consists of $R$
+reliability maps $\Lambda_r$, one for each annotator, with values
+constrained to the $[0,1]$ range through a sigmoid activation
+function. This design allows the network to learn and adapt to the
+varying reliability of different annotators across different regions
+of the image.
 
 \subsection{Integration with TGCE$_{SS}$ Loss}
 
-The model outputs two components:
-
-\begin{itemize}
-  \item Segmentation masks $\mathbf{\hat{Y}} = f(\mathbf{X};\theta)$
-  \item Reliability maps $\{\Lambda_r(\mathbf{X};\theta)\}_{r=1}^R$
-\end{itemize}
-
-These outputs are used to compute the TGCE$_{SS}$ loss as described
-in Section \ref{sec:proposed_loss}. The loss function guides the
-learning of both the segmentation masks and reliability maps simultaneously.
+The model produces two distinct outputs: segmentation masks
+$\mathbf{\hat{Y}} = f(\mathbf{X};\theta)$ and reliability maps
+$\{\Lambda_r(\mathbf{X};\theta)\}_{r=1}^R$. These outputs work in
+tandem with the TGCE$_{SS}$ loss function described in Section
+\ref{sec:proposed_loss}. The loss function simultaneously guides the
+learning of both the segmentation masks and reliability maps,
+ensuring that the model learns to balance the contributions of
+different annotators based on their estimated reliability.
 
 \subsection{Training Process}
 
-The training process involves:
+The training process begins with the initialization of the ResNet-34
+backbone using pre-trained weights, providing a strong foundation for
+feature extraction. The entire network is then trained end-to-end
+using the Adam optimizer with a learning rate of $10^{-4}$. The
+TGCE$_{SS}$ loss function plays a crucial role in updating both the
+segmentation and reliability branches, ensuring that the model learns
+to effectively handle multiple annotators' inputs while accounting
+for their varying reliability.
 
-\begin{itemize}
-  \item Initializing the ResNet-34 backbone with pre-trained weights
-  \item Training the entire network end-to-end
-  \item Using the Adam optimizer with a learning rate of $10^{-4}$
-  \item Applying the TGCE$_{SS}$ loss to update both the segmentation
-    and reliability branches
-\end{itemize}
-
-The model's architecture allows it to:
-\begin{itemize}
-  \item Learn robust segmentation features through the ResNet-34 backbone
-  \item Capture fine-grained details through UNET's skip connections
-  \item Adapt to annotator reliability through the parallel reliability branch
-  \item Handle multiple annotators' inputs effectively
-\end{itemize}
+The model's architecture is specifically designed to address the
+challenges of multi-annotator segmentation. Through the ResNet-34
+backbone, it learns robust segmentation features that capture
+high-level patterns in the data. The UNET's skip connections enable
+the preservation of fine-grained details, while the parallel
+reliability branch allows the model to adapt to annotator-specific
+characteristics. This comprehensive design enables the model to
+effectively handle multiple annotators' inputs while maintaining high
+segmentation accuracy and reliability estimation.
