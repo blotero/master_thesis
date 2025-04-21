@@ -2,4 +2,47 @@
 
 \section{Summary}
 
+Throughout this work, several techniques have been explored to develop a
+model that can face \gls{ISS} of real world histopathology images in
+crowdsourcing scenarios. Different approaches were studied and evaluated
+to reach an optimal solution which could model the annotators' performance
+from the input space. The following remarks are based on the results
+obtained from the experiments conducted and reviewed literature:
+
+\begin{itemize}
+  \item Chained Gaussian Processes approaches are a robust approach
+    for developing classification and regression tasks, however,
+    their computational powerful requirements make them unsuitable
+    for image segmentation tasks, specially since deep learning approaches
+    have shown to be more efficient in the task of extracting features
+    from images.
+  \item Existing loss functions in the state of the art were insufficient
+    to model the annotators' performance across the input space, from
+    which the need for a new loss function which fulfils the requirements
+    of the task was identified.
+  \item A novel loss function was proposed and evaluated, showing to
+    be a good alternative to the existing loss functions in the state
+    of the art, and providing an efficient way to optimize parameters
+    for reaching capability to model the annotators' performance
+    across the input space.
+  \item The use of U-Shaped Deep Learning models as a building block
+    for the proposed solution was a valid approach, as it allows for
+    the model to learn the spatial relationships between the pixels
+    in the image, and the annotations, and to use this information to
+    make predictions about the annotations of new images.
+  \item Chained Deep Learning approaches in combination with the
+    proposed loss function were the best approach for the task, outperforming
+    the state of the art in the task of \gls{ISS} of histopathology images.
+\end{itemize}
+
 \section{Future work}
+
+As tools and frameworks for bayesian approaches like Chained Gaussian Processes
+\footnote{Including GPFlow, and GPFlux.}
+evolve, it is expected to see a decrease in computational
+requirements and hence, making mixed models more appealing for the
+task of \gls{ISS} of histopathology images.
+In that sense, the use of \gls{CCGPMA} as a building block for the
+proposed solution could be a good approach, as it is a powerful model
+that can take advantage of the inter-dependencies between the annotators,
+and the powerfulness of \glspl{CNN} to extract features from the images.

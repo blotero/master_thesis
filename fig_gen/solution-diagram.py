@@ -47,4 +47,4 @@ dot.edge("features", "unet")
 dot.edge("unet", "loss")
 
 # Save and render the diagram
-dot.render("../Cap4/Figures/solution_architecture", format="png", cleanup=True)
+dot.render("../Cap5/Figures/solution_architecture", format="png", cleanup=True)
