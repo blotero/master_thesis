@@ -1,5 +1,8 @@
 \section{Digital histopathological images}
 
+\glsreset{WSI}
+\glsreset{ROI}
+
 Digital histopathology represents a significant advancement in
 medical imaging, where traditional glass slides containing tissue
 samples are digitized using specialized scanning devices. This
@@ -18,9 +21,9 @@ significantly over the past few decades, as shown in Figure
 
 \subsection{Whole Slide Imaging (WSI)}
 
-Whole Slide Imaging (WSI) is the process of digitizing entire glass
+\gls{WSI} is the process of digitizing entire glass
 slides at high resolution, creating a digital representation that can
-be viewed, analyzed, and shared electronically. Modern WSI scanners
+be viewed, analyzed, and shared electronically. Modern \gls{WSI} scanners
 use sophisticated optical systems that capture multiple fields of
 view at high magnification, which are then stitched together to
 create a seamless digital image \cite{DingyiEtAl2025}. These systems incorporate
@@ -57,7 +60,7 @@ computational analysis on relevant areas, reduce computational
 complexity in automated systems, facilitate targeted diagnosis and
 research, and enable efficient storage and transmission of critical information.
 
-\subsection{Staining Techniques}
+\subsection{Staining Techniques}\label{sec:staining_techniques}
 
 Histopathological analysis relies heavily on various staining
 techniques to enhance the visibility of different tissue components
@@ -101,14 +104,5 @@ muscle fibers, and silver stains for detecting microorganisms and
 nerve fibers. These specialized staining techniques complement H\&E
 by providing additional diagnostic information that is crucial for
 accurate diagnosis and treatment planning \cite{WeitzEtAl2023}.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.7\textwidth]{Cap2/Figures/staining_comparison.png}
-  \caption{Different staining techniques obtained from multi-stain
-    breast cancer dataset \cite{WeitzEtAl2023}. (a) shows H\&E, (b)
-    ER, (c) HER2, (d) Ki67 and (e) PGR. (f) shows an example of a
-    WSI that was excluded since it contains multiple tissue
-  sections.}
-  \label{fig:hist_staining}
-\end{figure}
+Examples of these staining techniques are shown in Figure
+\ref{fig:weitz_dataset_overview}.

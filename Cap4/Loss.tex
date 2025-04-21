@@ -1,13 +1,13 @@
 \section{Loss functions for multiple annotators}
 
-As mentioned in Section \ref{ch:dl_seg}, a loss function is a key element
-for defining the objective function of a deep learning model. The
-categorical cross-entropy loss is a common loss function for
-classification tasks. However, in the case of multiple annotators,
-the categorical cross-entropy loss is not able to handle the varying
-reliability of the annotators. In this section, we will propose a
-loss function that is able to handle multiple annotators'
-segmentation masks while accounting for their varying reliability
+As mentioned in Section \ref{sec:architecture_and_training}, a loss
+function is a key element for defining the objective function of a
+deep learning model. The categorical cross-entropy loss is a common
+loss function for classification tasks. However, in the case of
+multiple annotators, the categorical cross-entropy loss is not able
+to handle the varying reliability of the annotators. In this section,
+we will propose a loss function that is able to handle multiple
+annotators' segmentation masks while accounting for their varying reliability
 across different regions of the image.
 \subsection{Generalized Cross Entropy}
 
@@ -37,7 +37,8 @@ MAE loss can be rewritten for softmax outputs, yielding:
 
 where $\odot$ stands for the element-wise product.
 
-The \gls{CE} is characterized by the following properties:
+From this, it can be seen that the \gls{CE} is characterized by the
+following properties:
 
 \begin{itemize}
   \item It is unbounded from above.
@@ -144,8 +145,9 @@ flexibility of reliability maps:
   \end{split}
 \end{equation}
 
-where $q \in (0,1)$ controls the truncation level. The loss function
-consists of two main components:
+where $q \in (0,1)$ controls the \gls{MAE} or \gls{CE} level in the
+same way as in the \gls{GCE} loss function. The loss function consists of
+two main components:
 
 \begin{itemize}
   \item The first term weighted by $\Lambda_r$ represents the GCE

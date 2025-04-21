@@ -2,6 +2,10 @@
   "latex-workshop.latex.search.rootFiles.include": ["Tesis.tex"],
   "latex-workshop.latex.recipes": [
     {
+      "name": "lualatexmk",
+      "tools": ["lualatexmk"]
+    },
+    {
       "name": "lualatexmk -> bibtex -> makeglossaries -> lualatexmk*2",
       "tools": [
         "lualatexmk",
@@ -10,10 +14,6 @@
         "lualatexmk",
         "lualatexmk"
       ]
-    },
-    {
-      "name": "lualatexmk",
-      "tools": ["lualatexmk"]
     },
     {
       "name": "bibtex",
