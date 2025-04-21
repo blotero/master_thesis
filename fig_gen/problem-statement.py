@@ -59,10 +59,10 @@ dot.node(
 
 # Edges with styles
 dot.edge(
-    "SC1", "C1", style="dashed", color="black", penwidth="1.5", label="Lead to"
+    "SC1", "C1", style="dashed", color="black", penwidth="1.5", label="Leads to"
 )
 dot.edge(
-    "SC2", "C1", style="dashed", color="black", penwidth="1.5", label="Lead to"
+    "SC2", "C1", style="dashed", color="black", penwidth="1.5", label="Leads to"
 )
 dot.edge("C1", "P", style="dashed", color="black", penwidth="1.5")
 dot.edge("C2", "P", style="dashed", color="black", penwidth="1.5")
@@ -72,4 +72,4 @@ dot.edge("E1", "E2", color="darkred", penwidth="2")
 
 
 # Render and view
-dot.render("Cap1/Figures/problem_statement_diagram")
+dot.render("../Cap1/Figures/problem_statement_diagram")

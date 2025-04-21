@@ -1,1 +1,36 @@
 \section{Datasets and data sources}
+
+Throughout the development of this work, multiple datasets were used
+for evaluation of \gls{ISS} models. The common elements of all these datasets
+are that they contain RGB images and are crowdsourced with multiple
+labelers, where not necessarily all labeler label all images.
+
+As it has been mentioned in Chapter \ref{ch:introduction}, the main goal of this
+work is mainly focused on crowdsourced histopathology images semantic
+segmentation, however, these datasets present the following challenges:
+
+\begin{itemize}
+  \item Distribution of segmentation labels is not uniform across the
+    image, since some tissues and structures are more common than others.
+  \item Visualization of performance of the models in debug time (like per epoch
+    analysis) is not simple for non experts in the subject, which makes it
+    hard to evaluate whether the model is overfitting or not at a glance.
+\end{itemize}
+
+For these reasons, multiple datasets were created in the pursuit of
+an initial evaluation of performance of the models against more traditional
+and familiar images before the focus on histopathology images. Once a
+decent performance in metrics like Dice coefficient was achieved, the
+focus was shifted to histopathology images and further tunings on the models
+were performed if needed.
+
+In any case, both the emulated noisy annotations datasets and the
+histopathology datasets somehow contained ground truth aggregation, either from
+the original source (in the case of emulated noisy annotations), the
+expert annotation (if available) or from the aggregation of multiple
+labelers \footnote{\gls{STAPLE} in the case of histopathology
+datasets with no expert annotations available}.
+
+\subsection{Datasets with emulated noisy annotations}
+
+A challenge arises for the creation of emulated noisy annotations datasets,
