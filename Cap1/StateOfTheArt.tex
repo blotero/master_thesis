@@ -244,7 +244,7 @@ of multiple labelers with two networks can be overwhelming for the
 optimization process, requiring large amounts of annotated data to
 properly codify the annotators spatial reliabilities, which could be
 managed by a single model with an appropriate loss function.
-\subsubsection{Bayesian models}
+\subsubsection{Bayesian models}\label{subsec:bayesian_models}
 
 Bayesian approaches are a good choice for handling label noise
 and uncertainty in the labelers. In \cite{GilEtAlvarez2023CCGPMA} the
@@ -329,7 +329,8 @@ that quantify how well a model's predictions match the ground truth.
 They serve as the objective function that guides the learning process
 by measuring the discrepancy between predicted and actual values. In
 classification tasks, the most common loss functions are
-Cross-Entropy (CE) and Mean Absolute Error (MAE). CE is particularly
+Cross-Entropy (CE) and Mean Absolute Error (MAE)
+\cite{ZhangEtAl2018}. CE is particularly
 effective for classification as it heavily penalizes confident but
 wrong predictions, though it can be sensitive to noisy labels. MAE,
 on the other hand, is more robust to outliers and assigns equal
@@ -338,18 +339,14 @@ iterations. For image segmentation tasks, specialized loss functions
 have been developed to handle the unique challenges of pixel-wise
 classification. The Dice loss, which measures the overlap between
 predicted and ground truth regions, is widely used in medical image
-segmentation. More recently, the Generalized Cross Entropy (GCE) loss
-has emerged as a robust alternative that combines the benefits of
-both CE and MAE, allowing for better handling of noisy labels through
-a tunable parameter that controls sensitivity to outliers. In
-multi-annotator scenarios, where multiple experts provide potentially
-inconsistent segmentations, novel loss functions like the Truncated
-Generalized Cross Entropy for Semantic Segmentation (TGCE$_{SS}$)
-have been developed to account for varying annotator reliability
-across different image regions. These loss functions are crucial for
-training accurate segmentation models, especially in medical imaging
-where precise delineation of anatomical structures is essential for
-diagnosis and treatment planning.
+segmentation \cite{ZhaoEtAl2020}. More recently, the Generalized
+Cross Entropy (GCE) loss has emerged as a robust alternative that
+combines the benefits of both CE and MAE, allowing for better
+handling of noisy labels through a tunable parameter that controls
+sensitivity to outliers. However, to the best of our knowledge, none
+of the current loss functions approaches have focused on the multiple
+labelers scenario, neither on the per labeler spatial reliability
+estimation.
 
 \subsubsection{Generalized Cross-Entropy for multiple annotators classification}
 
@@ -383,3 +380,60 @@ $\tilde{C}$ is a constant, $q$ is a parameter that controls the
 balance between MAE and CE behavior, $\mathbf{y}$ is the annotation
 vector, and $f(\mathbf{x})$ is the model prediction. This approach is
 more deeply discussed in chapter \ref{ch:seg_tgce}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Summary of state-of-the-art approaches for handling
+  multiple annotators in medical image segmentation}
+  \label{tab:state_of_art_summary}
+  \begin{tabular}{p{0.2\textwidth}p{0.3\textwidth}p{0.3\textwidth}p{0.15\textwidth}}
+    \toprule
+    \textbf{Approach} & \textbf{Key Characteristics} &
+    \textbf{Advantages} & \textbf{Limitations} \\
+    \midrule
+    Majority Voting (MV) & Simple aggregation of multiple annotators' labels &
+    - Simple to implement
+    - No complex algorithms required
+    - Proven effective in many cases &
+    - Assumes equal expertise
+    - Sensitive to correlated errors
+    - May introduce bias in expert tasks \\
+    \midrule
+    STAPLE & Probabilistic framework estimating true segmentation and
+    rater reliability &
+    - Handles binary and multiclass segmentation
+    - Estimates rater sensitivity/specificity
+    - Robust to correlated errors &
+    - Computationally expensive
+    - Sensitive to low-quality annotations
+    - Tends to over-smooth results
+    - Limited interpretability \\
+    \midrule
+    U-Net based approaches & Deep learning architecture with
+    encoder-decoder structure &
+    - Captures both global and local information
+    - Effective for complex structures
+    - Works well with limited data &
+    - Requires large amounts of training data
+    - Complex optimization process
+    - May need specialized loss functions \\
+    \midrule
+    Bayesian Models (CCGPMA) & Gaussian Processes modeling annotator
+    reliability &
+    - Preserves annotator interdependencies
+    - Handles label noise effectively
+    - Works for classification and regression &
+    - Computationally expensive
+    - Not directly applicable to segmentation
+    - Complex optimization process \\
+    \midrule
+    Generalized Cross-Entropy (GCE) & Loss function balancing MAE and CE &
+    - Robust to noisy labels
+    - Accounts for non-stationary behavior
+    - Handles annotator dependencies &
+    - Limited to classification tasks
+    - Requires parameter tuning
+    - May need adaptation for segmentation \\
+    \bottomrule
+  \end{tabular}
+\end{table}

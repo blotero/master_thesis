@@ -2,7 +2,7 @@
 
 Since Roentgen’s discovery of X-rays in 1895, medical imaging has
 advanced significantly, with modalities like radionuclide imaging,
-ultrasound, CT, MRI, and digital radiography emerging over the past
+ultrasound, \gls{CT}, \gls{MRI}, and digital radiography emerging over the past
 50 years. Modern imaging extends beyond image production to include
 processing, display, storage, transmission and analysis.
 \cite{Zhou2021}.
@@ -30,13 +30,13 @@ the images, which can be used to detect and classify diseases
 The application of Machine Learning in medical imaging has grown
 significantly, with key tasks including classification, segmentation,
 anomaly detection, super-resolution, image registration, and
-synthetic image generation \cite{Brito-Pacheco2025}. Among imaging
-modalities, X-rays and CT scans are widely used for classification
+synthetic image generation \cite{BritoPacheco2025}. Among imaging
+modalities, X-rays and \gls{CT} scans are widely used for classification
 and anomaly detection, especially in pulmonary and oncological
-applications. MRI and ultrasound play a crucial role in segmentation
+applications. \gls{MRI} and ultrasound play a crucial role in segmentation
 and resolution enhancement, while PET/SPECT imaging is essential for
 anomaly detection in oncology and neurodegenerative diseases
-\cite{Brito-Pacheco2025}.
+\cite{BritoPacheco2025}.
 Histopathology is rapidly gaining prominence, particularly in segmentation and
 feature extraction, where AI-driven techniques aid in automated
 cancer diagnosis and tissue structure analysis. The integration of
@@ -45,13 +45,14 @@ pathology, enabling more precise and efficient diagnostics. A brief
 comparison of the tasks and medical image types
 based on recent literature review, can be seen in Figure
 \ref{fig:medical_image_analysis}. \cite{YuEtAl2025},
-\cite{Brito-Pacheco2025}, \cite{RyouEtAl2025},
+\cite{BritoPacheco2025}, \cite{RyouEtAl2025},
 \cite{DingyiEtAl2025}, \cite{BehnazEtAl2025}
 
 \begin{figure}
   \centering
   \includegraphics[width=0.9\textwidth]{Cap1/Figures/comparative-tasks-and-medical-image-types.png}
-  \caption{Estimation of the tasks and medical image types based on
+  \caption{Estimation of the popularity of tasks and medical image
+    types based on
   recent literature review (count of referenced terms).}
   \label{fig:medical_image_analysis}
 \end{figure}
@@ -99,14 +100,15 @@ being used in a semi-supervised strategy \cite{Shah2018}.
 Many medical images datasets however, contain a high variability in
 class sizes and variations in colors, which is specially noticeable
 in histopathological images because of the usage of different
-staining and other factors which can affect the color of the images.
+staining and other factors which can affect the color of the images
+(see section \ref{sec:staining-techniques}).
 This variability can lead to a significant loss of efficiency of
 machine learning models when using a mixed supervision strategy, as
 the model can be biased towards the most common classes or colors in
 the dataset \cite{Shah2018}.
 
 This is were other solutions arise to tackle the problem of the weak
-image annotation while mainlining low costs. One of these solutions
+image annotation while maintaining low costs. One of these solutions
 is crowdsourcing strategy, which consists of having multiple annotators
 labeling the same image, and then combining the labels to obtain a
 consensus label \cite{LuEtAl2023}. This strategy can lead to a

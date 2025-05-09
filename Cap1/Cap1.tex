@@ -14,14 +14,24 @@ As an output of this work, some contributions were made to the field of
 \gls{ISS} in medical images. The main contributions are:
 
 \begin{itemize}
-  \item A python package for using the proposed loss function in
-    \gls{CNN} models for \gls{ISS} tasks in medical images.
+  \item A novel loss function for \gls{ISS} tasks in medical images capable of
+    inferring the best possible segmentation and codifying the
+    reliability of the labelers without needing separate inputs about
+    the labeler performance or multiple networks to be trained.
+  \item A Chained Deep Learning model for \gls{ISS} tasks in medical
+    images, which can learn from inconsistent labels and improve the
+    segmentation performance outperforming state of the art
+    approaches on a Triple Negative Breast Cancer histopathology dataset.
+  \item A mechanism for noisy annotations emulations by using networks
+    encoding layers weight disturbance for building crowdsourced
+    version of the well known Oxford-IIIT Pet Dataset.
+  \item A python package for using the proposed loss function and
+    architecture in \gls{CNN} models for \gls{ISS} tasks in medical images.
     \footnote{https://pypi.org/project/seg\_tgce/}
-  \item Datasets mapping as lazy loaders for the proposed loss
-    function.
+  \item Triple negative breast cancer and Oxford-IIIT Pet Datasets
+    mapping as lazy loaders for the proposed loss function ready to go in
+    the package.
     \footnote{https://seg-tgce.readthedocs.io/en/latest/experiments.html}
   \item A public Github repository with the code used in this work.
     \footnote{https://github.com/blotero/seg\_tgce}
 \end{itemize}
-
-\glsreset{SS}
