@@ -6,8 +6,6 @@ contexto de múltiples anotadores: Aplicación al estudio de histopatologías}
 % Packages
 \usepackage[pagebackref=true]{hyperref}
 %\usepackage{hyperref}
-\usepackage[subfigure]{tocloft}
-%\usepackage[subfig]{tocloft}
 %\usepackage{tocloft}
 %\usepackage{tocloft}
 \usepackage[utf8]{inputenc}
@@ -21,7 +19,6 @@ contexto de múltiples anotadores: Aplicación al estudio de histopatologías}
 \usepackage{here}
 \usepackage{graphicx}
 \usepackage{lscape}
-%\usepackage{subfigure}
 \usepackage{longtable}
 \usepackage{setspace}
 \usepackage{array}
@@ -33,17 +30,23 @@ contexto de múltiples anotadores: Aplicación al estudio de histopatologías}
 \usepackage{xparse}
 \usepackage{xstring}
 \usepackage[titletoc]{appendix}
-%\usepackage{subfig}
 \usepackage{enumitem}
 \usepackage{cancel}
 \usepackage{multirow}
 \usepackage{longtable}
 %\usepackage{hyperref}
 \usepackage{tcolorbox}
-\usepackage{subfig}
 \usepackage{breakcites}
 \usepackage{mathrsfs}
 \usepackage{tikz}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+% \renewcommand{\listofalgorithms}{\begingroup
+% \tocfile{\listalgorithmname}{loa}
+% \endgroup}
+% \renewcommand{\algorithmicrequire}{\textbf{Input:}}
+% \renewcommand{\algorithmicensure}{\textbf{Output:}}
+% \renewcommand{\algorithmiccomment}[1]{/* #1 */}
 \usetikzlibrary{positioning, calc, shapes, arrows.meta,
 decorations.pathreplacing}
 
@@ -51,11 +54,9 @@ decorations.pathreplacing}
 
 % Show margins
 % \usepackage{showframe}
-% \renewcommand*\ShowFrameLinethickness{0.1pt}
-% \renewcommand*\ShowFrameColor{\color{black!10!white}}
 
 \usepackage{caption}
-%\usepackage{subcaption}
+\usepackage{subcaption}
 
 % Math
 \usepackage{amstext,amsbsy,amsopn,amsmath,eucal,amsfonts,amssymb,amsthm}
@@ -150,11 +151,13 @@ decorations.pathreplacing}
   % \renewcommand{\contentsname}{\hfill\normalfont\Large CONTENTS}
   \renewcommand{\listfigurename}{\hfill\normalfont\Large LIST OF FIGURES}
   \renewcommand{\listtablename}{\hfill\normalfont\Large LIST OF TABLES}
+  \renewcommand{\listalgorithmname}{\hfill\normalfont\Large LIST OF ALGORITHMS}
 
   % Labels
   \renewcommand{\theequation}{\thechapter-\arabic{equation}}
   \renewcommand{\thefigure}{\textbf{\thechapter-\arabic{figure}}}
   \renewcommand{\thetable}{\textbf{\thechapter-\arabic{table}}}
+  \renewcommand{\thealgorithm}{\textbf{\thechapter-\arabic{algorithm}}}
   \renewcommand{\thesubfigure}{\alph{subfigure}}
 
   % Justify without hyphenation
@@ -207,14 +210,6 @@ nomain=true]{glossaries-extra}
 \setabbreviationstyle[acronym]{long-short}
 \renewcommand{\glsnamefont}[1]{\textsc{\normalfont\large\bfseries #1}}
 \glssetcategoryattribute{acronym}{hyperoutside}{false}
-
-% Fonts used in table of contents
-\renewcommand{\cfttoctitlefont}{\normalfont\ssfamily\Large}
-% \renewcommand{\cftpartfont}{\bfseries}
-\renewcommand{\cftchapfont}{\normalfont\ssfamily\bfseries}
-\renewcommand{\cftsecfont}{\normalfont\ssfamily}
-\renewcommand{\cftsubsecfont}{\normalfont\ssfamily}
-\renewcommand{\cftsubsubsecfont}{\normalfont\ssfamily\small}
 
 % Fancy chapters
 \usepackage[Bjarne]{fncychap}

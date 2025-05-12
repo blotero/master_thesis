@@ -6,6 +6,7 @@
 **/*.ist
 **/*.lof
 **/*.lot
+**/*.loa
 **/*.out
 **/*.synctex.gz
 **/*.synctex(busy)

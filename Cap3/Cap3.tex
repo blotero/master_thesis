@@ -232,32 +232,6 @@ which makes it possible to train deep Gaussian process models on
 large datasets. The framework provides built-in support for minibatch
 training, making it practical to work with datasets that don't fit in memory.
 
-\subsection{Implementation Considerations}
-
-When implementing Chained Gaussian Processes for multiple annotator
-learning using these tools, several key considerations must be
-addressed. First, the model architecture must be carefully designed
-to capture both the individual annotator characteristics and their
-interdependencies. This requires extending the basic GP layers
-provided by GPflux to handle multiple output streams - one for each
-annotator's reliability model.
-
-Second, the inference procedure must be adapted to handle the unique
-challenges of multiple annotator data, such as missing labels and
-varying levels of annotator expertise across different regions of the
-input space. The variational inference capabilities of GPflux provide
-a solid foundation for this, but careful attention must be paid to
-the design of the variational approximation to ensure it captures the
-relevant uncertainty in both the ground truth and annotator
-reliability estimates.
-
-Finally, computational efficiency becomes a critical concern when
-scaling to large datasets with multiple annotators. The minibatch
-training capabilities of both frameworks help address this, but
-additional considerations such as appropriate inducing point
-selection and batch size tuning become important for achieving good
-performance in practice.
-
 \section{Experimental Setup}\label{sec:experiments}
 
 Synthetic datasets were used to evaluate the proposed methods in
@@ -272,11 +246,15 @@ problem with $K=3$ classes is generated. The input feature matrix
 $\mathbf{X}$ is constructed by randomly sampling $N=100$ points from
 a uniform distribution over the interval $[0, 1]$. For each sample
 $n$, the true label is determined by computing three target values:
-\begin{align*}
-  t_{n,1} &= \sin(2\pi x_n), \\
-  t_{n,2} &= -\sin(2\pi x_n), \\
-  t_{n,3} &= -\sin(2\pi (x_n + 0.25)) + 0.5,
-\end{align*}
+
+\begin{equation}\label{eq:classification_targets}
+  \begin{aligned}
+    t_{n,1} &= \sin(2\pi x_n), \\
+    t_{n,2} &= -\sin(2\pi x_n), \\
+    t_{n,3} &= -\sin(2\pi (x_n + 0.25)) + 0.5,
+  \end{aligned}
+\end{equation}
+
 and assigning the class label as the index $i \in \{1, 2, 3\}$ that
 maximizes $t_{n,i}$. This construction ensures a nontrivial,
 nonlinear decision boundary between the classes.
@@ -331,9 +309,9 @@ both inter-annotator dependencies and input-dependent reliability.
 A fully synthetic dataset is also generated for a 1-D regression problem,
 where the ground truth for the $n$th sample is defined as:
 
-\[
+\begin{equation}\label{eq:regression_targets}
 y_n = \sin(2\pi x_n) \sin(6\pi x_n)
-\]
+\end{equation}
 
 Here, the input matrix $\mathbf{X}$ is constructed by randomly
 sampling 100 points uniformly from the interval $[0, 1]$. The test
@@ -384,7 +362,74 @@ Embedding (t-SNE) approach.
 $v_n^r=\exp(\hat{f}_{l,r,n})$.
 \end{enumerate}
 
-\section{Summary}\label{sec:summary}
+\section{Results}\label{sec:gps_results}
+
+The built synthetic datasets are used to train the \gls{CCGPMA}
+model. Emulated classification labels following the true label
+determining function from \ref{eq:classification_targets} can be seen in
+Figure \ref{fig:classification_labels}. On the other hand, the ground
+truth and noisy labels emulation for annotators across the feature
+space for regression task can be seen in Figure \ref{fig:regression_labels}.
+
+Using both GPflux and GPflow for the regression and classifications
+tasks, leads to the following combinations experiments: GPflux-CCGPMA
+Regression, GPflow-CCGPMA Regression, GPflux-CCGPMA Binary
+Classification, GPflow-CCGPMA Binary Classification, GPflow-CCGPMA
+Multiclass Classification, GPflux-CCGPMA Multiclass Classification.
+All of the experiments converged successfully with almost identical
+results and close to no difference in performance.
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.8\textwidth}
+\includegraphics[width=\textwidth]{Cap3/Figures/multiclass_ma_ground_truth.png}
+\caption{Ground truth labels across the feature space}
+\label{fig:classification_labels_ground_truth}
+\end{subfigure}
+\begin{subfigure}[b]{0.8\textwidth}
+\includegraphics[width=\textwidth]{Cap3/Figures/multiclass_noisy_emulations.png}
+\caption{Noisy emulations for annotators across the feature space for
+classification task}
+\label{fig:classification_labels_noisy_emulations}
+\end{subfigure}
+\caption{Synthetic dataset overview for classification task}
+\label{fig:classification_labels}
+\end{figure}
+
+\begin{figure}
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=\textwidth]{Cap3/Figures/multiclass_elbo_gpflux.png}
+\caption{ELBO convergence}
+\label{fig:elbo_convergence_gpflux}
+\end{subfigure}
+\begin{subfigure}[b]{0.4\textwidth}
+\includegraphics[width=\textwidth]{Cap3/Figures/multiclass_ma_test_gpflux.png}
+\caption{Trained CCGPMA predictions on the test set}
+\label{fig:classification_test_gpflux}
+\end{subfigure}
+\caption{Classification results for the \gls{CCGPMA} model using GPflux.}
+\label{fig:classification_results_gpflux}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.7\textwidth]{Cap3/Figures/regression_labels.png}
+\caption{Ground truth and noisy labels emulation for annotators
+across the feature space for regression task.}
+\label{fig:regression_labels}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{0.5\textwidth}
+\includegraphics[width=\textwidth]{Cap3/Figures/regression_gpflux_results.png}
+\caption{Trained CCGPMA predictions on the test set, for inference of both the
+hidden ground truth and the annotators' reliabilities across the feature space.}
+\label{fig:regression_results}
+\end{subfigure}
+\caption{Regression results for the \gls{CCGPMA} model using GPflux.}
+\end{figure}
+\section{Conclusion}\label{sec:cgp_conclusion}
 \subsection{Comparative Analysis}
 
 The evolution of multiple annotator learning methods represents a
@@ -441,7 +486,65 @@ comparison of the key characteristics and capabilities of each method discussed.
 uncertainty estimation.}}
 \end{table}
 
-\section{Conclusion}\label{sec:cgp_conclusion}
+\subsection{Implementation Considerations}
+
+When implementing Chained Gaussian Processes for multiple annotator
+learning using these tools, several key considerations must be
+addressed. First, the model architecture must be carefully designed
+to capture both the individual annotator characteristics and their
+interdependencies. This requires extending the basic GP layers
+provided by GPflux to handle multiple output streams - one for each
+annotator's reliability model.
+
+Second, the inference procedure must be adapted to handle the unique
+challenges of multiple annotator data, such as missing labels and
+varying levels of annotator expertise across different regions of the
+input space. The variational inference capabilities of GPflux provide
+a solid foundation for this, but careful attention must be paid to
+the design of the variational approximation to ensure it captures the
+relevant uncertainty in both the ground truth and annotator
+reliability estimates.
+
+Third, kernel selection and design presents a critical challenge in
+implementing the CGP model. The choice of kernel functions significantly
+impacts the model's ability to capture the underlying structure of the
+data and the relationships between annotators. Several considerations
+must be taken into account:
+
+\begin{itemize}
+\item \textbf{Kernel Complexity}: The model requires multiple kernel
+functions to capture different aspects of the data - one for the
+ground truth and additional kernels for each annotator's reliability
+model. This multi-kernel setup increases the complexity of kernel
+selection and optimization.
+
+\item \textbf{Input-Dependent Behavior}: Since annotator performance
+often varies across the input space, the kernel functions must be
+flexible enough to capture this non-stationary behavior. This may
+require using composite kernels or kernels with input-dependent
+lengthscales.
+
+\item \textbf{Inter-Annotator Dependencies}: The kernel design must
+account for potential correlations between different annotators'
+behaviors. This can be achieved through careful design of the kernel
+structure in the SLFM framework, where the combination of basis
+kernels must be chosen to effectively model these dependencies.
+
+\item \textbf{Computational Efficiency}: The choice of kernel
+functions also impacts computational performance. While more
+expressive kernels may better capture complex patterns, they often
+come with increased computational cost. This trade-off must be
+carefully considered, especially when dealing with large datasets.
+\end{itemize}
+
+Finally, computational efficiency becomes a critical concern when
+scaling to large datasets with multiple annotators. The minibatch
+training capabilities of both frameworks help address this, but
+additional considerations such as appropriate inducing point
+selection and batch size tuning become important for achieving good
+performance in practice.
+
+\subsection{Final Remarks}
 
 In this chapter, we have presented a comprehensive overview of the
 Chained Gaussian Processes model and its application to multiple
@@ -451,3 +554,17 @@ evaluation on synthetic datasets. It was shown in
 \cite{GilGonzalezEtAl2023} that \gls{CCGPMA} outperforms other method
 in state of the art methods in terms of accuracy and uncertainty
 quantification (see \ref{subsec:bayesian_models}).
+
+While Gaussian Processes have demonstrated remarkable success in
+regression and classification tasks, their application to image
+segmentation presents significant computational challenges. The cubic
+computational complexity of GPs ($\mathcal{O}(N^3)$), which scales with
+the number of data points, becomes particularly problematic when
+dealing with high-resolution images where each pixel can be considered
+a data point. This limitation makes traditional GP approaches
+impractical for large-scale image segmentation tasks, where the number
+of pixels can easily reach into the millions. Alternative approaches,
+such as deep learning-based segmentation methods, often provide more
+computationally efficient solutions for these high-dimensional
+problems, though at the cost of uncertainty quantification
+capabilities that GPs naturally provide.

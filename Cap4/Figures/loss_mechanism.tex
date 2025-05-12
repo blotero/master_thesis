@@ -1,71 +1,50 @@
-\begin{figure}[t]
+\begin{figure}[ht]
   \centering
   \begin{tikzpicture}[
-      node distance=1.5cm,
-      block/.style={rectangle, draw, minimum width=1cm, minimum
-      height=1cm, text centered},
-      arrow/.style={->, >=stealth},
-      label/.style={text width=2cm, align=center}
+      node distance=1.6cm and 1.2cm,
+      every node/.style={font=\sffamily},
+      box/.style={draw, minimum width=2.2cm, minimum height=1.2cm,
+      align=center},
+      imagebox/.style={draw, minimum width=2.2cm, minimum
+      height=1.5cm, align=center, fill=gray!10},
+      annot/.style={align=left}
     ]
 
-    % Input image
-    \node[block] (input) {
-    \includegraphics[width=2cm]{Cap4/Figures/histopathology_patch.jpg}};
-    \node[text width=2cm, align=center, above of=input, yshift=0.5cm]
-    {Input Image $\mathbf{X}$};
+    % Nodes
+    \node[annot] (input) at (-4.2,0) {Input Image};
+    \node[imagebox, right=of input] (patch)
+    {\includegraphics[width=2.2cm,height=1.5cm]{Cap4/Figures/histopathology_patch.jpg}\\ \small
+    Patch};
+    \node[box, right=of patch] (model) {$f(X_i; \theta)$};
+    \node[box, right=of model] (loss) {TCE$_{\text{SS}}$ Loss};
+    \node[annot, right=of loss] (outputhat) {$\hat{y}$};
 
-    % Annotator masks
-    \node[block, right of=input, xshift=2cm] (mask1) {$\mathbf{Y}_1$};
-    \node[block, above of=mask1] (mask2) {$\mathbf{Y}_2$};
-    \node[block, below of=mask1] (mask3) {$\mathbf{Y}_R$};
-
-    % Reliability maps
-    \node[block, right of=mask1, xshift=1cm] (rel1) {$\Lambda_1$};
-    \node[block, right of=mask2, xshift=1cm] (rel2) {$\Lambda_2$};
-    \node[block, right of=mask3, xshift=1cm] (rel3) {$\Lambda_R$};
-
-    % Model prediction
-    \node[block, right of=rel1, xshift=2cm] (pred) {$f(\mathbf{X};\theta)$};
-
-    % Loss computation
-    \node[block, below of=pred, yshift=-2cm] (loss) {TGCE$_{SS}$ Loss};
+    % Output vector from model
+    \node[annot, above=0.5cm of model] (yhatvec) {$\hat{\mathbf{y}} =
+      \begin{bmatrix} \hat{y}_1 \\ \hat{y}_2 \\ \vdots \\ \hat{y}_V
+    \end{bmatrix}$};
 
     % Arrows
-    \draw[arrow] (input) -- (mask1);
-    \draw[arrow] (input) -- (mask2);
-    \draw[arrow] (input) -- (mask3);
+    \draw[->] (input) -- (patch);
+    \draw[->] (patch) -- (model);
+    \draw[->] (model) -- (loss);
+    \draw[->] (loss) -- (outputhat);
+    \draw[->] (model.north) -- (yhatvec.south);
+    \draw[->] ($(model.west)+(0, -0.3)$) -- ++(-1.2, 0) node[left]
+    {$\Lambda_R$};
 
-    \draw[arrow] (mask1) -- (rel1);
-    \draw[arrow] (mask2) -- (rel2);
-    \draw[arrow] (mask3) -- (rel3);
-
-    \draw[arrow] (rel1) -- (loss);
-    \draw[arrow] (rel2) -- (loss);
-    \draw[arrow] (rel3) -- (loss);
-    \draw[arrow] (pred) -- (loss);
-
-    % Annotations
-    \node[text width=2cm, align=center, above of=mask2, yshift=0.5cm]
-    {Annotator Masks};
-    \node[text width=2cm, align=center, above of=rel2, yshift=0.5cm]
-    {Reliability Maps};
-    \node[text width=2cm, align=center, above of=pred, yshift=0.5cm]
-    {Model Prediction};
-
-    % Loss components
-    \node[block, below of=loss, yshift=-3cm] (reliable) {Reliable Regions Loss};
-    \node[block, left of=reliable, xshift=-3cm] (unreliable)
-    {Unreliable Regions Loss};
-
-    \draw[arrow] (loss) -- (reliable);
-    \draw[arrow] (loss) -- (unreliable);
-
-    % Legend
-    \node[text width=4cm, align=left, right of=loss, xshift=2cm] {
-      \textbf{Loss Components:}\\
-      $\bullet$ Reliable: $\Lambda_r \circ GCE$\\
-      $\bullet$ Unreliable: $(1-\Lambda_r) \circ \text{Uniform Prior}$
+    % Annotator masks
+    \node[annot, below=2cm of model] (annots) {
+      Annotators Masks\\[1mm]
+      $
+      \begin{bmatrix}
+        y_1 \\
+        y_2 \\
+        \vdots \\
+        y^R
+      \end{bmatrix}$
     };
+    \draw[->] (annots.north) -- ($(model.south)-(0.2,0)$);
 
   \end{tikzpicture}
   \caption{Working mechanism of the proposed Truncated Generalized
