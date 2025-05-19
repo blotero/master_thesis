@@ -15,23 +15,19 @@
     \node[imagebox, right=of input] (patch)
     {\includegraphics[width=2.2cm,height=1.5cm]{Cap4/Figures/histopathology_patch.jpg}\\ \small
     Patch};
-    \node[box, right=of patch] (model) {$f(X_i; \theta)$};
+    \node[box, right=of patch] (model) {$f(X_i; \theta) =
+    [\hat{\mathbf{y}} \mid \Lambda_R] $};
     \node[box, right=of model] (loss) {TCE$_{\text{SS}}$ Loss};
-    \node[annot, right=of loss] (outputhat) {$\hat{y}$};
 
     % Output vector from model
-    \node[annot, above=0.5cm of model] (yhatvec) {$\hat{\mathbf{y}} =
-      \begin{bmatrix} \hat{y}_1 \\ \hat{y}_2 \\ \vdots \\ \hat{y}_V
+    \node[annot, above=1.5cm of model] (yhatvec) {$\hat{\mathbf{y}} =
+      \begin{bmatrix} \hat{y}_1 \\ \hat{y}_2 \\ \vdots \\ \hat{y}_R
     \end{bmatrix}$};
 
     % Arrows
     \draw[->] (input) -- (patch);
     \draw[->] (patch) -- (model);
     \draw[->] (model) -- (loss);
-    \draw[->] (loss) -- (outputhat);
-    \draw[->] (model.north) -- (yhatvec.south);
-    \draw[->] ($(model.west)+(0, -0.3)$) -- ++(-1.2, 0) node[left]
-    {$\Lambda_R$};
 
     % Annotator masks
     \node[annot, below=2cm of model] (annots) {
@@ -41,7 +37,7 @@
         y_1 \\
         y_2 \\
         \vdots \\
-        y^R
+        y_R
       \end{bmatrix}$
     };
     \draw[->] (annots.north) -- ($(model.south)-(0.2,0)$);

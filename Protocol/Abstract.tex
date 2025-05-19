@@ -3,6 +3,41 @@
 \markboth{Abstract}{}
 \addcontentsline{toc}{chapter}{Abstract}
 
+Breast cancer remains one of the deadliest diseases affecting women
+worldwide, making accurate diagnosis and treatment planning crucial
+for improving patient outcomes. This thesis presents a novel approach
+to Image Semantic Segmentation (ISS) in medical imaging, with a
+particular focus on histopathology images of breast cancer tissue.
+The work addresses the critical challenge of handling multiple
+annotators' labels in crowdsourcing scenarios, where annotator
+performance varies across the input space and image quality. The
+proposed solution introduces a novel loss function that implicitly
+infers optimal segmentation and assesses labeler reliability without
+requiring explicit performance inputs. This is achieved through an
+intermediate reliability map that enables the model to prioritize
+information from reliable labelers while disregarding noisy labels.
+
+The methodology diverges from conventional CNN-based segmentation
+models by eliminating the need for direct supervision of labeler
+performance, thereby enhancing its generalizability and adaptability
+across diverse datasets and labeler cohorts. The approach combines
+the strengths of U-shaped deep learning architectures with a
+sophisticated loss function that models annotator reliability across
+the input space. The model's performance is evaluated on both
+synthetic datasets and real-world histopathology images,
+demonstrating superior results compared to state-of-the-art
+approaches in terms of segmentation accuracy and uncertainty quantification.
+
+The research makes significant contributions to the field by
+providing a robust solution for handling inconsistent annotations in
+medical image segmentation, particularly valuable in histopathology
+where expert annotations are expensive and time-consuming to obtain.
+The proposed approach shows promising results in reducing annotation
+costs while maintaining high segmentation accuracy, making it
+particularly relevant for clinical applications where precise
+segmentation of tissue structures is crucial for diagnosis and
+treatment planning.
+
 \textbf{\small Keywords:} Crowdsourcing, Multiple Annotators,
-Histopathology, Breast Cancer, Semantic Image Segmentation,
-Gaussian Processes, Deep Learning, Medical Image Analysis
+Histopathology, Breast Cancer, Semantic Image Segmentation, Gaussian
+Processes, Deep Learning, Medical Image Analysis

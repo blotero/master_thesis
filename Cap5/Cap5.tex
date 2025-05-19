@@ -15,11 +15,13 @@ datasets.
   \label{fig:unet_architecture}
 \end{figure}
 
-\section{Using U-NET as a building block}
+\section{Using U-Net as a Building Block}
 
-Our proposed model architecture combines the strengths of UNET with a
+The proposed model architecture combines the strengths of U-Net with a
 ResNet-34 backbone, specifically designed to work with the
-TGCE$_{SS}$ loss function. The architecture is illustrated in Figure
+TGCE$_{SS}$ loss function by providing a multi-output network which
+focuses on two tasks: \textbf{segmentation} and \textbf{reliability
+estimation}. The architecture is illustrated in Figure
 \ref{fig:model_architecture}.
 
 \begin{figure}[h]
@@ -36,14 +38,14 @@ leveraging its deep residual learning framework for efficient feature
 extraction. The choice of ResNet-34 provides several key advantages:
 efficient feature extraction through residual connections,
 pre-trained weights that capture rich visual representations, and
-stable gradient flow during training. We modify the ResNet-34
-backbone to serve as the encoder in our UNET architecture by removing
+stable gradient flow during training. The ResNet-34 backbone is
+modified to serve as the encoder in our UNET architecture by removing
 the final fully connected layer and utilizing the feature maps from
 different stages of the network for skip connections.
 
-\subsection{UNET Architecture}
+\subsection{U-Net Architecture}
 
-The UNET architecture follows a traditional encoder-decoder structure
+The U-Net architecture follows a traditional encoder-decoder structure
 with skip connections, where the encoder path implements the
 ResNet-34 structure. The decoder path employs transposed convolutions
 for upsampling, creating a symmetrical architecture that effectively
@@ -56,19 +58,74 @@ preserve fine-grained details. Each convolution operation is followed
 by batch normalization and ReLU activation to ensure stable training
 and effective feature learning.
 
-\subsection{Reliability Map Branch}
+This U-Net architecture is expected to be coupled with a reliability
+branch which leads to a multi-output network. Three different approaches
+are considered for this branch: \textbf{scalar}, \textbf{features},
+and \textbf{pixel}.
 
-A key innovation in our architecture is the parallel branch dedicated
-to estimating reliability maps. This branch processes the same
-encoder features as the main segmentation path but focuses on
-learning the confidence of each annotator. Through a series of $1
-\times 1$ convolutions, the branch reduces channel dimensions while
-maintaining spatial information. The final output consists of $R$
+\subsection{Scalar Reliability Estimation}
+
+The scalar reliability estimation branch is the simplest one, in which
+the reliability branch is a parallel branch to the segmentation branch,
+which leads to a multi-output network. The final output consists of $R$
 reliability maps $\Lambda_r$, one for each annotator, with values
 constrained to the $[0,1]$ range through a sigmoid activation
 function. This design allows the network to learn and adapt to the
 varying reliability of different annotators across different regions
 of the image.
+
+The scalar reliability branch is implemented by taking the bottleneck features
+from the encoder and applying a global average pooling operation followed by
+a dense layer with sigmoid activation. This results in a single reliability
+value per annotator for each input image, making it computationally efficient
+but less spatially aware of reliability variations within the image.
+
+\subsection{Feature-based Reliability Estimation}
+
+The feature-based reliability estimation approach provides a more detailed
+spatial understanding of annotator reliability by operating on the bottleneck
+features of the encoder. This approach maintains the spatial information from
+the encoder's bottleneck while being more computationally efficient than
+pixel-wise reliability estimation.
+
+The feature-based reliability branch is implemented by applying two
+convolutional layers with batch normalization to the bottleneck features:
+\begin{itemize}
+  \item A first convolutional layer with 32 filters to process the
+    bottleneck features
+  \item A second convolutional layer that produces $R$ feature maps,
+    one for each annotator
+\end{itemize}
+
+This approach provides a coarse-grained spatial reliability map that captures
+regional variations in annotator reliability while maintaining computational
+efficiency. The resulting reliability maps have the same spatial dimensions
+as the bottleneck features, providing a middle ground between scalar and
+pixel-wise reliability estimation.
+
+\subsection{Pixel-wise Reliability Estimation}
+
+The pixel-wise reliability estimation approach provides the most detailed
+spatial understanding of annotator reliability by operating on the
+full-resolution
+features from the decoder. This approach allows for fine-grained reliability
+estimation at the pixel level, capturing local variations in annotator
+reliability.
+
+The pixel-wise reliability branch is implemented by applying three convolutional
+layers with batch normalization to the decoder's output features:
+\begin{itemize}
+  \item Two initial convolutional layers with 32 filters each to
+    process the features
+  \item A final convolutional layer that produces $R$ reliability
+    maps, one for each annotator
+\end{itemize}
+
+This approach provides the most detailed spatial reliability information,
+allowing the model to capture pixel-level variations in annotator reliability.
+The resulting reliability maps have the same spatial dimensions as the input
+image, providing the finest granularity of reliability estimation among the
+three approaches.
 
 \subsection{Integration with TGCE$_{SS}$ Loss}
 
@@ -76,21 +133,97 @@ The model produces two distinct outputs: segmentation masks
 $\mathbf{\hat{Y}} = f(\mathbf{X};\theta)$ and reliability maps
 $\{\Lambda_r(\mathbf{X};\theta)\}_{r=1}^R$. These outputs work in
 tandem with the TGCE$_{SS}$ loss function described in Section
-\ref{sec:proposed_loss}. The loss function simultaneously guides the
+\ref{sec:proposed-loss-functions}. The loss function simultaneously guides the
 learning of both the segmentation masks and reliability maps,
 ensuring that the model learns to balance the contributions of
 different annotators based on their estimated reliability.
+
+The TGCE$_{SS}$ loss function is implemented differently for each reliability
+approach, with specific adaptations to handle the different spatial dimensions
+of the reliability maps. All implementations share common hyperparameters:
+\begin{itemize}
+  \item $q = 0.1$: Controls the truncation of the loss function
+  \item $\epsilon = 10^{-8}$: Small constant to prevent numerical instability
+  \item $\alpha_{reg} = 0.1$: Weight for the regularization term
+  \item $\alpha_{entropy} = 0.1$: Weight for the entropy regularization
+  \item $\alpha_{sum} = 0.1$: Weight for the sum-to-one constraint
+\end{itemize}
+
+For the scalar reliability approach, the loss function operates on
+global reliability values per annotator. The reliability maps are
+expanded to match the spatial dimensions of the predictions through
+tiling operations. This approach is computationally efficient but
+provides the same reliability value across all spatial locations.
+
+The feature-based reliability approach requires additional processing
+to handle the spatial dimensions of the bottleneck features. The
+reliability maps are resized using bilinear interpolation to match
+the spatial dimensions of the predictions. This approach provides
+coarse-grained spatial reliability information while maintaining
+computational efficiency.
+
+The pixel-wise reliability approach operates directly on full-resolution
+reliability maps, requiring no spatial transformations. This approach
+provides the most detailed spatial reliability information but requires
+more computational resources.
+
+All three implementations include three regularization terms to ensure
+proper learning of the reliability maps:
+\begin{itemize}
+  \item \textbf{Center Regularization}: $\alpha_{reg} \cdot
+    \mathbb{E}[(\Lambda_r - 0.5)^2]$
+  \item \textbf{Entropy Regularization}: $-\alpha_{entropy} \cdot
+    \mathbb{E}[\Lambda_r \log(1 + \Lambda_r) + (1 - \Lambda_r) \log(1
+    + (1 - \Lambda_r))]$
+  \item \textbf{Sum-to-One Regularization}: $\alpha_{sum} \cdot
+    \mathbb{E}[(\sum_r \Lambda_r - 1)^2]$
+\end{itemize}
+
+These regularization terms help prevent the model from assigning extreme
+reliability values and ensure a balanced distribution of reliability
+across annotators. The loss function also includes a noise tolerance
+parameter ($\eta = 0.1$) to handle cases where the model's predictions
+differ from the annotators' labels.
+
+The final loss function combines the main TGCE$_{SS}$ terms with the
+regularization terms:
+\begin{equation}
+  \mathcal{L} = \mathbb{E}[\text{term}_1 + \text{term}_2] +
+  \alpha_{reg} + \alpha_{entropy} + \alpha_{sum}
+\end{equation}
+
+where $\text{term}_1$ and $\text{term}_2$ are the main TGCE$_{SS}$ terms
+that handle the interaction between predictions and reliability maps.
 
 \subsection{Training Process}
 
 The training process begins with the initialization of the ResNet-34
 backbone using pre-trained weights, providing a strong foundation for
-feature extraction. The entire network is then trained end-to-end
-using the Adam optimizer with a learning rate of $10^{-4}$. The
+feature extraction. The model's hyperparameters are optimized using
+Bayesian optimization through Keras Tuner, which searches for optimal
+values of:
+
+\begin{itemize}
+  \item Learning rate: Sampled logarithmically between $10^{-5}$ and $10^{-2}$
+  \item TGCE$_{SS}$ parameters:
+    \begin{itemize}
+      \item $q$: Controls truncation of the loss function (0.1 to 0.9)
+      \item Noise tolerance: Controls model's robustness to label
+        noise (0.1 to 0.9)
+      \item Regularization weights: Control the balance between
+        different loss terms (0.01 to 0.5)
+    \end{itemize}
+\end{itemize}
+
+The hyperparameter search is performed using a validation set, with the
+objective of maximizing the Dice coefficient on the validation data.
+After finding the optimal hyperparameters, the model is trained end-to-end
+using the Adam optimizer with the best learning rate found. The
 TGCE$_{SS}$ loss function plays a crucial role in updating both the
 segmentation and reliability branches, ensuring that the model learns
 to effectively handle multiple annotators' inputs while accounting
 for their varying reliability.
+
 \begin{figure}[h]
   \centering
   \begin{tikzpicture}[
@@ -126,7 +259,15 @@ for their varying reliability.
     };
 
     % Argmin
-    \node[box, below=of loss] (argmin) {arg min};
+    \node[box, below=of loss] (argmin) {
+      $\argmin_{\theta} \mathcal{L}(\theta)$
+    };
+
+    % Hyperparameter tuning
+    \node[roundedbox, below=0.7cm of argmin] (tuner) {%
+      Bayesian Optimization \\
+      $\argmax_{\phi} \text{Dice}(f(x; \theta))$
+    };
 
     % Arrows
     \draw[arrow] (dataset) -- (image);
@@ -134,11 +275,18 @@ for their varying reliability.
     \draw[arrow] (modelout) -- (loss);
     \draw[arrow] (dataset) |- (loss);
     \draw[arrow] (loss) -- (argmin);
+    \draw[arrow] (argmin) -- (tuner);
 
   \end{tikzpicture}
-  \caption{Training process of the proposed model overview. Estimated
-    segmentation and reliability maps are computed for each input
-  image, and the loss function is computed for the entire batch.}
+  \caption{Training process of the proposed model overview. The model first
+    undergoes hyperparameter optimization using Bayesian optimization,
+    followed by end-to-end training with the optimal parameters.
+    Estimated segmentation and reliability maps are computed for each input
+    image, and the loss function is computed for the entire batch.
+    Network parameters are tuned based on the loss function as
+    objective (with minimization target) whereas the hyperparameters
+    $\phi$ tuning are based on the Dice coefficient of the validation
+  data set (with maximization target). }
   \label{fig:optimization_process}
 \end{figure}
 
@@ -152,10 +300,10 @@ characteristics. This comprehensive design enables the model to
 effectively handle multiple annotators' inputs while maintaining high
 segmentation accuracy and reliability estimation.
 
-\section{Experimental setup}
+\section{Experimental Setup}
 
-\subsection{Noisy annotations
-generation}\label{sec:noisy_annotations_generation}
+\subsection{Noisy Annotations
+Generation}\label{sec:noisy_annotations_generation}
 
 A challenge arises for the creation of emulated noisy annotations datasets,
 since it is expected for images annotations to have some degree of
@@ -235,7 +383,7 @@ annotations in crowdsourcing-like scenarios.
   \label{fig:enhanced_disturbances}
 \end{figure}
 
-\subsection{Missing labels emulation}
+\subsection{Missing Labels Emulation}
 
 It has also been determined that most real world crowdsourced datasets
 suffer from missing labels, since not all annotators are able to label all
@@ -304,3 +452,85 @@ generated noisy and missing labels dataset is shown in Figure
     \Return Multi-annotator dataset with noisy and missing labels
   \end{algorithmic}
 \end{algorithm}
+
+\section{Results}
+
+\subsection{Oxford-IIIT Pet Dataset}
+
+\begin{table}[h!]
+  \centering
+  \begin{tabular}{lcc}
+    \hline
+    \textbf{Method} & \textbf{Dice} & \textbf{Jaccard} \\
+    \hline
+    TGCE scalar & 0.8564 & 0.7691 \\
+    TGCE pixel  & 0.8334 & 0.7392 \\
+    \textbf{STAPLE}      & \textbf{0.8639} & \textbf{0.7795} \\
+    MV          & 0.8214 & 0.7351 \\
+    \hline
+  \end{tabular}
+  \caption{Performance comparison of methods using Dice and Jaccard
+    metrics for the Oxford-IIIT Pet Dataset with no labelers
+    aggregation. STAPLE outperforms all other methods, followed by
+  TGCE$_{SS}$ scalar and pixel. MV performs the worst.}
+  \label{tab:oxford_results}
+\end{table}
+
+The experimental results on the Oxford-IIIT Pet Dataset demonstrate
+interesting insights into the performance of different approaches.
+While STAPLE achieves the highest Dice and Jaccard scores (0.8639 and
+0.7795 respectively), our proposed TGCE$_{SS}$ approaches show
+competitive performance, with the scalar variant achieving a Dice
+score of 0.8564 and Jaccard of 0.7691. The pixel-wise variant, while
+slightly lower in performance metrics, provides more detailed spatial
+reliability information.
+
+It's important to note that these results, when compared directly
+with STAPLE and Majority Voting (MV) without labeler aggregation,
+show that STAPLE maintains its advantage in terms of pure
+segmentation accuracy. However, this comparison alone doesn't fully
+capture the value of our approach. The key strength of our method
+lies in its ability to simultaneously learn both segmentation and
+reliability estimation, providing valuable insights into annotator
+behavior and confidence levels that STAPLE and MV cannot offer.
+
+The reliability estimation capabilities of our model are particularly
+noteworthy, as demonstrated in Figures
+\ref{fig:oxford_example_output} and
+\ref{fig:oxford_example_output_pixel}. The model successfully
+captures the varying reliability levels of different annotators, with
+higher reliability assigned to annotators with lower noise levels (10
+dB) and lower reliability to those with higher noise levels (-20 dB).
+This ability to quantify and visualize annotator reliability is a
+significant advantage over traditional approaches like STAPLE and MV,
+which focus solely on segmentation accuracy without providing
+insights into annotator behavior.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Cap5/Figures/oxford_example_output_scalar.png}
+  \caption{Example evaluation of the proposed model in its last
+    trained epoch. An accurate segmentation output is delivered as well
+    as scalar reliability estimations from the labelers masks.
+    Disturbance signal-to-noise ratios are: $[-20, 0, 10]$ dB from
+    left to right.
+    Best found hyperparameters: learning rate = 0.0011, $q = 0.4$,
+    noise tolerance = 0.2, $\alpha_{reg} = 0.26$,
+  $\alpha_{entropy} = 0.03$, $\alpha_{sum} = 0.27$.}
+  \label{fig:oxford_example_output}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Cap5/Figures/oxford_example_output_pixel.png}
+  \caption{Example evaluation of the proposed model in some given
+    epoch (5/50) of training, which demonstrates a quick convergence
+    of the model for correctly estimating the reliability of the labelers
+    masks. An accurate segmentation output is delivered as well
+    as pixel-wise reliability estimations from the labelers masks.
+    Disturbance signal-to-noise ratios are: $[-20, 0, 10]$ dB from left
+    to right. Best found hyperparameters: learning rate = 0.0027,
+    $q = 0.9$, noise tolerance = 0.2, $\alpha_{reg} = 0.38$,
+  $\alpha_{entropy} = 0.02$, $\alpha_{sum} = 0.42$.}
+  \label{fig:oxford_example_output_pixel}
+\end{figure}

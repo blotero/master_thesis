@@ -3,6 +3,47 @@
 \markboth{Resumen}{}
 \addcontentsline{toc}{chapter}{Resumen}
 
+El cáncer de mama sigue siendo una de las enfermedades más mortales
+en la población femenina en todo el mundo, lo que hace que el
+diagnóstico preciso y la planificación del tratamiento sean cruciales
+para mejorar las condiciones de los pacientes. Esta tesis presenta un
+enfoque novedoso para la Segmentación Semántica de Imágenes (ISS) en
+imágenes médicas, con un enfoque particular en imágenes
+histopatológicas de tejido de cáncer de mama. El trabajo aborda el
+desafío crítico de manejar las etiquetas de múltiples anotadores en
+escenarios de crowdsourcing, donde el rendimiento de los anotadores
+varía a través del espacio de entrada y la calidad de la imagen. La
+solución propuesta introduce una función de pérdida novedosa que
+infiere implícitamente la segmentación óptima y evalúa la
+confiabilidad de los etiquetadores sin requerir entradas explícitas
+sobre su rendimiento. Esto se logra a través de un mapa de
+confiabilidad intermedio que permite al modelo priorizar la
+información de etiquetadores confiables mientras descarta etiquetas ruidosas.
+
+La metodología se aparta de los modelos de segmentación basados en
+CNN convencionales al eliminar la necesidad de supervisión directa
+del rendimiento de los etiquetadores, mejorando así su generalización
+y adaptabilidad a través de diversos conjuntos de datos y cohortes de
+etiquetadores. El enfoque combina las fortalezas de las arquitecturas
+de aprendizaje profundo en forma de U con una sofisticada función de
+pérdida que modela la confiabilidad de los anotadores a través del
+espacio de entrada. El rendimiento del modelo se evalúa tanto en
+conjuntos de datos sintéticos como en imágenes histopatológicas del
+mundo real, demostrando resultados superiores en comparación con los
+enfoques más avanzados en términos de precisión de segmentación y
+cuantificación de incertidumbre.
+
+La investigación hace contribuciones significativas al campo al
+proporcionar una solución robusta para manejar anotaciones
+inconsistentes en la segmentación de imágenes médicas,
+particularmente valiosa en histopatología donde las anotaciones de
+expertos son costosas y requieren mucho tiempo para obtenerlas. El
+enfoque propuesto muestra resultados prometedores en la reducción de
+costos de anotación mientras mantiene una alta precisión de
+segmentación, lo que lo hace particularmente relevante para
+aplicaciones clínicas donde la segmentación precisa de estructuras
+tisulares es crucial para el diagnóstico y la planificación del tratamiento.
+
 \textbf{\small Palabras clave:} Crowdsourcing, Múltiples Anotadores,
 Histopatología, Cáncer de Mama, Segmentación Semántica de Imágenes,
 Procesos Gaussianos, Aprendizaje Profundo, Análisis de Imágenes Médicas

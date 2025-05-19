@@ -1,0 +1,58 @@
+\usepackage{rotating}
+\usetikzlibrary{arrows.meta, positioning, calc}
+
+\begin{sidewaysfigure}[ht]
+  \centering
+  \begin{tikzpicture}[node distance=1.2cm and 1.2cm, every
+    node/.style={font=\small}]
+
+    % Nodes
+    \node[draw, minimum width=1.8cm, minimum height=1cm] (net) {Sig +
+    Reliability \\ Network};
+    \node[draw, right=2.2cm of net, minimum width=1.2cm, minimum
+    height=1cm] (ip) {$\langle \cdot, \cdot \rangle$};
+    \node[draw, right=2.2cm of ip, minimum width=1.8cm, minimum
+    height=1cm] (exp1) {$1 - \frac{z^q}{q}$};
+    \node[draw, right=1.8cm of exp1, minimum width=0.8cm, minimum
+    height=1cm] (mul1) {$\times$};
+    \node[draw, below=1.8cm of ip, minimum width=1.8cm, minimum
+    height=1cm] (exp2) {$\frac{1 - \hat{C}^q}{q}$};
+    \node[draw, left=1.8cm of exp2, minimum width=1.2cm, minimum
+    height=1cm] (oneMinusZ) {$1 - \hat{z}$};
+    \node[draw, right=1.8cm of exp2, minimum width=0.8cm, minimum
+    height=1cm] (mul2) {$\times$};
+    \node[draw, right=2.2cm of mul1, minimum width=0.8cm, minimum
+    height=1cm] (plus) {$+$};
+    \node[right=0.8cm of plus] (loss) {$\mathcal{L}(y, f(x); \hat{z},
+    \hat{C})$};
+
+    % Inputs and outputs
+    \node[left=1.2cm of net] (x) {$x$};
+
+    % Connecting lines
+    \draw[->] (x) -- (net);
+    \draw[->] (net) -- node[above] {$\hat{y}(x)$} (ip);
+    \draw[->] (net) |- +(-0.2,-1.7) node[below left=-2pt] {$\hat{z}$}
+    -- (oneMinusZ);
+    \draw[->] (oneMinusZ) -- (mul2);
+
+    \draw[->] (ip) -- (exp1);
+    \draw[->] (exp1) -- (mul1);
+    \draw[->] (mul1) -- (plus);
+    \draw[->] (mul2) -- (plus);
+    \draw[->] (plus) -- (loss);
+
+    % Branch to exp2
+    \draw[->] (net.east) ++(0.5,-0.2) |- (exp2.west);
+    \draw[->] (exp2) -- (mul2);
+
+    % Labels
+    \node at ($(exp1.north)+(0,0.4)$) {$z = \langle y, \hat{y}(x) \rangle$};
+
+  \end{tikzpicture}
+  \caption{Step-by-step computation of the proposed Truncated Generalized
+    Cross Entropy for Semantic Segmentation (TGCE$_{SS}$) loss function.
+    The loss combines reliability maps $\Lambda_r$ with the model's
+    predictions $f(\mathbf{X};\theta)$ to compute a weighted loss for each
+  image $x$.}
+\end{sidewaysfigure}

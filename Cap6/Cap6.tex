@@ -1,6 +1,6 @@
-\chapter{Conclusions}\label{ch:conclusions}
+\chapter{Final Remarks}\label{ch:final_remarks}
 
-\section{Summary}
+\section{Conclusions}
 
 Throughout this work, several techniques have been explored to develop a
 model that can face \gls{ISS} of real world histopathology images in
@@ -10,29 +10,33 @@ from the input space. The following remarks are based on the results
 obtained from the experiments conducted and reviewed literature:
 
 \begin{itemize}
-  \item Chained Gaussian Processes approaches are a robust approach
-    for developing classification and regression tasks, however,
-    their computational powerful requirements make them unsuitable
-    for image segmentation tasks, specially since deep learning approaches
-    have shown to be more efficient in the task of extracting features
-    from images.
-  \item Existing loss functions in the state of the art were insufficient
-    to model the annotators' performance across the input space, from
-    which the need for a new loss function which fulfils the requirements
-    of the task was identified.
-  \item A novel loss function was proposed and evaluated, showing to
-    be a good alternative to the existing loss functions in the state
-    of the art, and providing an efficient way to optimize parameters
-    for reaching capability to model the annotators' performance
-    across the input space.
+  \item Chained Gaussian Processes approaches, while robust for classification
+    and regression tasks, proved computationally intensive for image
+    segmentation.
+    This limitation highlighted the need for more efficient
+    approaches that could
+    handle the complexity of medical image segmentation while modeling annotator
+    performance.
+  \item The development of a novel loss function was crucial for the success
+    of this work, as existing loss functions were insufficient to model the
+    annotators' performance across the input space. The proposed loss function
+    successfully enabled the model to adaptively infer the best possible
+    segmentation without requiring separate inputs about labeler performance.
+  \item The introduction of a tensor map to codify labeler reliability proved
+    to be an effective approach, allowing the model to implicitly weigh the
+    labelers based on their performance across the mask and classes space,
+    thus handling the labeler performance inconsistency effectively.
   \item The use of U-Shaped Deep Learning models as a building block
-    for the proposed solution was a valid approach, as it allows for
-    the model to learn the spatial relationships between the pixels
-    in the image, and the annotations, and to use this information to
-    make predictions about the annotations of new images.
-  \item Chained Deep Learning approaches in combination with the
-    proposed loss function were the best approach for the task, outperforming
-    the state of the art in the task of \gls{ISS} of histopathology images.
+    for the proposed solution was validated, as it effectively captured
+    spatial relationships between pixels and annotations while handling
+    the variability in image quality.
+  \item The combination of Chained Deep Learning approaches with the
+    proposed loss function and tensor map representation resulted in a
+    comprehensive solution being, to the best of our knowledge, the
+    first approach on offering an image segmentation solution for
+    multiple labelers in medical image with interpretability in the
+    reliability of the labelers, successfully addressing both
+    labeler inconsistency and image quality variability.
 \end{itemize}
 
 \section{Future work}
@@ -46,3 +50,110 @@ In that sense, the use of \gls{CCGPMA} as a building block for the
 proposed solution could be a good approach, as it is a powerful model
 that can take advantage of the inter-dependencies between the annotators,
 and the powerfulness of \glspl{CNN} to extract features from the images.
+
+The noisy labelers emulation technique developed in this work presents
+an opportunity to test the model's robustness in various medical image
+segmentation challenges. This technique could be adapted to simulate
+different types of expert variability in other medical imaging domains:
+
+\begin{itemize}
+  \item \textbf{Multi-modal Medical Imaging}: The technique could be
+    extended to simulate expert disagreements in multi-modal scenarios,
+    where different imaging modalities (e.g., MRI, CT, PET) might lead
+    to varying interpretations of the same anatomical structure.
+  \item \textbf{Temporal Consistency}: For longitudinal studies, the
+    emulation could be modified to simulate how expert annotations
+    might vary over time, helping to test the model's ability to
+    maintain consistency in segmentation across different time points.
+  \item \textbf{Cross-institutional Variability}: The noise injection
+    technique could be calibrated to simulate the variations in
+    annotation patterns that arise from different institutional
+    protocols or training backgrounds.
+  \item \textbf{Pathology-specific Challenges}: The emulation could be
+    tailored to simulate expert disagreements in specific pathological
+    conditions, where the morphological features might be more
+    ambiguous or subject to interpretation.
+\end{itemize}
+
+These extensions would help validate the model's performance across a
+broader range of medical imaging scenarios and ensure its robustness
+in real-world clinical applications.
+
+The pixel-wise reliability mapping approach shows particular promise
+for future development. While the current implementation already
+demonstrates good performance, several enhancements could lead to
+significant improvements:
+
+\begin{itemize}
+  \item \textbf{Advanced Data Augmentation}: Implementing a comprehensive
+    data augmentation strategy could significantly improve the model's
+    convergence and performance. This could include:
+    \begin{itemize}
+      \item Geometric transformations (rotations, flips, elastic deformations)
+      \item Intensity variations to simulate different staining conditions
+      \item Multi-scale training to handle varying tissue sizes
+      \item Adversarial training to improve robustness
+    \end{itemize}
+    These augmentations would help the model learn more robust features
+    and better generalize to unseen data.
+  \item \textbf{Attention Mechanisms}: Integrating attention mechanisms
+    into the pixel-wise reliability branch could help the model focus
+    on the most relevant regions for reliability estimation, potentially
+    improving both accuracy and computational efficiency.
+  \item \textbf{Multi-scale Reliability Estimation}: Implementing a
+    hierarchical approach to reliability estimation could capture
+    both fine-grained local variations and broader regional patterns
+    in annotator reliability, this would imply a network with yet
+    more branches and outputs.
+\end{itemize}
+
+The combination of these enhancements with the existing pixel-wise
+reliability mapping approach could potentially outperform all other
+techniques, as it would provide the most detailed and accurate
+representation of annotator reliability while maintaining computational
+efficiency. The use of data augmentation, in particular, could help
+the model converge faster and achieve better generalization, as it
+would expose the model to a wider variety of possible variations in
+both the input images and the corresponding annotations.
+
+\section{Academic Discussion}
+
+To facilitate the adoption and further development of the proposed approach,
+several resources have been made publicly available. A comprehensive GitHub
+repository has been created that provides easy-to-use APIs for implementing
+the proposed solution. The repository includes pre-built dataset loaders for
+TensorFlow/Keras frameworks, implementation of the TGCE$_{SS}$ loss function
+in all its variants (scalar, features, and pixel-wise), and a neural network
+architecture builder with experimental examples. A key feature of this
+repository is its automatic dataset fetching from AWS S3, which eliminates
+the need for manual downloads or external dependencies. This repository aims
+to lower the entry barrier for researchers and practitioners interested in
+implementing the proposed approach.
+
+To further simplify the adoption of the proposed solution, a PyPI package
+has been published with detailed documentation available at
+\url{https://seg-tgce.readthedocs.io/en/latest/}. The documentation
+provides comprehensive installation instructions, API reference, usage
+examples, and best practices for implementation. This package makes it
+straightforward for the community to integrate the proposed approach into
+their existing workflows, with a focus on ease of use and clear
+documentation of all available features and options.
+
+An academic publication is currently being prepared for submission to a Q1
+journal. This publication will provide detailed theoretical foundations of
+the proposed approach, comprehensive experimental results and analysis,
+comparison with state-of-the-art methods, and discussion of limitations
+and future directions. The publication will serve as the primary reference
+for the theoretical and practical aspects of the proposed solution,
+ensuring that the work is properly documented and validated through the
+peer-review process.
+
+These resources collectively contribute to the reproducibility and
+accessibility of the research, enabling the broader scientific community
+to build upon and extend the proposed approach. The combination of
+open-source code, well-documented APIs, and peer-reviewed publication
+ensures that the work can be properly evaluated, validated, and
+utilized by other researchers in the field. This comprehensive approach
+to sharing research outputs aligns with current best practices in
+scientific computing and machine learning research, promoting both
+transparency and practical utility of the proposed solution.
