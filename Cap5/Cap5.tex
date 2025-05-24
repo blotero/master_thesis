@@ -457,42 +457,45 @@ generated noisy and missing labels dataset is shown in Figure
 
 \subsection{Oxford-IIIT Pet Dataset}
 
-\begin{table}[h!]
+\begin{table}[h]
   \centering
-  \begin{tabular}{lcc}
+  \begin{tabular}{lcccccc}
     \hline
-    \textbf{Method} & \textbf{Dice} & \textbf{Jaccard} \\
+    \textbf{Method} & \multicolumn{2}{c}{\textbf{Label Rate 1.0}} &
+    \multicolumn{2}{c}{\textbf{Label Rate 0.7}} &
+    \multicolumn{2}{c}{\textbf{Label Rate 0.3}} \\
+    & Dice & Jaccard & Dice & Jaccard & Dice & Jaccard \\
     \hline
-    TGCE scalar & 0.8564 & 0.7691 \\
-    TGCE pixel  & 0.8334 & 0.7392 \\
-    \textbf{STAPLE}      & \textbf{0.8639} & \textbf{0.7795} \\
-    MV          & 0.8214 & 0.7351 \\
+    TGCE scalar   & 0.8622±0.009 & 0.7791±0.012 &
+    \textbf{0.8568±0.017} & \textbf{0.7726±0.024} &
+    \textbf{0.8529±0.004} & \textbf{0.7677±0.007} \\
+    TGCE feature  & 0.6995±0.044 & 0.5733±0.047 & 0.4766±0.026 &
+    0.3441±0.027 & 0.4766±0.026 & 0.3441±0.027 \\
+    TGCE pixel    & 0.8468±0.018 & 0.7589±0.025 & 0.8545±0.013 &
+    0.7695±0.017 & 0.8283±0.001 & 0.7359±0.002 \\
+    MV            & 0.8132±0     & 0.7222±0     & 0.7572±0     &
+    0.6554±0     & 0.5566±0     & 0.4687±0 \\
+    STAPLE        & \textbf{0.8718±0} & \textbf{0.7917±0} & 0.8439±0
+    & 0.7609±0     & 0.5734±0     & 0.5158±0 \\
     \hline
   \end{tabular}
-  \caption{Performance comparison of methods using Dice and Jaccard
-    metrics for the Oxford-IIIT Pet Dataset with no labelers
-    aggregation. STAPLE outperforms all other methods, followed by
-  TGCE$_{SS}$ scalar and pixel. MV performs the worst.}
-  \label{tab:oxford_results}
+  \caption{Performance metrics (Dice and Jaccard) at different
+  labeling rates. Best values per category are bolded.}
+  \label{tab:oxford_pet_results}
 \end{table}
 
 The experimental results on the Oxford-IIIT Pet Dataset demonstrate
 interesting insights into the performance of different approaches.
-While STAPLE achieves the highest Dice and Jaccard scores (0.8639 and
-0.7795 respectively), our proposed TGCE$_{SS}$ approaches show
-competitive performance, with the scalar variant achieving a Dice
-score of 0.8564 and Jaccard of 0.7691. The pixel-wise variant, while
-slightly lower in performance metrics, provides more detailed spatial
-reliability information.
-
-It's important to note that these results, when compared directly
-with STAPLE and Majority Voting (MV) without labeler aggregation,
-show that STAPLE maintains its advantage in terms of pure
-segmentation accuracy. However, this comparison alone doesn't fully
-capture the value of our approach. The key strength of our method
-lies in its ability to simultaneously learn both segmentation and
-reliability estimation, providing valuable insights into annotator
-behavior and confidence levels that STAPLE and MV cannot offer.
+While STAPLE achieves the highest Dice and Jaccard scores (0.8718 and
+0.7917 respectively) for the dataset with no missing labels (label
+rate of 1.0), our proposed TGCE$_{SS}$ approaches show superior
+performance for label rates below 1.0 (Table \ref{tab:oxford_pet_results}).
+The pixel-wise variant, while slightly lower in performance metrics,
+provides more detailed spatial reliability information. It is of note
+that the key strength of TGCE$_{SS}$ lies in its ability to
+simultaneously learn both segmentation and reliability estimation,
+providing valuable insights into annotator behavior and confidence
+levels that STAPLE and MV cannot offer.
 
 The reliability estimation capabilities of our model are particularly
 noteworthy, as demonstrated in Figures
