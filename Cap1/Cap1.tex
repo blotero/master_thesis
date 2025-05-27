@@ -32,15 +32,18 @@ in medical images are as follows:
   \item The development of a novel loss function for \gls{ISS} tasks.
     This function can infer the best possible segmentation and codify
     labeler reliability without needing separate inputs regarding
-    labeler performance or the training of multiple networks.
+    labeler performance or the training of multiple networks (see
+    Chapter \ref{ch:seg_tgce}).
   \item The creation of a Chained Deep Learning model for \gls{ISS}
     in medical images. This model effectively learns from
     inconsistent labels and demonstrates improved segmentation
-    performance, outperforming state-of-the-art approaches on a
-    Triple Negative Breast Cancer histopathology dataset.
+    performance, outperforming state-of-the-art approaches on datasets with
+    emulated noisy labels and a real world Triple Negative Breast Cancer
+    histopathology dataset (see Chapter \ref{ch:chained_deep_learning_seg}).
   \item A mechanism for emulating noisy annotations. This involves
     using network encoding layer weight disturbances to construct a
-    crowdsourced version of the well-known Oxford-IIIT Pet Dataset.
+    crowdsourced version of the well-known Oxford-IIIT Pet Dataset
+    (see Section \ref{sec:noisy_annotations_generation}).
   \item A Python package facilitating the use of the proposed loss
     function and architecture within \gls{CNN} models for \gls{ISS}
     tasks in medical images.

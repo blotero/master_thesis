@@ -6,32 +6,60 @@
 El cáncer de mama sigue siendo una de las enfermedades más mortales
 en la población femenina en todo el mundo, lo que hace que el
 diagnóstico preciso y la planificación del tratamiento sean cruciales
-para mejorar las condiciones de los pacientes. Esta tesis presenta un
-enfoque novedoso para la Segmentación Semántica de Imágenes (ISS) en
-imágenes médicas, con un enfoque particular en imágenes
-histopatológicas de tejido de cáncer de mama. El trabajo aborda el
-desafío crítico de manejar las etiquetas de múltiples anotadores en
-escenarios de crowdsourcing, donde el rendimiento de los anotadores
-varía a través del espacio de entrada y la calidad de la imagen. La
-solución propuesta introduce una función de pérdida novedosa que
-infiere implícitamente la segmentación óptima y evalúa la
-confiabilidad de los etiquetadores sin requerir entradas explícitas
-sobre su rendimiento. Esto se logra a través de un mapa de
-confiabilidad intermedio que permite al modelo priorizar la
-información de etiquetadores confiables mientras descarta etiquetas ruidosas.
+para mejorar las condiciones de los pacientes. La segmentación
+semántica de imágenes histopatológicas juega un papel vital en este
+proceso, ya que permite la identificación y análisis preciso de
+estructuras tisulares. Sin embargo, los enfoques actuales enfrentan
+desafíos significativos en escenarios del mundo real donde múltiples
+anotadores con diferentes niveles de experiencia y confiabilidad
+contribuyen al proceso de etiquetado. Este paradigma de
+crowdsourcing, aunque rentable, introduce inconsistencias que pueden
+comprometer la calidad de los resultados de segmentación.
 
-La metodología se aparta de los modelos de segmentación basados en
-CNN convencionales al eliminar la necesidad de supervisión directa
-del rendimiento de los etiquetadores, mejorando así su generalización
-y adaptabilidad a través de diversos conjuntos de datos y cohortes de
-etiquetadores. El enfoque combina las fortalezas de las arquitecturas
-de aprendizaje profundo en forma de U con una sofisticada función de
-pérdida que modela la confiabilidad de los anotadores a través del
-espacio de entrada. El rendimiento del modelo se evalúa tanto en
-conjuntos de datos sintéticos como en imágenes histopatológicas del
-mundo real, demostrando resultados superiores en comparación con los
-enfoques más avanzados en términos de precisión de segmentación y
-cuantificación de incertidumbre.
+Esta tesis aborda dos desafíos fundamentales en la segmentación de
+imágenes médicas: la incertidumbre inherente en escenarios de
+múltiples anotadores y la necesidad de modelos de segmentación
+robustos que puedan manejar la calidad variable de las imágenes y la
+experiencia de los anotadores. Estos desafíos surgen de la naturaleza
+compleja de las imágenes histopatológicas, donde las estructuras
+tisulares pueden ser ambiguas, y los diferentes niveles de
+experiencia entre los anotadores conducen a patrones de etiquetado
+inconsistentes. Además, el alto costo y los requisitos de tiempo para
+las anotaciones de expertos crean la necesidad de soluciones
+eficientes que puedan trabajar con datos crowdsourced.
+
+El primer objetivo introduce una función de pérdida novedosa que
+infiere implícitamente la segmentación óptima mientras evalúa la
+confiabilidad de los etiquetadores sin requerir entradas explícitas
+sobre su rendimiento. Este enfoque difiere de los métodos
+convencionales al eliminar la necesidad de supervisión directa del
+rendimiento de los etiquetadores, utilizando en su lugar un mapa de
+confiabilidad intermedio que permite al modelo priorizar la
+información de etiquetadores confiables mientras descarta etiquetas
+ruidosas. La base matemática de este enfoque radica en el modelado
+probabilístico de la confiabilidad de los anotadores a través del
+espacio de entrada.
+
+El segundo objetivo se centra en el desarrollo de una arquitectura de
+segmentación robusta que combina las fortalezas de los modelos de
+aprendizaje profundo en forma de U con la función de pérdida
+propuesta que tiene en cuenta la confiabilidad. Esta combinación
+permite que el modelo aprenda tanto la tarea de segmentación como los
+patrones de confiabilidad simultáneamente, lo que lleva a resultados
+más precisos y consistentes. La innovación clave de la arquitectura
+radica en su capacidad para adaptarse a diferentes niveles de calidad
+de imagen y experiencia de los anotadores sin requerir métricas de
+rendimiento explícitas.
+
+El tercer objetivo valida el enfoque propuesto a través de
+experimentación exhaustiva tanto en conjuntos de datos sintéticos
+como en imágenes histopatológicas del mundo real. La evaluación
+demuestra un rendimiento superior en comparación con los enfoques más
+avanzados en términos de precisión de segmentación y cuantificación
+de incertidumbre. Los resultados muestran que el método propuesto
+puede manejar efectivamente anotaciones inconsistentes mientras
+mantiene una alta precisión de segmentación, lo que lo hace
+particularmente valioso para aplicaciones clínicas.
 
 La investigación hace contribuciones significativas al campo al
 proporcionar una solución robusta para manejar anotaciones
@@ -42,7 +70,11 @@ enfoque propuesto muestra resultados prometedores en la reducción de
 costos de anotación mientras mantiene una alta precisión de
 segmentación, lo que lo hace particularmente relevante para
 aplicaciones clínicas donde la segmentación precisa de estructuras
-tisulares es crucial para el diagnóstico y la planificación del tratamiento.
+tisulares es crucial para el diagnóstico y la planificación del
+tratamiento. Este trabajo abre nuevas direcciones de investigación en
+las áreas de análisis de imágenes médicas crowdsourced,
+cuantificación de incertidumbre en aprendizaje profundo y el
+desarrollo de protocolos de anotación más eficientes para imágenes médicas.
 
 \textbf{\small Palabras clave:} Crowdsourcing, Múltiples Anotadores,
 Histopatología, Cáncer de Mama, Segmentación Semántica de Imágenes,

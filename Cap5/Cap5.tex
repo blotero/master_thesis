@@ -1,7 +1,5 @@
-\chapter{Chained deep learning for image
+\chapter{Chained deep learning and TGCE$_{SS}$ loss for image
 segmentation}\label{ch:chained_deep_learning_seg}
-
-\section{Introduction}
 
 As mentioned in Chapter \ref{ch:introduction}, U-shaped \glspl{CNN} have been
 proven a good solution for segmentation tasks in medical images, due to their
@@ -14,8 +12,6 @@ datasets.
   \caption{Original U-NET architecture.}
   \label{fig:unet_architecture}
 \end{figure}
-
-\section{Using U-Net as a Building Block}
 
 The proposed model architecture combines the strengths of U-Net with a
 ResNet-34 backbone, specifically designed to work with the
@@ -63,7 +59,7 @@ branch which leads to a multi-output network. Three different approaches
 are considered for this branch: \textbf{scalar}, \textbf{features},
 and \textbf{pixel}.
 
-\subsection{Scalar Reliability Estimation}
+\subsection{Scalar Reliability Estimation}\label{sec:scalar_model}
 
 The scalar reliability estimation branch is the simplest one, in which
 the reliability branch is a parallel branch to the segmentation branch,
@@ -402,9 +398,9 @@ Algorithm \ref{alg:multi_annotator_dataset_generation}. A sample of the
 generated noisy and missing labels dataset is shown in Figure
 \ref{fig:missing_labels_emulation}.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth]{Cap5/Figures/oxford_pet_missing_labels.png}
+  \includegraphics[width=0.7\textwidth]{Cap5/Figures/oxford_pet_missing_labels.png}
   \caption{Example of missing labels and noisy annotations emulation
     for the Oxford-IIIT Pet Dataset. The same label rate ($r_l =
     0.7$) is preserved for all labelers, which means in this case
@@ -457,6 +453,18 @@ generated noisy and missing labels dataset is shown in Figure
 
 \subsection{Oxford-IIIT Pet Dataset}
 
+The experimental results on the Oxford-IIIT Pet Dataset demonstrate
+interesting insights into the performance of different approaches.
+While STAPLE achieves the highest Dice and Jaccard scores (0.8718 and
+0.7917 respectively) for the dataset with no missing labels (label
+rate of 1.0), our proposed TGCE$_{SS}$ approaches show superior
+performance for label rates below 1.0 (Table \ref{tab:oxford_pet_results}).
+The pixel-wise variant, while slightly lower in performance metrics,
+provides more detailed spatial reliability information. It is of note
+that the key strength of TGCE$_{SS}$ lies in its ability to
+simultaneously learn both segmentation and reliability estimation,
+providing valuable insights into annotator behavior and confidence
+levels that STAPLE and MV cannot offer.
 \begin{table}[h]
   \centering
   \begin{tabular}{lcccccc}
@@ -484,19 +492,6 @@ generated noisy and missing labels dataset is shown in Figure
   \label{tab:oxford_pet_results}
 \end{table}
 
-The experimental results on the Oxford-IIIT Pet Dataset demonstrate
-interesting insights into the performance of different approaches.
-While STAPLE achieves the highest Dice and Jaccard scores (0.8718 and
-0.7917 respectively) for the dataset with no missing labels (label
-rate of 1.0), our proposed TGCE$_{SS}$ approaches show superior
-performance for label rates below 1.0 (Table \ref{tab:oxford_pet_results}).
-The pixel-wise variant, while slightly lower in performance metrics,
-provides more detailed spatial reliability information. It is of note
-that the key strength of TGCE$_{SS}$ lies in its ability to
-simultaneously learn both segmentation and reliability estimation,
-providing valuable insights into annotator behavior and confidence
-levels that STAPLE and MV cannot offer.
-
 The reliability estimation capabilities of our model are particularly
 noteworthy, as demonstrated in Figures
 \ref{fig:oxford_example_output} and
@@ -509,7 +504,7 @@ significant advantage over traditional approaches like STAPLE and MV,
 which focus solely on segmentation accuracy without providing
 insights into annotator behavior.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{Cap5/Figures/oxford_example_output_scalar.png}
   \caption{Example evaluation of the proposed model in its last
@@ -523,7 +518,7 @@ insights into annotator behavior.
   \label{fig:oxford_example_output}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.8\textwidth]{Cap5/Figures/oxford_example_output_pixel.png}
   \caption{Example evaluation of the proposed model in some given
@@ -537,3 +532,229 @@ insights into annotator behavior.
   $\alpha_{entropy} = 0.02$, $\alpha_{sum} = 0.42$.}
   \label{fig:oxford_example_output_pixel}
 \end{figure}
+
+\subsection{TNBC Dataset}
+
+As mentioned in Section \ref{sec:tnbc_dataset}, \cite{AmgadEtAl2019} presented
+a Triple Negative Breast Cancer (TNBC) dataset, which is
+crowdsourced and available as HistomicsTK metadata. Later,
+\cite{Lopez2023} sampled 151 \glspl{WSI}, from which 161 \glspl{ROI}
+were extracted and labeled by 20 medical students. The dataset was
+sampled as patches of size 512x512, resulting in 10173 training
+patches, 1264 validation patches and 399 testing patches. The
+segmentation masks for the patches are composed of the classes:
+tumor, stroma, inflammation, necrosis, and others \footnote{In
+  practice, some of this masks also contain an additional class
+labeled as `ignore'.}. This subset of the TNBC is named Crowd-Seg.
+
+Raw png files for the images patches and masks were provided by the
+authors, in practice, in order to optimize the use of these data, a
+custom tensorflow dataset was built for facilitating batch memory,
+caching and prefetching. The custom dataset implementation handles
+the loading and preprocessing of both images and masks, including
+normalization of images to the [0,1] range and one-hot encoding of
+the segmentation masks. It also manages the multi-annotator structure
+by creating a labeler mask that indicates which annotators provided
+labels for each sample. The dataset supports data augmentation
+through random transformations (flips, rotations, brightness/contrast
+adjustments) and includes visualization utilities for debugging and
+analysis purposes. This custom dataset implementation is publicly
+available as a PyPI package (see Section \ref{sec:academic_discussion}).
+
+\subsubsection{Notes on the TNBC Dataset}
+The TNBC dataset contains a couple of peculiarities that are worth mentioning.
+First, the label rate (inverse percentage of labels that are missing)
+is not uniform across the labelers and, in general, quite low, ranging
+from 1 to 12\% as seen in Figure \ref{fig:tnbc_label_rates}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{Cap5/Figures/crowd_seg_annotation_distribution.png}
+  \caption{Label rate distribution across the labelers for the TNBC
+  (Crowd-Seg) dataset.}
+  \label{fig:tnbc_label_rates}
+\end{figure}
+
+On the other hand, the classes distribution across all patches are
+not equal, being `Tumor' (class 2) the most frequent class. Despite
+the classes not being equally distributed, the distribution of the
+classes across the labelers is fairly uniform, as shown in Figure
+\ref{fig:tnbc_labelers_classes_distribution}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[trim=0pt 0pt 0pt 20pt, clip,
+  width=0.8\textwidth]{Cap5/Figures/labelers_classes_distribution_histologies.jpeg}
+  \caption{Classes distribution across the labelers for the TNBC
+    (Crowd-Seg) dataset.
+    Most common classes are `Tumor' (class 2),`Other' (class 1) and
+  `Stroma' (class 3).}
+  \label{fig:tnbc_labelers_classes_distribution}
+\end{figure}
+
+It was also found that the dice score of the labelers masks against
+the ground truth differed across the labelers and the classes, as
+shown in Figure \ref{fig:crowd_seg_annotated_vs_dice}. The target
+class (Tumor) ranged dice scores across the labelers from 0.5 to 0.9,
+other classes can get as low as 0.4 for in average for some labelers, meaning
+very high levels of disagreement.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Cap5/Figures/crowd_seg_annotated_vs_dice.png}
+  \caption{Dice score of the labelers masks against the ground truth
+  for the TNBC (Crowd-Seg) dataset.}
+  \label{fig:crowd_seg_annotated_vs_dice}
+\end{figure}
+
+Finally, it was found that the expert labels, which would thereby be
+considered as ground truth for metrics evaluation, were not always
+correct, as shown in Figure \ref{fig:ground_truth_odd_geometries}.
+These morphological inconsistencies make an objetive metric for
+evaluating the performance of the proposed model difficult to define,
+since the ground truth is not always correct or expressive enough.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{Cap5/Figures/ground_truth_odd_geometries_2.png}
+  \caption{Example of ground truth with odd geometries (second patch
+    from top to bottom), which are not always correct or compatible
+  with the underlying structures of the patch itself.}
+  \label{fig:ground_truth_odd_geometries}
+\end{figure}
+
+\subsubsection{Special considerations for the TNBC Dataset}
+
+Because of the aforementioned  peculiarities of the TNBC dataset, some special
+considerations were taken into account for the experiments. Because
+of the low label rates, experiments showed an unavoidable
+convergence to estimate arbitrarily high reliabilities on labelers which did not
+label a certain patch, which is not a desired behavior. None
+particular element of the proposed loss function penalizes
+this optimization shortcut, so to avoid this, an additional
+regularizer was included for penalizing high estimated
+reliabilities on unlabeled data, as follows:
+
+\begin{equation}
+  \mathcal{L}_{\lambda} = \max \left(0, \sum_{\forall i \in R}
+    \frac{1}{1-\alpha} \left(\Lambda_i - \mathbb{LM}_i\right) \cdot
+  e^{\frac{\Lambda_i - \mathbb{LM}_i - 1}{\beta}}\right)
+\end{equation}
+
+where $R$ is the amount of labelers, $\Lambda_i$ is the estimated
+reliability of the labeler $i$
+for a certain patch and $\mathbb{LM}_i$ is the one hot label mask of the
+labeler $i$ for the same patch. The $\alpha$ and $\beta$ parameters
+control the penalty strength for high and low estimated reliabilities,
+respectively. In the Crowd-Seg experiments, this regularizer replaced
+the other regularizers, since it was showing better convergence on
+estimating the reliability of the labelers.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[
+  width=0.8\textwidth]{Cap5/Figures/crowd_seg_baseline_training_curves.png}
+  \caption{Training curves for the baseline model on the TNBC
+  (Crowd-Seg) dataset.}
+  \label{fig:tnbc_baseline_training_curves}
+\end{figure}
+
+\section{Results}
+
+Initially, a baseline model (ground truth only) was trained with an
+early stopping mechanism, which stopped the training when the
+validation loss stopped decreasing for 10 epochs, reaching only 20
+epochs of significant training. The results are shown in Figure
+\ref{fig:baseline_segment_20_epochs}.
+
+Then, using the scalar model described in Section
+\ref{sec:scalar_model}, training
+was performed for 20 epochs and Bayesian hyperparameter optimization
+on learning rate,
+decoder dropout rate, $\alpha$ and $\beta$ for the regularizer, and
+$q$ and noise tolerance from \gls{GCE}. The results are shown in
+Figure \ref{fig:crowd_seg_scalar_model_overfitting}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[
+  width=0.8\textwidth]{Cap5/Figures/baseline_segment_20_epochs.png}
+  \caption{Segmentation results for baseline model on the TNBC
+    (Crowd-Seg) dataset after 20 epochs of training. Even though the
+    segmentation algorithm seems to show progress on its way to capture
+    the underlying target structures ot be segmented, since the ground
+    truth annotation is not expressive enough, the Dice coefficient
+    remains below 0.55, which is not considered a good performance.
+    The baseline model remained with overfitting even after combining
+    techniques of: Bayesian hyperparameter optimization, data
+    augmentation, learning rate scheduling, dataset shuffling, and
+  early stopping.}
+  \label{fig:baseline_segment_20_epochs}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[
+  width=0.8\textwidth]{Cap5/Figures/crowd_seg_scalar_model_overfitting.png}
+  \caption{Segmentation results for scalar model on the TNBC
+    (Crowd-Seg) dataset after 20 epochs of training. Again, training
+    metrics show a constant grow, but not validation metrics, which
+  shows a combined issue of overfitting and unreliable ground truth.}
+  \label{fig:crowd_seg_scalar_model_overfitting}
+\end{figure}
+
+\section{Conclusion}
+
+The experimental results on both the Oxford-IIIT Pet and TNBC
+(Crowd-Seg) datasets provide valuable insights into the performance
+and limitations of our proposed approach. The model demonstrated
+exceptional performance on the Oxford-IIIT Pet dataset, achieving
+competitive Dice and Jaccard scores while successfully capturing
+annotator reliability patterns. The model's ability to simultaneously
+learn segmentation and reliability estimation proved particularly
+valuable, providing insights into annotator behavior that traditional
+approaches like STAPLE and MV cannot offer.
+
+However, the experiments on the TNBC dataset revealed significant
+challenges in evaluating semantic segmentation models for
+histopathological images when dealing with unreliable ground truth.
+The morphological inconsistencies in the expert annotations, combined
+with the extremely low label rates (1-12\%) across annotators, made
+it difficult to objectively measure the model's performance. While
+the model showed promising convergence in training, the validation
+metrics remained unstable, suggesting that the current dataset may
+not be suitable for rigorous evaluation of multi-annotator
+segmentation approaches.
+
+These findings highlight the need for more reliable ground truth
+annotations in histopathological image segmentation datasets. Future
+work should focus on:
+\begin{itemize}
+  \item Developing datasets with more consistent and reliable expert annotations
+  \item Implementing stricter quality control measures for ground
+    truth generation
+  \item Exploring alternative evaluation metrics that account for
+    annotation uncertainty
+  \item Investigating methods to handle extremely sparse annotations
+    more effectively
+\end{itemize}
+
+Despite these challenges, the model's performance on the Oxford-IIIT
+Pet dataset demonstrates its effectiveness in handling multiple
+annotators with varying reliability levels. The model successfully learned to:
+\begin{itemize}
+  \item Balance the contributions of different annotators based on
+    their reliability
+  \item Provide detailed spatial reliability information through
+    pixel-wise estimation
+  \item Maintain high segmentation accuracy even with missing labels
+  \item Adapt to different noise levels in annotator inputs
+\end{itemize}
+
+These capabilities make the proposed approach particularly valuable
+for real-world applications where multiple annotators with varying
+expertise levels contribute to the dataset. The model's ability to
+simultaneously learn segmentation and reliability estimation provides
+a more comprehensive understanding of the annotation process, which
+could be leveraged to improve the quality of future annotations and
+dataset construction.

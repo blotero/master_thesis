@@ -157,5 +157,55 @@ For a batch containing $N$ samples, the total loss is computed as:
   \mathbf{\Lambda}_r (\mathbf X[n];\theta))
 \end{equation}
 
+\subsection{Discussion and Conclusions}
+
+This chapter presents a novel approach to handle multiple annotators
+in semantic segmentation tasks through the introduction of the
+Truncated Generalized Cross Entropy for Semantic Segmentation
+(TGCE$_{SS}$) loss function. The key contributions and novelties of
+this work can be summarized as follows:
+
+\begin{itemize}
+  \item \textbf{Reliability-aware Learning}: Unlike traditional
+    approaches that treat all annotators equally, the proposed method
+    introduces reliability maps ($\Lambda_r$) that dynamically
+    estimate the confidence of each annotator at every spatial
+    location in the image. This allows the model to adapt to varying
+    levels of expertise across different regions.
+
+  \item \textbf{Robust Loss Function}: The proposed TGCE$_{SS}$
+    combines the benefits of both Cross Entropy and Mean Absolute
+    Error losses through the Generalized Cross Entropy framework. The
+    truncation parameter $q$ provides a flexible mechanism to control
+    the sensitivity to noisy labels while maintaining the convexity
+    property necessary for optimization.
+
+  \item \textbf{Unified Framework}: The approach provides a unified
+    framework that handles both reliable and unreliable regions
+    through a weighted combination of GCE loss and uniform prior.
+    This is particularly important in medical imaging where annotator
+    expertise can vary significantly across different anatomical structures.
+\end{itemize}
+
+The main novelty of this approach lies in its ability to
+simultaneously learn the segmentation task while estimating annotator
+reliability in a spatially-aware manner. This represents a
+significant advancement over existing methods that either:
+\begin{itemize}
+  \item Treat all annotators equally without considering their varying expertise
+  \item Use global reliability scores that don't account for spatial
+    variations in annotator performance
+  \item Rely on fixed, pre-defined reliability measures rather than
+    learning them from data
+\end{itemize}
+
+The proposed TGCE$_{SS}$ loss function represents a step forward in
+handling the complex nature of multiple annotator scenarios in
+semantic segmentation, particularly in medical imaging applications
+where expert knowledge can vary significantly across different
+regions of interest. This work provides a foundation for more
+sophisticated approaches to handling multiple annotators in deep
+learning-based segmentation tasks.
+
 \input{Cap4/Figures/loss_mechanism.tex}
 % \input{Cap4/Figures/step-by-step-loss.tex}

@@ -850,3 +850,47 @@
   doi     = {10.1109/TNNLS.2021.3116943},
   pmid    = {34633937}
 }
+@article{GilGonzalezEtAl2018,
+  title    = {Learning from multiple annotators using kernel alignment},
+  journal  = {Pattern Recognition Letters},
+  volume   = {116},
+  pages    = {150-156},
+  year     = {2018},
+  issn     = {0167-8655},
+  doi      = {https://doi.org/10.1016/j.patrec.2018.10.005},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0167865518307888},
+  author   = {J. Gil-Gonzalez and A. Alvarez-Meza and A. Orozco-Gutierrez},
+  keywords = {Multiple annotators, Kernel methods, Classification},
+  abstract = {In a typical supervised learning scenario, it is supposed that there is an oracle who gives the correct label (also known as gold standard or ground truth) for each instance available in the training set. Nevertheless, for many real-world problems, instead of the gold standard, we have access to some annotations (possibly noisy) provided by multiple annotators with different unknown levels of expertise. Then, it is not appropriate to use trivial methods, i.e., majority voting, to estimate the actual label from the annotations due to this way assumes homogeneity in the performance of the labelers. Here, we introduce a new kernel alignment-based annotator relevance analysis–(KAAR) approach to code each annotator expertise as an averaged matching between the input features and the expert labels. So, a new sample label is predicted as a convex combination of classifiers adopting the achieved KAAR-based coding. Experimental results show that our methodology can estimate the performance of annotators even if the gold standard is not available, defeating state-of-the-art techniques.}
+}
+
+@article{GilGonzalezEtAl2021,
+  title    = {Learning from multiple inconsistent and dependent annotators to support classification tasks},
+  journal  = {Neurocomputing},
+  volume   = {423},
+  pages    = {236-247},
+  year     = {2021},
+  issn     = {0925-2312},
+  doi      = {https://doi.org/10.1016/j.neucom.2020.10.045},
+  url      = {https://www.sciencedirect.com/science/article/pii/S0925231220316039},
+  author   = {J. Gil-Gonzalez and A. Orozco-Gutierrez and A. Alvarez-Meza},
+  keywords = {Learning from crowds, Localized kernel alignment, Inconsistent annotators, Dependent labelers},
+  abstract = {Training a supervised learning model requires a labeled dataset, where the labeling process is usually carried out by an expert to provide the ground truth/gold standard for each sample. However, in many applications, such a gold standard is not available. Instead, several real-world scenarios give us access to annotations provided by crowds, holding different and unknown levels of expertise. Thus, Learning from crowds is a subject undergoing intense study, and its main aim is to manage various machine learning paradigms in the presence of multiple annotators. Most of the state-of-the-art approaches reside on two key assumptions: i) the labeler's performance does not depend on the input feature space, and ii) independence among the annotators is imposed. Here, we introduce a localized kernel alignment-based annotator relevance analysis (LKAAR) to code each labeler's expertise as the matching between the feature and label spaces. Namely, LKAAR takes into account inter-annotators dependencies and models labelers' knowledge as a function of the input feature space. Experimental results devoted to classification, show that LKAAR achieves suitable performances from inconsistent labelers, even if the gold standard is not available.}
+}
+
+@article{GilGonzalezEtAl2021-RCDNN,
+  author         = {Gil-Gonzalez, Julian and Valencia-Duque, Andres and Alvarez-Meza, Andres and Orozco-Gutierrez, Alvaro and Garcia-Moreno, Andrea},
+  title          = {Regularized Chained Deep Neural Network Classifier for Multiple Annotators},
+  journal        = {Applied Sciences},
+  volume         = {11},
+  year           = {2021},
+  number         = {12},
+  article-number = {5409},
+  url            = {https://www.mdpi.com/2076-3417/11/12/5409},
+  issn           = {2076-3417},
+  abstract       = {The increasing popularity of crowdsourcing platforms, i.e., Amazon Mechanical Turk, changes how datasets for supervised learning are built. In these cases, instead of having datasets labeled by one source (which is supposed to be an expert who provided the absolute gold standard), databases holding multiple annotators are provided. However, most state-of-the-art methods devoted to learning from multiple experts assume that the labeler's behavior is homogeneous across the input feature space. Besides, independence constraints are imposed on annotators' outputs. This paper presents a regularized chained deep neural network to deal with classification tasks from multiple annotators. The introduced method, termed RCDNN, jointly predicts the ground truth label and the annotators' performance from input space samples. In turn, RCDNN codes interdependencies among the experts by analyzing the layers' weights and includes l1, l2, and Monte-Carlo Dropout-based regularizers to deal with the over-fitting issue in deep learning models. Obtained results (using both simulated and real-world annotators) demonstrate that RCDNN can deal with multi-labelers scenarios for classification tasks, defeating state-of-the-art techniques.},
+  doi            = {10.3390/app11125409}
+}
+
+
+

@@ -5,28 +5,53 @@
 
 Breast cancer remains one of the deadliest diseases affecting women
 worldwide, making accurate diagnosis and treatment planning crucial
-for improving patient outcomes. This thesis presents a novel approach
-to Image Semantic Segmentation (ISS) in medical imaging, with a
-particular focus on histopathology images of breast cancer tissue.
-The work addresses the critical challenge of handling multiple
-annotators' labels in crowdsourcing scenarios, where annotator
-performance varies across the input space and image quality. The
-proposed solution introduces a novel loss function that implicitly
-infers optimal segmentation and assesses labeler reliability without
-requiring explicit performance inputs. This is achieved through an
-intermediate reliability map that enables the model to prioritize
-information from reliable labelers while disregarding noisy labels.
+for improving patient outcomes. Semantic segmentation of
+histopathology images plays a vital role in this process, as it
+enables precise identification and analysis of tissue structures.
+However, the current approaches face significant challenges in
+real-world scenarios where multiple annotators with varying expertise
+and reliability contribute to the labeling process. This
+crowdsourcing paradigm, while cost-effective, introduces
+inconsistencies that can compromise the quality of the segmentation results.
 
-The methodology diverges from conventional CNN-based segmentation
-models by eliminating the need for direct supervision of labeler
-performance, thereby enhancing its generalizability and adaptability
-across diverse datasets and labeler cohorts. The approach combines
-the strengths of U-shaped deep learning architectures with a
-sophisticated loss function that models annotator reliability across
-the input space. The model's performance is evaluated on both
-synthetic datasets and real-world histopathology images,
-demonstrating superior results compared to state-of-the-art
-approaches in terms of segmentation accuracy and uncertainty quantification.
+This thesis addresses two fundamental challenges in medical image
+segmentation: the inherent uncertainty in multiple annotator
+scenarios and the need for robust segmentation models that can handle
+varying image quality and annotator expertise. These challenges arise
+from the complex nature of histopathology images, where tissue
+structures can be ambiguous, and the varying levels of expertise
+among annotators lead to inconsistent labeling patterns.
+Additionally, the high cost and time requirements for expert
+annotations create a need for efficient solutions that can work with
+crowdsourced data.
+
+The first objective introduces a novel loss function that implicitly
+infers optimal segmentation while assessing labeler reliability
+without requiring explicit performance inputs. This approach differs
+from conventional methods by eliminating the need for direct
+supervision of labeler performance, instead using an intermediate
+reliability map that enables the model to prioritize information from
+reliable labelers while disregarding noisy labels. The mathematical
+foundation of this approach lies in the probabilistic modeling of
+annotator reliability across the input space.
+
+The second objective focuses on the development of a robust
+segmentation architecture that combines the strengths of U-shaped
+deep learning models with the proposed reliability-aware loss
+function. This combination enables the model to learn both the
+segmentation task and the reliability patterns simultaneously,
+leading to more accurate and consistent results. The architecture's
+key innovation lies in its ability to adapt to varying image quality
+and annotator expertise levels without requiring explicit performance metrics.
+
+The third objective validates the proposed approach through extensive
+experimentation on both synthetic datasets and real-world
+histopathology images. The evaluation demonstrates superior
+performance compared to state-of-the-art approaches in terms of
+segmentation accuracy and uncertainty quantification. The results
+show that the proposed method can effectively handle inconsistent
+annotations while maintaining high segmentation accuracy, making it
+particularly valuable for clinical applications.
 
 The research makes significant contributions to the field by
 providing a robust solution for handling inconsistent annotations in
@@ -36,7 +61,10 @@ The proposed approach shows promising results in reducing annotation
 costs while maintaining high segmentation accuracy, making it
 particularly relevant for clinical applications where precise
 segmentation of tissue structures is crucial for diagnosis and
-treatment planning.
+treatment planning. This work opens new research directions in the
+areas of crowdsourced medical image analysis, uncertainty
+quantification in deep learning, and the development of more
+efficient annotation protocols for medical imaging.
 
 \textbf{\small Keywords:} Crowdsourcing, Multiple Annotators,
 Histopathology, Breast Cancer, Semantic Image Segmentation, Gaussian

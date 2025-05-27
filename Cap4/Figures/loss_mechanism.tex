@@ -19,11 +19,6 @@
     [\hat{\mathbf{y}} \mid \Lambda_R] $};
     \node[box, right=of model] (loss) {TCE$_{\text{SS}}$ Loss};
 
-    % Output vector from model
-    \node[annot, above=1.5cm of model] (yhatvec) {$\hat{\mathbf{y}} =
-      \begin{bmatrix} \hat{y}_1 \\ \hat{y}_2 \\ \vdots \\ \hat{y}_R
-    \end{bmatrix}$};
-
     % Arrows
     \draw[->] (input) -- (patch);
     \draw[->] (patch) -- (model);
@@ -40,7 +35,7 @@
         y_R
       \end{bmatrix}$
     };
-    \draw[->] (annots.north) -- ($(model.south)-(0.2,0)$);
+    \draw[->] (annots.north) -- ($(model.south)$);
 
   \end{tikzpicture}
   \caption{Working mechanism of the proposed Truncated Generalized

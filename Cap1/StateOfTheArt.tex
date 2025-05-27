@@ -1,4 +1,4 @@
-\section{Literature Review}\label{sec:state_of_art}
+
 
 Certainly, in general \gls{ML} classification tasks \footnote{In this
   work, image segmentation is considered as a particular case of classification
@@ -146,8 +146,6 @@ decoder layers preserve fine-grained details by concatenating
 high-resolution features from the encoder with upsampled features in
 the decoder, enabling precise localization of structures.
 
-\subsubsection{U-Net based approaches}
-
 In \cite{LopezEtAl2024} two networks are trained for delivering a final
 segmentation. One network is trained to estimate the annotators reliability
 and another one is trained to segment the image. The
@@ -244,7 +242,8 @@ of multiple labelers with two networks can be overwhelming for the
 optimization process, requiring large amounts of annotated data to
 properly codify the annotators spatial reliabilities, which could be
 managed by a single model with an appropriate loss function.
-\subsubsection{Bayesian models}\label{subsec:bayesian_models}
+
+\subsubsection{Bayesian Models}\label{subsec:bayesian_models}
 
 Bayesian approaches are a good choice for handling label noise
 and uncertainty in the labelers. In \cite{GilEtAlvarez2023CCGPMA} the
@@ -322,7 +321,7 @@ widely used for aggregating multiple annotators' inputs. However,
 they assume a homogeneous reliability of annotators, which may not
 hold in real-world scenarios.
 
-\subsubsection{Loss functions in deep learning models}
+\subsubsection{Loss Functions in Deep Learning Models}
 
 Loss functions are fundamental components in deep learning models
 that quantify how well a model's predictions match the ground truth.
@@ -348,7 +347,7 @@ of the current loss functions approaches have focused on the multiple
 labelers scenario, neither on the per labeler spatial reliability
 estimation.
 
-\subsubsection{Generalized Cross-Entropy for multiple annotators classification}
+\subsubsection{Generalized Cross-Entropy for Multiple Annotators Classification}
 
 A more recent approach was proposed by~\cite{TrianaEtAl2023},
 introducing a \gls{GCECDL} framework. This method addresses the limitations of
@@ -391,7 +390,8 @@ more deeply discussed in chapter \ref{ch:seg_tgce}.
     \textbf{Approach} & \textbf{Key Characteristics} &
     \textbf{Advantages} & \textbf{Limitations} \\
     \midrule
-    Majority Voting (MV) & Simple aggregation of multiple annotators' labels &
+    Majority Voting (MV) \cite{LamAndSuen1997} & Simple aggregation
+    of multiple annotators' labels &
     - Simple to implement
     - No complex algorithms required
     - Proven effective in many cases &
@@ -399,7 +399,8 @@ more deeply discussed in chapter \ref{ch:seg_tgce}.
     - Sensitive to correlated errors
     - May introduce bias in expert tasks \\
     \midrule
-    STAPLE & Probabilistic framework estimating true segmentation and
+    STAPLE \cite{WarfieldEtAl2004} & Probabilistic framework
+    estimating true segmentation and
     rater reliability &
     - Handles binary and multiclass segmentation
     - Estimates rater sensitivity/specificity
@@ -409,7 +410,8 @@ more deeply discussed in chapter \ref{ch:seg_tgce}.
     - Tends to over-smooth results
     - Limited interpretability \\
     \midrule
-    U-Net based approaches & Deep Learning architecture with
+    U-Net based approaches \cite{RonnebergerEtAl2015} & Deep Learning
+    architecture with
     encoder-decoder structure &
     - Captures both global and local information
     - Effective for complex structures
@@ -418,7 +420,8 @@ more deeply discussed in chapter \ref{ch:seg_tgce}.
     - Complex optimization process
     - May need specialized loss functions \\
     \midrule
-    Bayesian Models (CCGPMA) & Gaussian Processes modeling annotator
+    Bayesian Models (CCGPMA) \cite{GilGonzalezEtAl2023} & Gaussian
+    Processes modeling annotator
     reliability &
     - Preserves annotator interdependencies
     - Handles label noise effectively
@@ -427,7 +430,8 @@ more deeply discussed in chapter \ref{ch:seg_tgce}.
     - Not directly applicable to segmentation
     - Complex optimization process \\
     \midrule
-    Generalized Cross-Entropy (GCE) & Loss function balancing MAE and CE &
+    Generalized Cross-Entropy (GCE) \cite{ZhangEtAl2018} & Loss
+    function balancing MAE and CE &
     - Robust to noisy labels
     - Accounts for non-stationary behavior
     - Handles annotator dependencies &

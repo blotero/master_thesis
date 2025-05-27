@@ -2,6 +2,17 @@
 
 \section{Conclusions}
 
+This thesis has presented a novel approach to address the challenges
+of Image Semantic Segmentation (ISS) in histopathology images,
+particularly in crowdsourcing scenarios where multiple annotators
+with varying levels of expertise contribute to the labeling process.
+The proposed solution successfully tackles the fundamental challenges
+of modeling annotator performance and handling label inconsistencies
+while maintaining computational efficiency. The work demonstrates
+significant improvements over existing state-of-the-art methods,
+particularly in scenarios with noisy and missing labels, which are
+common in crowdsourcing approaches.
+
 Throughout this work, several techniques have been explored to develop a
 model that can face \gls{ISS} of real world histopathology images in
 crowdsourcing scenarios. Different approaches were studied and evaluated
@@ -36,7 +47,10 @@ obtained from the experiments conducted and reviewed literature:
     first approach on offering an image segmentation solution for
     multiple labelers in medical image with interpretability in the
     reliability of the labelers, successfully addressing both
-    labeler inconsistency and image quality variability.
+    labeler inconsistency and image quality variability. The model outperformed
+    other state of the art solutions in terms of segmentation
+    accuracy in noisy and missing labels conditions, which is rather
+    common in crowdsourcing approaches.
 \end{itemize}
 
 \section{Future work}
@@ -116,7 +130,7 @@ the model converge faster and achieve better generalization, as it
 would expose the model to a wider variety of possible variations in
 both the input images and the corresponding annotations.
 
-\section{Academic Discussion}
+\section{Academic Discussion}\label{sec:academic_discussion}
 
 To facilitate the adoption and further development of the proposed approach,
 several resources have been made publicly available. A comprehensive GitHub

@@ -1,5 +1,3 @@
-\usepackage{rotating}
-\usetikzlibrary{arrows.meta, positioning, calc}
 
 \begin{sidewaysfigure}[ht]
   \centering
@@ -7,8 +5,7 @@
     node/.style={font=\small}]
 
     % Nodes
-    \node[draw, minimum width=1.8cm, minimum height=1cm] (net) {Sig +
-    Reliability \\ Network};
+    \node[draw, minimum width=1.8cm, minimum height=1cm] (net) {DNN};
     \node[draw, right=2.2cm of net, minimum width=1.2cm, minimum
     height=1cm] (ip) {$\langle \cdot, \cdot \rangle$};
     \node[draw, right=2.2cm of ip, minimum width=1.8cm, minimum
@@ -23,7 +20,7 @@
     height=1cm] (mul2) {$\times$};
     \node[draw, right=2.2cm of mul1, minimum width=0.8cm, minimum
     height=1cm] (plus) {$+$};
-    \node[right=0.8cm of plus] (loss) {$\mathcal{L}(y, f(x); \hat{z},
+    \node[right=0.8cm of plus] (loss) {$\mathcal{L}(y, \hat{y}; \hat{z},
     \hat{C})$};
 
     % Inputs and outputs
@@ -32,8 +29,7 @@
     % Connecting lines
     \draw[->] (x) -- (net);
     \draw[->] (net) -- node[above] {$\hat{y}(x)$} (ip);
-    \draw[->] (net) |- +(-0.2,-1.7) node[below left=-2pt] {$\hat{z}$}
-    -- (oneMinusZ);
+    \draw[->] (net) |- node[above] {$\hat{z}$} (oneMinusZ.north);
     \draw[->] (oneMinusZ) -- (mul2);
 
     \draw[->] (ip) -- (exp1);
