@@ -22,3 +22,4 @@
 **/*.pdf
 **/*.lyx
 !Tesis.pdf
+**/*.venv/

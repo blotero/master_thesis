@@ -14,7 +14,7 @@ significantly over the past few decades, as shown in Figure
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=0.65\textwidth]{Cap2/Figures/histology_evolution.png}
+  \includegraphics[width=0.85\textwidth]{Cap2/Figures/histology_evolution.jpg}
   \caption{Histology evolution timeline. (Image from \cite{MazzariniEtAl2021}).}
   \label{fig:histology_evolution}
 \end{figure}
@@ -42,7 +42,7 @@ pathologists' diagnostic workflow \cite{FarahaniEtAl2015}.
   \centering
   \includegraphics[width=0.5\textwidth]{Cap2/Figures/hist_scanner.jpg}
   \caption{(Above) Whole slide imaging system by Omnyx for slide
-    digitization. (Below) Comprehensive digital pathology interface
+    digitization. (Below) Comprehensive digital pathology scan visualization
     from Omnyx designed to streamline pathologists' diagnostic
   workflow. (From \cite{FarahaniEtAl2015}).}
   \label{fig:wsi}
@@ -52,13 +52,72 @@ pathologists' diagnostic workflow \cite{FarahaniEtAl2015}.
 
 In digital histopathology, \glspl{ROI} are specific areas within a
 whole slide image that contain diagnostically relevant information.
-These regions can be manually annotated by pathologists,
-automatically detected using computer vision algorithms, or defined
-based on specific tissue characteristics or abnormalities. The
-importance of \glspl{ROI} lies in their ability to focus
+The importance of \glspl{ROI} lies in their ability to focus
 computational analysis on relevant areas, reduce computational
 complexity in automated systems, facilitate targeted diagnosis and
 research, and enable efficient storage and transmission of critical information.
+
+Selecting \glspl{ROI} is a fundamental step in medical image analysis
+across all imaging modalities, where an ROI represents a subset of an
+image appropriate for the intended analysis and is typically identified
+manually by experts \cite{HossainEtAl2023}. In modern pathology, the
+analysis involves processing multidimensional and high-resolution \gls{WSI}
+tiles automatically, containing an overwhelming quantity of structural
+and functional information. Despite recent improvements in computing
+capacity, analyzing such extensive data remains challenging but vital
+for accurate analysis. Automatic ROI detection can significantly reduce
+the number of pixels to be processed, speed up the analysis, improve
+accuracy, and reduce dependency on pathologists \cite{HossainEtAl2023}.
+
+The challenge of acquiring image domain annotations for ROI detection
+is particularly significant due to the knowledge and commitment required
+of expert pathologists. Pathologists often identify regions in whole
+slide images with diagnostic relevance rather than examining the entire
+slide, with a positive correlation between the time spent on these
+critical image regions and diagnostic accuracy \cite{GhezlooEtAl2025}.
+This selective viewing behavior highlights the importance of developing
+automated systems that can replicate pathologists' diagnostic patterns.
+
+Recent advances in deep learning techniques have offered improvements
+in computer-aided diagnosis systems for ROI detection. Innovative
+approaches include generating heatmaps to represent pathologists'
+viewing patterns during diagnosis and using these to guide deep learning
+architectures during training \cite{GhezlooEtAl2025}. Such systems can
+integrate pathologists' domain expertise to enhance region of interest
+detection without needing individual case annotations, potentially
+surpassing traditional approaches based on color and texture image
+characteristics.
+
+The clinical application of automated ROI detection has been demonstrated
+in specific diagnostic contexts, such as Human Epidermal Growth Factor
+Receptor 2 (HER2) grading for breast cancer patients. Existing HER2
+grading relies on manual ROI selection, which is tedious, time-consuming,
+and suffers from inter-observer and intra-observer variability
+\cite{HossainEtAl2023}. Studies have found that HER2 grade changes with
+ROI selection, emphasizing the critical importance of accurate and
+consistent ROI detection methods. Advanced approaches using Vision
+Transformer architectures have shown promising results, achieving high
+accuracy rates for ROI detection while significantly reducing processing
+time and improving diagnostic agreement with clinical scores
+\cite{HossainEtAl2023}.
+
+These automated ROI detection methods not only enhance diagnostic
+accuracy and efficiency but also streamline annotation processes and
+aid in the training of new pathologists. By incorporating pathologists'
+expertise through heatmap generation and advanced deep learning
+architectures, these systems demonstrate the potential to revolutionize
+digital pathology workflows8while maintaining the quality and reliability
+of diagnostic assessments \cite{GhezlooEtAl2025} (Figure
+\ref{fig:roi_heatmaps}).
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.85\textwidth]{Cap2/Figures/roi_heatmaps.jpeg}
+  \caption{ROI heatmaps measured experimentally from pathologists
+    view patterns and estimated heatmap from a U-Net model from
+  \cite{GhezlooEtAl2025}.}
+  \label{fig:roi_heatmaps}
+\end{figure}
 
 \subsection{Staining Techniques}\label{sec:staining-techniques}
 

@@ -6,10 +6,9 @@
 The main purpose of this work is to develop a novel approach for
 \gls{ISS} tasks in medical images, which can adaptively infer the best
 possible segmentation without needing separate inputs about the
-labeler offering a much more interpretable reliability space per
-labeler than other solutions in the literature and correctly facing the
-performance inconsistency across the annotators space and the
-variability of images quality.
+labeler offering an interpretable reliability space per
+labeler and properly facing the performance inconsistency across the
+annotators space and the variability of images quality.
 
 %----------------------------------------------------------------------
 \subsection{Specific Aims}
@@ -21,9 +20,10 @@ variability of images quality.
     segmentation without needing separate inputs about the labeler
     performance.
 
-  \item Introducing a tensor map which codifies the reliability of
-    each labeler, allowing the model to implicitly weigh the labelers
-    based on their performance across the mask and classes space.
+  \item To introduce a tensor map which codifies the reliability of
+    each labeler based only on the inputs, allowing the model to
+    implicitly weigh the labelers based on their performance across
+    the mask and classes space.
 
   \item To develop and test a deep learning model for \gls{ISS} tasks
     in medical images, which can learn from inconsistent labels and

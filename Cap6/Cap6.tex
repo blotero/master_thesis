@@ -134,15 +134,29 @@ both the input images and the corresponding annotations.
 
 To facilitate the adoption and further development of the proposed approach,
 several resources have been made publicly available. A comprehensive GitHub
-repository has been created that provides easy-to-use APIs for implementing
+repository \footnote{https://github.com/blotero/seg\_tgce} has been
+created that provides easy-to-use APIs for implementing
 the proposed solution. The repository includes pre-built dataset loaders for
 TensorFlow/Keras frameworks, implementation of the TGCE$_{SS}$ loss function
 in all its variants (scalar, features, and pixel-wise), and a neural network
-architecture builder with experimental examples. A key feature of this
-repository is its automatic dataset fetching from AWS S3, which eliminates
-the need for manual downloads or external dependencies. This repository aims
-to lower the entry barrier for researchers and practitioners interested in
-implementing the proposed approach.
+architecture builder with experimental examples.
+The two \textit{tfds} datasets available in the repository are:
+\begin{itemize}
+  \item \textbf{Triple Negative Breast Cancer (TNBC) Dataset}: A dataset of
+    histopathology images of breast cancer, with annotations of the tumor
+    regions from \cite{LopezEtAl2024}.
+    The dataset is automatically fetched from AWS S3, which
+    eliminates the need for manual downloads or external dependencies.
+  \item \textbf{Oxford-IIIT Pet Dataset}: A dataset of pet
+    images, based on the well-known Oxford-IIIT Pet Dataset with
+    annotations of the pet regions.
+    The mechanism for emulating noisy crowdsourced annotations
+    exposed throughout the present work (see Section
+    \ref{sec:noisy_annotations_generation}) is also available in the
+    repository in a tunable manner, just as the TNBC dataset, this
+    \texttt{tfds} is batteries included (automatic fetching and
+    mapping, no need to manually download any external source).
+\end{itemize}
 
 To further simplify the adoption of the proposed solution, a PyPI package
 has been published with detailed documentation available at
