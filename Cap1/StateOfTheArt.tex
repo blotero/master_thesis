@@ -1,4 +1,4 @@
-
+\section{State of the Art}\label{sec:state_of_the_art}
 
 Certainly, in general \gls{ML} classification tasks \footnote{In this
   work, image segmentation is considered as a particular case of classification
@@ -20,22 +20,20 @@ similar results to more complicated approaches (Bayesian, logistic
 regression, fuzzy integral, and neural network) in the
 particular task of \gls{OCR}. Despite its simplicity, modern
 solutions for delivering accurate medical image segmentation models
-still rely on Majority Voting at some stage, like \cite{Elnakib2020},
-which uses a majority voting strategy for delivering a final output
+still rely on Majority Voting at some stage. In \cite{Elnakib2020},
+a majority voting strategy is used for delivering a final output
 based on the labels of multiple models (VGG16-Segnet, Resnet-18 and
-Alexnet) in \gls{CT} images for Liver Tumor Segmentation, or
-\cite{Lopez2023}, which uses \gls{MV} for combining noisy annotations
-as an additional annotator to be included in the deep learning solution.
-Majority voting as a technique for setting a pseudo ground truth label
-is a powerful approach for its simplicity in many use cases in which
-the target to be labeled is not tied to an expertise related task,
-otherwise, the assumption of equal expertise among the labelers can
-be a source of bias in the final label, which is not desirable in the
-case of highly technical annotations like medical images.
-In subsection \ref{subsec:expertise_levels_lit_review}, we will be
-reviewing literature which no longer assumes the naive approach of
-equal expertise among labelers and face the challenge of learning
-from inconsistent labels.
+Alexnet) in \gls{CT} images for Liver Tumor Segmentation.
+Majority voting as a technique for label aggregation is a powerful
+approach for its simplicity in many use cases in which the target to
+be labeled is not tied to an expertise related task, otherwise, the
+assumption of equal expertise among the labelers may introduce
+bias in the final label, which is not desirable in the
+case of highly technical annotations like medical images. In
+subsection \ref{subsec:expertise_levels_lit_review}, a review is done on
+literature which no longer assumes the naive approach of equal
+expertise among labelers and face the challenge of learning from
+inconsistent labels will be presented.
 
 \subsection{Facing Annotation Variability in Medical
 images}\label{subsec:expertise_levels_lit_review}
@@ -47,7 +45,7 @@ approaches assume beforehand a certain level of expertise for each
 labeler based on experience as an input, like in
 \cite{TianEtZhu2015}, which introduce the concept of max margin
 majority voting, using the reliability vector as weights for the
-weights for the binary and multiclass classifier. The crowdsourcing
+binary and multiclass classifier. The crowdsourcing
 margin is the minimal difference between the aggregated score of the
 potential true label and the scores for other alternative labels.
 Accordingly, the annotators' reliability is estimated as generating
@@ -79,18 +77,27 @@ $\mathbf{T}$ is the hidden true segmentation, $p$ is the sensitivity
 and $q$ is the specificity of the raters.
 
 This is achieved by using the Expectation-Maximization algorithm to
-maximize the log likelihood function in equation, which is done iteratively
+maximize the log likelihood function, which is done iteratively
 with step computations:
 
 \begin{equation}
+  \label{eq:staple_em_step}
   \begin{split}
-    (p_j^{(k)}, q_j^{(k)}) = \arg\max_{p_j, q_j} \sum_{i:D_{ij}=1}
+    (p_j^{(k)}, q_j^{(k)}) = & \arg\max_{p_j, q_j} \sum_{i:D_{ij}=1}
     W_i^{(k-1)} \ln p_j \\
     &+ \sum_{i:D_{ij}=1} \left(1 - W_i^{(k-1)}\right) \ln (1 - q_j) \\
     &+ \sum_{i:D_{ij}=0} W_i^{(k-1)} \ln (1 - p_j) \\
     &+ \sum_{i:D_{ij}=0} \left(1 - W_i^{(k-1)}\right) \ln q_j.
   \end{split}
 \end{equation}
+
+The weight terms $W_i^{(k-1)}$ and $(1 - W_i^{(k-1)})$
+represent the current estimates of the probability that voxel $i$
+belongs or does not belong to the true segmentation from the previous
+E-step. The log-likelihood contributions $\ln p_j$, $\ln (1 - q_j)$,
+$\ln (1 - p_j)$, and $\ln q_j$ account for true positives, false
+positives, false negatives, and true negatives, respectively,
+weighted by the current estimate of true segmentation probabilities.
 
 The capacity of STAPLE to accurately estimate the true segmentation,
 even in the presence of a majority of raters generating correlated
@@ -113,15 +120,17 @@ annotations, potentially degrading final segmentations if the weights
 are not initialized correctly. The algorithm tends to over-smooth
 results, blurring fine details, and struggles with multi-class
 segmentation. Computationally, it is expensive due to its iterative
-EM approach. Additionally, STAPLE cannot correct systematic biases in
+\gls{EM} approach. Additionally, STAPLE cannot correct systematic biases in
 annotations and depends on initial estimates, impacting accuracy.
 Lastly, the estimated performance levels lack interpretability,
 making it difficult to assess annotator reliability effectively.
 
-Finally, this work contemplates \gls{STAPLE} as useful for label
-aggregation,hence being a good support for other methods, but not
-that useful for providing annotations of structures on
-new and unlabeled images.
+Finally, while \gls{STAPLE} proves valuable for aggregating existing
+labels and supporting other methodologies, its primary limitation
+lies in its inability to generate annotations for novel, unlabeled
+images. This restricts its applicability to scenarios where multiple
+annotations already exist, rather than serving as a standalone
+solution for new image segmentation tasks.
 
 \subsubsection{U-shaped \gls{CNN}s}
 Since the introduction of U-Net \cite{RonnebergerEtAl2015} in 2015
@@ -133,7 +142,7 @@ it particularly effective for complex and heterogeneous structures,
 even with limited annotated data. This architecture has been
 successfully applied to various medical image segmentation tasks,
 including organ segmentation, tumor segmentation, and brain structure
-segmentation.
+segmentation \cite{KrithikaEtAl2022}.
 
 The U-Net architecture consists of a symmetric encoder-decoder
 structure with skip connections. The encoder path progressively
@@ -149,16 +158,16 @@ the decoder, enabling precise localization of structures.
 In \cite{LopezEtAl2024} two networks are trained for delivering a final
 segmentation. One network is trained to estimate the annotators reliability
 and another one is trained to segment the image. The
-first network is a deep neural network that takes as input features of
-image and the labelers id encoded as one-hot and outputs a reliability
-map across the image feature space. This map is then used to weight
-the contribution of each annotator to the final segmentation. The
-second network is the U-Net used for segmentation.
+first network is a Deep Neural Network that takes as input features of
+image and the one-hot encoded identifiers of the labelers and outputs
+a reliability map across the image feature space. This map is then
+used to weight the contribution of each annotator to the final segmentation.
+The second network is the U-Net used for segmentation.
 
 In this approach, it is assumed that the images are labeled for at least one
-labeler and not all of them, which is closer to a real world scenario, in which
-it is common to have images with variability in the amount of
-annotations, per patch. Hence, the input data can be modeled as:
+labeler and not all of them, which is closer to a real world scenario, in
+which images with variability in the amount of annotations per patch
+is common. Hence, the input data can be modeled as:
 
 \begin{equation}
   \label{eq:input_data}
@@ -176,13 +185,13 @@ reliability map $\{\hat{\mathbf{A}}^{(r)}_{\phi}(\mathbf{x}) \}_{r
 \in R_n}$ with different dimensions:
 
 \begin{itemize}
-  \item CR global: a single reliability vector per labeler with
+  \item \gls{CR} global: a single reliability vector per labeler with
     dimensions $C$ which represent global reliability of the labeler
     across all input space.
-  \item CR image: a single reliability vector per image per labeler
+  \item \gls{CR} image: a single reliability vector per image per labeler
     with dimensions $C$ which represent local reliability of the labeler
     across the image.
-  \item CR pixel: a reliability matrix per image per labeler,
+  \item \gls{CR} pixel: a reliability matrix per image per labeler,
     with dimensions $C$ which represent local reliability of the labeler
     across all the pixels in the image.
 \end{itemize}
@@ -191,10 +200,10 @@ These differences in dimensions are determined by the feature
 extraction space from segmentation network which feed the input of the
 annotator network, which the authors vary for experimentation purposes.
 
-Being $\mathbf{p}_\theta(\vecx_n)$ the estimation of the latent (ground
-truth) segmentation delivered by the segmentation UNet network, thus,
-the estimated segmentation probability mask for each annotator is
-given by the product:
+Let $\mathbf{p}_\theta(\vecx_n)$ be the estimated latent (ground
+truth) segmentation produced by the segmentation U-Net network. The
+estimated segmentation probability mask for each annotator is then
+computed as the product:
 
 \begin{equation}
   \label{eq:estimated_segmentation}
@@ -225,34 +234,35 @@ and $\lambda$ the regularization parameter.
 
 When evaluated on a Triple Negative Breast Cancer dataset, this
 approach achieves a Dice coefficient of 0.7827, outperforming STAPLE
-(0.7039) and matching expert-supervised performance (0.7723). The CR
-image reliability modeling proved most effective, as CR pixel, while
-potentially offering finer-grained reliability estimation, requires
-significantly more training data.
+(0.7039) and matching expert-supervised performance (0.7723). The \gls{CR}
+image reliability modeling proved most effective, on the other hand
+\gls{CR} pixel, while potentially offering finer-grained reliability
+estimation, requires significantly more training data.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.7\textwidth]{Cap1/Figures/lopez_2024_proposed_framework.png}
+  \includegraphics[width=0.85\textwidth]{Cap1/Figures/lopez_2024_proposed_framework.png}
   \caption{Proposed framework for the approach in \cite{LopezEtAl2024}.}
   \label{fig:lopez_2024_proposed_framework}
 \end{figure}
 
-Despite the decent performance of the approach, solving the problem
-of multiple labelers with two networks can be overwhelming for the
-optimization process, requiring large amounts of annotated data to
-properly codify the annotators spatial reliabilities, which could be
-managed by a single model with an appropriate loss function.
+Despite the proven performance of the approach by the authors,
+solving the problem of multiple labelers with two networks can be
+overwhelming for the optimization process, requiring large amounts of
+annotated data to properly codify the annotators spatial
+reliabilities, which could be managed by a single model with an
+appropriate loss function.
 
 \subsubsection{Bayesian Models}\label{subsec:bayesian_models}
 
 Bayesian approaches are a good choice for handling label noise
 and uncertainty in the labelers. In \cite{GilEtAlvarez2023CCGPMA} the
-authors propose a novel approach from Gaussian Processes to model the
-relationship between the annotators' reliability and the input data,
-while also preserving the interdependencies among the annotators.
-This is achieved by introducing \gls{CCGPMA}, a framework based on
-the well known \gls{CGP}.
-\gls{CGP} on itself cannot consider inter-annotator dependencies,
+authors propose a novel approach based on Gaussian Processes for
+modeling the relationship between the annotators' reliability and the
+input data, while also preserving the interdependencies among the
+annotators. This is achieved by introducing \gls{CCGPMA}, a framework
+based on the well known \gls{CGP}. \gls{CGP} on itself cannot consider
+inter-annotator dependencies, thus, the authors introduce the \gls{CCGP}
 thus, the authors introduce the \gls{CCGP} to model correlations
 between the GP latent functions, which are supposed to be generated
 from a \gls{SLFM}:
@@ -284,7 +294,7 @@ expectations are not analytically tractable, and hence, the authors
 derive a Gaussian-Hermite quadrature approach.
 
 Finally, the authors extend this approach for being applied to
-classification an regression, reaching the only known approach to
+classification and regression, reaching the only known approach to
 involve chained gaussian processes in multiple annotators
 classification and regression tasks while preserving the
 interdependencies among the annotators, and also outperforming
@@ -303,9 +313,8 @@ combination of classifiers and codes labelers dependencies.}.
 \gls{CCGPMA} on itself proposes a good approach for handling label
 noise and uncertainty in the labelers for regression and
 classification tasks, while also preserving the interdependencies
-among the annotators, however, it does not face the image segmentation
-problem, which is the main focus of this works, however, it does not
-face the image segmentation problem, which is the main focus of this
+among the annotators, however, it does not face the image
+segmentation problem, which is the main focus of this
 work. Besides, handling so many latent functions during the
 optimization process is computationally expensive, making it on itself
 infeasible for large and high resolution datasets.
@@ -316,10 +325,9 @@ The problem of low-quality data and noisy annotations has been
 tackled with various strategies. One such approach is the use of deep
 learning models that incorporate loss functions designed to mitigate
 the effects of unreliable labels. Traditional methods such as
-Majority Voting (MV) or Expectation-Maximization (EM) have been
-widely used for aggregating multiple annotators' inputs. However,
-they assume a homogeneous reliability of annotators, which may not
-hold in real-world scenarios.
+\gls{MV} or \gls{EM} have been widely used for aggregating multiple
+annotators' inputs. However, they assume a homogeneous reliability of
+annotators, which may not hold in real-world scenarios.
 
 \subsubsection{Loss Functions in Deep Learning Models}
 
@@ -390,7 +398,7 @@ more deeply discussed in chapter \ref{ch:seg_tgce}.
     \textbf{Approach} & \textbf{Key Characteristics} &
     \textbf{Advantages} & \textbf{Limitations} \\
     \midrule
-    Majority Voting (MV) \cite{LamAndSuen1997} & Simple aggregation
+    \gls{MV} \cite{LamAndSuen1997} & Simple aggregation
     of multiple annotators' labels &
     - Simple to implement
     - No complex algorithms required

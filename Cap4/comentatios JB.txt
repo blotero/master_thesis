@@ -1,0 +1,64 @@
+Manizales, 2 de julio de 2025.
+
+Señores
+Comité Asesor de Posgrados
+Departamento de Ing. Eléctrica, Electrónica y Computación
+Universidad Nacional de Colombia Sede Manizales
+
+Referencia: Concepto sobre la tesis de maestría presentada por el
+estudiante Brandon Lotero
+
+Apreciados miembros del comité:
+
+Luego de revisar el documento de tesis titulado “Medical Image
+Segmentation in a Multiple Labelers Context: Application to the Study
+of Histopathology”, presentado por el estudiante Brandon Lotero como
+requisito para optar al título de Magíster en Ingeniería -
+Automatización Industrial, me permito comunicar que la tesis es
+adecuada en cuanto a forma, contenido y profundidad, por lo que
+considero que cumple con los requisitos académicos y puede ser
+presentada para su defensa pública.
+
+El trabajo aborda el problema de la segmentación de imágenes médicas,
+con énfasis en imágenes de biopsias de mama, y propone una solución
+original al introducir una función de costo modificada que incorpora
+un nivel de confianza asociado a los datos de referencia obtenidos
+mediante anotadores con diferentes grados de experticia. Dicha
+función, denominada Función de Entropía Cruzada Truncada, permite una
+codificación granular espacial del nivel de confianza de las
+anotaciones dependiendo del anotador y de la posición espacial de la
+anotación misma.
+
+Esta función se integra a una arquitectura de red neuronal profunda
+tipo U-Net, la cual se complementa con una rama adicional paralela
+dedicada a refinar de forma iterativa el nivel de confianza entrenado
+a partir de los datos. El enfoque resulta pertinente e innovador,
+especialmente al considerar la frecuente falta de consenso entre
+expertos en contextos clínicos reales.
+
+Los resultados del esquema completo, evaluado para diferentes bases
+de datos de prueba, se muestran prometedores en comparación con
+alternativas recientes del estado del arte. Sin embargo, echo de
+menos la presentación de pruebas y resultados orientados de manera
+específica a ilustrar el efecto de cada uno de los cambios y
+modificaciones propuestos en el rendimiento de la segmentación, así
+como una caracterización más profunda de las implicaciones y
+comportamiento matemático de la función de costo introducida en el
+trabajo. También echo de menos tener más claro a través de qué
+experimento se lograron los valores seleccionados de los
+hiperparámetros para el entrenamiento (sintonización) de la red utilizada.
+
+Adjunto a esta carta el documento que me fue entregado para la
+evaluación, con una serie de observaciones de forma y estructura que
+considero importante atender, y que propenden a mejorar la calidad y
+completitud del documento que reposará en el repositorio de la biblioteca.
+
+Les agradezco por haberme tenido en cuenta para esta evaluación, y
+quedo atento a cualquier inquietud que el presente concepto pudiera suscitar.
+
+Atentamente,
+
+Juan Bernardo Gómez Mendoza
+Evaluador
+Profesor Asociado
+Universidad Nacional de Colombia Sede Manizales

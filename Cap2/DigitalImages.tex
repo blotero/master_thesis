@@ -34,7 +34,7 @@ a 3D matrix $I$ of size $M \times N \times B$, where $B$ is the
 number of spectral bands. Each band $I(i,j,b)$ represents the
 intensity at position $(i,j)$ for the $b$-th spectral band. This
 representation is particularly useful in medical imaging, remote
-sensing, and scientific applications.
+sensing, and several scientific applications.
 
 \subsubsection{3D Images and Volumetric Data}
 Three-dimensional images extend the concept of pixels to voxels
@@ -42,17 +42,20 @@ Three-dimensional images extend the concept of pixels to voxels
 of size $M \times N \times D$, where $D$ represents the depth
 dimension. Each voxel $V(i,j,k)$ represents the intensity at position
 $(i,j,k)$ in the 3D space. This representation is fundamental in
-medical imaging (CT, MRI), scientific visualization, and computer graphics.
+medical imaging (CT, MRI), scientific visualization, and computer
+graphics.
 
 \subsection{Mathematical Representations}
 
-The mathematical foundation of digital images relies on several key concepts:
+The mathematical foundation of digital images relies on several key
+concepts:
 
 \begin{itemize}
   \item \textbf{Sampling}: The process of converting a continuous
     image into a discrete representation. According to the
     Nyquist-Shannon sampling theorem, the sampling frequency must be
-    at least twice the highest frequency present in the image to avoid aliasing.
+    at least twice the highest frequency present in the image to
+    avoid aliasing.
 
   \item \textbf{Quantization}: The process of converting continuous
     intensity values into discrete levels. The number of quantization
@@ -75,7 +78,8 @@ The mathematical representation of a digital image can be expressed as:
 \end{equation}
 
 where $I(x,y)$ is the digital image, $f(i,j)$ represents the
-intensity values, and $\delta(x-i, y-j)$ is the Kronecker delta function.
+intensity values, and $\delta(x-i, y-j)$ is the Kronecker delta
+function \cite{DuarteBaraniuk2012}.
 
 For color images, the representation extends to:
 

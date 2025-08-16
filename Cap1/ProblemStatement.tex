@@ -1,3 +1,5 @@
+\newpage
+
 \section{Problem Statement}\label{sec:state_of_art}
 
 % ==============================
@@ -40,17 +42,17 @@ on ordinary an well known classes like MNIST}.
 
 The process of labeling medical images is often managed with the help of
 specialized software tools that allow the annotators to draw the
-regions, delivering an standard format for the labeled
+regions, delivering a standard format for the labeled
 masks \cite{Habis2024}.
 Despite the help of these tools, the labeling process in \gls{WSI} can have high
 costs, as it requires long hours of work from specialized personnel.
-Because of cost constraints in many medical institutions, the labeling processes
+In the pursuit of reducing costs, the labeling processes
 is often done by multiple labelers with varying levels of expertise, equalizing
 the cost of the labeling process. However, this strategy can lead to
 inconsistent labels, as the consensus between the labelers may not be
 exact due to the diversity in depth of knowledge and experience of
 the labelers \cite{XuYan2024}.
-These inconsistencies are mostly represented in the subsections
+These inconsistencies are discussed in the subsections
 \ref{subsec:expertise_levels} and \ref{subsec:technical_constraints}.
 
 \subsection{Variability in Expertise Levels}\label{subsec:expertise_levels}
@@ -74,10 +76,10 @@ conservative delineation of tumor boundaries, while others adopt a
 more inclusive approach. Such variations contribute to systematic
 biases in medical image datasets \cite{BanerjeeEtAl2025}.
 
-Medical images frequently contain structures with ambiguous
-boundaries, making segmentation inherently subjective. For instance,
-tumor margins in histopathological slides may not have well-defined
-edges, leading to variations in how different annotators delineate
+Medical images frequently contain complex structures which are
+difficult to distinguish, making segmentation inherently subjective.
+For instance, tumor margins in histopathological slides may not have
+well-defined edges, leading to variations in how different annotators delineate
 the regions of interest \cite{Carmo2025}. These discrepancies arise not only
 from technical expertise but also from differences in perception and
 interpretation.
@@ -91,7 +93,7 @@ impact segmentation accuracy. Lower-resolution images may obscure
 fine structures, leading to inconsistencies in boundary delineation
 \cite{ZhouEtAl2024}.
 
-When combined with long sessions, bad images might
+When combined with long sessions, images with insufficient quality might
 also increase the cognitive load of the annotators, leading to
 fatigue and reduced precision in labeling \cite{KimYujinAndLee2024}.
 This is particularly relevant in histopathological studies, where the

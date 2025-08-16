@@ -1,23 +1,24 @@
 \chapter{Chained deep learning and TGCE$_{SS}$ loss for image
 segmentation}\label{ch:chained_deep_learning_seg}
 
+\glsresetall
+
 As mentioned in Chapter \ref{ch:introduction}, U-shaped \glspl{CNN} have been
-proven a good solution for segmentation tasks in medical images, due to their
-ability to capture both global and local information with relatively low
-datasets.
+proven a good solution for \gls{SS} tasks in medical images, due to their
+ability to capture both global and local information with small datasets.
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=0.8\textwidth]{Cap5/Figures/unet_architecture.png}
-  \caption{Original U-NET architecture.}
+  \caption{Original U-NET architecture from \cite{Ronneberger2015}.}
   \label{fig:unet_architecture}
 \end{figure}
 
 The proposed model architecture combines the strengths of U-Net with a
 ResNet-34 backbone, specifically designed to work with the
 TGCE$_{SS}$ loss function by providing a multi-output network which
-focuses on two tasks: \textbf{segmentation} and \textbf{reliability
-estimation}. The architecture is illustrated in Figure
+focuses on two tasks: \textbf{Multiclass Semantic Segmentation} and
+\textbf{Reliability Estimation}. The architecture is illustrated in Figure
 \ref{fig:model_architecture}.
 
 \begin{figure}[h]
@@ -27,7 +28,7 @@ estimation}. The architecture is illustrated in Figure
   \label{fig:model_architecture}
 \end{figure}
 
-\subsection{Backbone Architecture}
+\section{Backbone Architecture}
 
 The model employs a pre-trained ResNet-34 as its encoder backbone,
 leveraging its deep residual learning framework for efficient feature
@@ -336,7 +337,7 @@ then used to produce a ``noisy'' annotation by introducing random
 noise into the last encoder layers of the model, thus preserving the
 morphological consistency of the original annotation. This strategy
 works since slight modifications introduced into the encoder layers
-weights, somehow resemble conceptual disturbances with respect to the
+weights, resemble conceptual disturbances with respect to the
 respect to the original ground truth label, which kind of emulates
 the cultural behavior of having a different interpretation of the
 image, either for having a different level of expertise or for having a
@@ -547,7 +548,7 @@ tumor, stroma, inflammation, necrosis, and others \footnote{In
   practice, some of this masks also contain an additional class
 labeled as `ignore'.}. This subset of the TNBC is named Crowd-Seg.
 
-Raw png files for the images patches and masks were provided by the
+Raw PNG files for the images patches and masks were provided by the
 authors, in practice, in order to optimize the use of these data, a
 custom tensorflow dataset was built for facilitating batch memory,
 caching and prefetching. The custom dataset implementation handles
@@ -630,7 +631,7 @@ considerations were taken into account for the experiments. Because
 of the low label rates, experiments showed an unavoidable
 convergence to estimate arbitrarily high reliabilities on labelers which did not
 label a certain patch, which is not a desired behavior. None
-particular element of the proposed loss function penalizes
+of the terms from the proposed loss function penalizes
 this optimization shortcut, so to avoid this, an additional
 regularizer was included for penalizing high estimated
 reliabilities on unlabeled data, as follows:
@@ -642,13 +643,22 @@ reliabilities on unlabeled data, as follows:
 \end{equation}
 
 where $R$ is the amount of labelers, $\Lambda_i$ is the estimated
-reliability of the labeler $i$
-for a certain patch and $\mathbb{LM}_i$ is the one hot label mask of the
+reliability of the labeler $i$ for a certain patch and
+$\mathbb{LM}_i$ is the one hot label mask of the
 labeler $i$ for the same patch. The $\alpha$ and $\beta$ parameters
 control the penalty strength for high and low estimated reliabilities,
 respectively. In the Crowd-Seg experiments, this regularizer replaced
 the other regularizers, since it was showing better convergence on
-estimating the reliability of the labelers.
+estimating the reliability of the labelers. This leads to an special overall
+loss function for the TNBC dataset of the form:
+
+$$
+\mathcal{L} = \mathcal{L}_{GCE} + \gamma \mathcal{L}_{\lambda}
+\label{eq:tnbc_loss_function}
+$$
+
+where $\gamma$ is a hyperparameter that controls the trade-off between
+the GCE loss and the regularizer.
 
 \begin{figure}[H]
   \centering

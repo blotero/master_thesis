@@ -577,7 +577,7 @@
 }
 
 @misc{GilEtAlvarez2023CCGPMA,
-  author   = {Gil González Julián and Álvarez Meza Andrés Marino},
+  author   = {Gil-González, Julián and Álvarez-Meza, Andrés M.},
   title    = {A Supervised Learning Framework in the Context of Multiple Annotators},
   year     = {2023},
   abstract = {The increasing popularity of crowdsourcing platforms, i.e., Amazon Mechanical Turk, is changing how datasets for supervised learning are built. In these cases, instead of having datasets labeled by one source (which is supposed to be an expert who provided the absolute gold standard), we have datasets labeled by multiple annotators with different and unknown expertise. Hence, we face a multi-labeler scenario, which typical supervised learning models cannot tackle.For this reason, much attention has recently been given to the approaches that capture multiple annotators' wisdom. However, such methods reside on two key assumptions: the labeler's performance does not depend on the input space and independence among the annotators, which are hardly feasible in real-world settings. This book exploresseveral models based on both frequentist and Bayesian perspectives aiming to face multi-labeler scenarios. Our approaches model the annotators' behavior by considering the relationship between the input space and the labelers' performance and coding interdependencies among them.},
@@ -920,7 +920,230 @@
   url      = {https://doi.org/10.1007/s10278-024-01202-x},
   abstract = {Deep learning techniques offer improvements in computer-aided diagnosis systems. However, acquiring image domain annotations is challenging due to the knowledge and commitment required of expert pathologists. Pathologists often identify regions in whole slide images with diagnostic relevance rather than examining the entire slide, with a positive correlation between the time spent on these critical image regions and diagnostic accuracy. In this paper, a heatmap is generated to represent pathologists’ viewing patterns during diagnosis and used to guide a deep learning architecture during training. The proposed system outperforms traditional approaches based on color and texture image characteristics, integrating pathologists’ domain expertise to enhance region of interest detection without needing individual case annotations. Evaluating our best model, a U-Net model with a pre-trained ResNet-18 encoder, on a skin biopsy whole slide image dataset for melanoma diagnosis, shows its potential in detecting regions of interest, surpassing conventional methods with an increase of 20\%, 11\%, 22\%, and 12\% in precision, recall, F1-score, and Intersection over Union, respectively. In a clinical evaluation, three dermatopathologists agreed on the model’s effectiveness in replicating pathologists’ diagnostic viewing behavior and accurately identifying critical regions. Finally, our study demonstrates that incorporating heatmaps as supplementary signals can enhance the performance of computer-aided diagnosis systems. Without the availability of eye tracking data, identifying precise focus areas is challenging, but our approach shows promise in assisting pathologists in improving diagnostic accuracy and efficiency, streamlining annotation processes, and aiding the training of new pathologists.}
 }
+@article{Werbos1990,
+  author   = {Werbos, P.J.},
+  journal  = {Proceedings of the IEEE},
+  title    = {Backpropagation through time: what it does and how to do it},
+  year     = {1990},
+  volume   = {78},
+  number   = {10},
+  pages    = {1550-1560},
+  keywords = {Backpropagation;Artificial neural networks;Supervised learning;Pattern recognition;Neural networks;Power system modeling;Equations;Control systems;Fluid dynamics;Books},
+  doi      = {10.1109/5.58337}
+}
+
+@inbook{Alloghani2020,
+  author    = {Alloghani, Mohamed
+               and Al-Jumeily, Dhiya
+               and Mustafina, Jamila
+               and Hussain, Abir
+               and Aljaaf, Ahmed J.},
+  editor    = {Berry, Michael W.
+               and Mohamed, Azlinah
+               and Yap, Bee Wah},
+  title     = {A Systematic Review on Supervised and Unsupervised Machine Learning Algorithms for Data Science},
+  booktitle = {Supervised and Unsupervised Learning for Data Science },
+  year      = {2020},
+  publisher = {Springer International Publishing},
+  address   = {Cham},
+  pages     = {3--21},
+  abstract  = {Machine learning is as growing as fast as concepts such as Big data and the field of data science in general. The purpose of the systematic review was to analyze scholarly articles that were published between 2015 and 2018 addressing or implementing supervised and unsupervised machine learning techniques in different problem-solving paradigms. Using the elements of PRISMA, the review process identified 84 scholarly articles that had been published in different journals. Of the 84 articles, 6 were published before 2015 despite their metadata indicating that they were published in 2015. The existence of the six articles in the final papers was attributed to errors in indexing. Nonetheless, from the reviewed papers, decision tree, support vector machine, and Na{\"i}ve Bayes algorithms appeared to be the most cited, discussed, and implemented supervised learners. Conversely, k-means, hierarchical clustering, and principal component analysis also emerged as the commonly used unsupervised learners. The review also revealed other commonly used algorithms that include ensembles and reinforce learners, and future systematic reviews can focus on them because of the developments that machine learning and data science is undergoing at the moment.},
+  isbn      = {978-3-030-22475-2},
+  doi       = {10.1007/978-3-030-22475-2_1},
+  url       = {https://doi.org/10.1007/978-3-030-22475-2_1}
+}
+
+@article{Soydaner2020,
+  author   = {Soydaner, Derya},
+  title    = {A Comparison of Optimization Algorithms for Deep Learning},
+  journal  = {International Journal of Pattern Recognition and Artificial Intelligence},
+  volume   = {34},
+  number   = {13},
+  pages    = {2052013},
+  year     = {2020},
+  doi      = {10.1142/S0218001420520138},
+  url      = { https://doi.org/10.1142/S0218001420520138 },
+  eprint   = { https://doi.org/10.1142/S0218001420520138 },
+  abstract = { In recent years, we have witnessed the rise of deep learning. Deep neural networks have proved their success in many areas. However, the optimization of these networks has become more difficult as neural networks going deeper and datasets becoming bigger. Therefore, more advanced optimization algorithms have been proposed over the past years. In this study, widely used optimization algorithms for deep learning are examined in detail. To this end, these algorithms called adaptive gradient methods are implemented for both supervised and unsupervised tasks. The behavior of the algorithms during training and results on four image datasets, namely, MNIST, CIFAR-10, Kaggle Flowers and Labeled Faces in the Wild are compared by pointing out their differences against basic optimization algorithms. }
+}
 
 
 
+@inproceedings{BinghamEtAl2020,
+  author    = {Bingham, Garrett and Macke, William and Miikkulainen, Risto},
+  title     = {Evolutionary optimization of deep learning activation functions},
+  year      = {2020},
+  isbn      = {9781450371285},
+  publisher = {Association for Computing Machinery},
+  address   = {New York, NY, USA},
+  url       = {https://doi.org/10.1145/3377930.3389841},
+  doi       = {10.1145/3377930.3389841},
+  abstract  = {The choice of activation function can have a large effect on the performance of a neural network. While there have been some attempts to hand-engineer novel activation functions, the Rectified Linear Unit (ReLU) remains the most commonly-used in practice. This paper shows that evolutionary algorithms can discover novel activation functions that outperform ReLU. A tree-based search space of candidate activation functions is defined and explored with mutation, crossover, and exhaustive search. Experiments on training wide residual networks on the CIFAR-10 and CIFAR-100 image datasets show that this approach is effective. Replacing ReLU with evolved activation functions results in statistically significant increases in network accuracy. Optimal performance is achieved when evolution is allowed to customize activation functions to a particular task; however, these novel activation functions are shown to generalize, achieving high performance across tasks. Evolutionary optimization of activation functions is therefore a promising new dimension of metalearning in neural networks.},
+  booktitle = {Proceedings of the 2020 Genetic and Evolutionary Computation Conference},
+  pages     = {289–296},
+  numpages  = {8},
+  keywords  = {activation functions, evolutionary algorithms, metalearning},
+  location  = {Canc\'{u}n, Mexico},
+  series    = {GECCO '20}
+}
 
+@article{Taye2023,
+  author         = {Taye, Mohammad Mustafa},
+  title          = {Theoretical Understanding of Convolutional Neural Network: Concepts, Architectures, Applications, Future Directions},
+  journal        = {Computation},
+  volume         = {11},
+  year           = {2023},
+  number         = {3},
+  article-number = {52},
+  url            = {https://www.mdpi.com/2079-3197/11/3/52},
+  issn           = {2079-3197},
+  abstract       = {Convolutional neural networks (CNNs) are one of the main types of neural networks used for image recognition and classification. CNNs have several uses, some of which are object recognition, image processing, computer vision, and face recognition. Input for convolutional neural networks is provided through images. Convolutional neural networks are used to automatically learn a hierarchy of features that can then be utilized for classification, as opposed to manually creating features. In achieving this, a hierarchy of feature maps is constructed by iteratively convolving the input image with learned filters. Because of the hierarchical method, higher layers can learn more intricate features that are also distortion and translation invariant. The main goals of this study are to help academics understand where there are research gaps and to talk in-depth about CNN’s building blocks, their roles, and other vital issues.},
+  doi            = {10.3390/computation11030052}
+}
+
+@inproceedings{RoelofsEtAl2019,
+  author    = {Roelofs, Rebecca and Shankar, Vaishaal and Recht, Benjamin and Fridovich-Keil, Sara and Hardt, Moritz and Miller, John and Schmidt, Ludwig},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {H. Wallach and H. Larochelle and A. Beygelzimer and F. d\textquotesingle Alch\'{e}-Buc and E. Fox and R. Garnett},
+  pages     = {},
+  publisher = {Curran Associates, Inc.},
+  title     = {A Meta-Analysis of Overfitting in Machine Learning},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2019/file/ee39e503b6bedf0c98c388b7e8589aca-Paper.pdf},
+  volume    = {32},
+  year      = {2019}
+}
+
+@article{JiaEtAl2014,
+  author     = {Yangqing Jia and
+                Evan Shelhamer and
+                Jeff Donahue and
+                Sergey Karayev and
+                Jonathan Long and
+                Ross B. Girshick and
+                Sergio Guadarrama and
+                Trevor Darrell},
+  title      = {Caffe: Convolutional Architecture for Fast Feature Embedding},
+  journal    = {CoRR},
+  volume     = {abs/1408.5093},
+  year       = {2014},
+  url        = {http://arxiv.org/abs/1408.5093},
+  eprinttype = {arXiv},
+  eprint     = {1408.5093},
+  timestamp  = {Mon, 13 Aug 2018 16:46:41 +0200},
+  biburl     = {https://dblp.org/rec/journals/corr/JiaSDKLGGD14.bib},
+  bibsource  = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+@article{DuarteBaraniuk2012,
+  author   = {Duarte, Marco F. and Baraniuk, Richard G.},
+  journal  = {IEEE Transactions on Image Processing},
+  title    = {Kronecker Compressive Sensing},
+  year     = {2012},
+  volume   = {21},
+  number   = {2},
+  pages    = {494-504},
+  keywords = {Hyperspectral imaging;Multiplexing;Image coding;Compressed sensing;Particle measurements;Atmospheric measurements;Compressed sensing;compression algorithms;hyperspectral imaging;multidimensional signal processing;video compression},
+  doi      = {10.1109/TIP.2011.2165289}
+}
+
+@article{Yan2014,
+  author   = {Yan, Yan and Rosales, R{\'o}mer and Fung, Glenn and Subramanian, Ramanathan and Dy, Jennifer},
+  title    = {Learning from multiple annotators with varying expertise},
+  journal  = {Machine Learning},
+  year     = {2014},
+  month    = {jun},
+  volume   = {95},
+  number   = {3},
+  pages    = {291--327},
+  doi      = {10.1007/s10994-013-5412-1},
+  url      = {https://doi.org/10.1007/s10994-013-5412-1},
+  issn     = {1573-0565},
+  abstract = {Learning from multiple annotators or knowledge sources has become an important problem in machine learning and data mining. This is in part due to the ease with which data can now be shared/collected among entities sharing a common goal, task, or data source; and additionally the need to aggregate and make inferences about the collected information. This paper focuses on the development of probabilistic approaches for statistical learning in this setting. It specially considers the case when annotators may be unreliable, but also when their expertise vary depending on the data they observe. That is, annotators may have better knowledge about different parts of the input space and therefore be inconsistently accurate across the task domain. The models developed address both the supervised and the semi-supervised settings and produce classification and annotator models that allow us to provide estimates of the true labels and annotator expertise when no ground-truth is available. In addition, we provide an analysis of the proposed models, tasks, and related practical problems under various scenarios. In particular, we address how to evaluate annotators and how to consider cases where some ground-truth may be available. We show experimentally that annotator expertise can indeed vary in real tasks and that the presented approaches provide clear advantages over previously introduced multi-annotator methods, which only consider input-independent annotator characteristics, and over alternative approaches that do not model multiple annotators.}
+}
+
+@article{Zhang2022,
+  author   = {Zhang, Jing},
+  journal  = {IEEE/CAA Journal of Automatica Sinica},
+  title    = {Knowledge Learning With Crowdsourcing: A Brief Review and Systematic Perspective},
+  year     = {2022},
+  volume   = {9},
+  number   = {5},
+  pages    = {749-762},
+  keywords = {Crowdsourcing;Training;Systematics;Uncertainty;Costs;Lead;Data models;Crowdsourcing;data fusion;learning from crowds;learning paradigms;learning with uncertainty},
+  doi      = {10.1109/JAS.2022.105434}
+}
+
+@misc{SaulEtAl2016,
+  title         = {Chained Gaussian Processes},
+  author        = {Alan D. Saul and James Hensman and Aki Vehtari and Neil D. Lawrence},
+  year          = {2016},
+  eprint        = {1604.05263},
+  archiveprefix = {arXiv},
+  primaryclass  = {stat.ML},
+  url           = {https://arxiv.org/abs/1604.05263}
+}
+@article{LiuEtAl2020,
+  author   = {Liu, Haitao and Ong, Yew-Soon and Shen, Xiaobo and Cai, Jianfei},
+  journal  = {IEEE Transactions on Neural Networks and Learning Systems},
+  title    = {When Gaussian Process Meets Big Data: A Review of Scalable GPs},
+  year     = {2020},
+  volume   = {31},
+  number   = {11},
+  pages    = {4405-4423},
+  keywords = {Kernel;Scalability;Sparse representation;Complexity theory;Computational modeling;Ground penetrating radar;Predictive models;Big data;Gaussian process regression (GPR);local approximations;scalability;sparse approximations},
+  doi      = {10.1109/TNNLS.2019.2957109}
+}
+
+@book{RasmussenEtAl2006Chapter3,
+  title     = {Gaussian Processes for Machine Learning},
+  author    = {Rasmussen, Carl Edward and Williams, Christopher K. I.},
+  year      = {2006},
+  publisher = {MIT Press},
+  address   = {Cambridge, MA, USA},
+  isbn      = {978-0-262-18253-9},
+  url       = {https://gaussianprocess.org/gpml/},
+  chapter   = {3},
+  pages     = {72-74}
+}
+
+@book{RasmussenEtAl2006Chapter9,
+  title     = {Gaussian Processes for Machine Learning},
+  author    = {Rasmussen, Carl Edward and Williams, Christopher K. I.},
+  year      = {2006},
+  publisher = {MIT Press},
+  address   = {Cambridge, MA, USA},
+  isbn      = {978-0-262-18253-9},
+  url       = {https://gaussianprocess.org/gpml/},
+  chapter   = {9}
+}
+
+@inproceedings{KendallEtAl2017,
+  author    = {Kendall, Alex and Gal, Yarin},
+  booktitle = {Advances in Neural Information Processing Systems},
+  editor    = {I. Guyon and U. Von Luxburg and S. Bengio and H. Wallach and R. Fergus and S. Vishwanathan and R. Garnett},
+  pages     = {},
+  publisher = {Curran Associates, Inc.},
+  title     = {What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision?},
+  url       = {https://proceedings.neurips.cc/paper_files/paper/2017/file/2650d6089a6d640c5e85b2b88265dc2b-Paper.pdf},
+  volume    = {30},
+  year      = {2017}
+}
+
+
+@inproceedings{WilsonEtAl2016,
+  title     = {Deep Kernel Learning},
+  author    = {Wilson, Andrew Gordon and Hu, Zhiting and Salakhutdinov, Ruslan and Xing, Eric P.},
+  booktitle = {Proceedings of the 19th International Conference on Artificial Intelligence and Statistics},
+  pages     = {370--378},
+  year      = {2016},
+  editor    = {Gretton, Arthur and Robert, Christian C.},
+  volume    = {51},
+  series    = {Proceedings of Machine Learning Research},
+  address   = {Cadiz, Spain},
+  month     = {09--11 May},
+  publisher = {PMLR},
+  pdf       = {http://proceedings.mlr.press/v51/wilson16.pdf},
+  url       = {https://proceedings.mlr.press/v51/wilson16.html},
+  abstract  = {We introduce scalable deep kernels, which combine the structural properties of deep learning architectures with the non-parametric flexibility of kernel methods.  Specifically, we transform the inputs of a spectral mixture base kernel with a deep architecture, using local kernel interpolation, inducing points, and structure exploiting (Kronecker and Toeplitz) algebra for a scalable kernel representation.  These closed-form kernels can be used as drop-in replacements for standard kernels, with benefits in expressive power and scalability.  We jointly learn the properties of these kernels through the marginal likelihood of a Gaussian process.  Inference and learning cost O(n) for n training points, and predictions cost O(1) per test point.  On a large and diverse collection of applications, including a dataset with 2 million examples, we show improved performance over scalable Gaussian processes with flexible kernel learning models, and stand-alone deep architectures.}
+}

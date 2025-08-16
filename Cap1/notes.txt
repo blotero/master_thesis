@@ -1,0 +1,2 @@
+555: ¿Hablas de versiones de baja resolución de imágenes en las cuales originalmente se puede apreciar un elemento y en la comprimida o degradada no?
+Fig 1.4: Por que se consideran los labels noisy?

@@ -39,7 +39,7 @@ dot.node("C2", "Technical Constraints", **causes_kwargs)
 # Consequences
 dot.node(
     "E1",
-    "Noisy & Inconsistent Labels",
+    "Inconsistent Labels",
     shape="diamond",
     style="filled",
     fillcolor="peachpuff",

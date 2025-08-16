@@ -109,7 +109,7 @@ maps $\Lambda_r$ for each annotator:
   \bigg\{ \Lambda_r (\mathbf X; \theta ) \in [0,1] ^{W\times H} \bigg\}_{r=1}^R
 \end{equation}
 
-These reliability maps serve as a sophisticated mechanism to estimate
+These reliability maps serve as a mechanism to estimate
 the confidence of each annotator at every spatial location $(w,h)$ in
 the image. By learning these maps jointly with the segmentation
 model, the network gains the ability to adapt to the varying levels
@@ -121,19 +121,36 @@ expertise in different parts of the image.
 
 The proposed Truncated Generalized Cross Entropy for Semantic
 Segmentation (TGCE$_{SS}$) combines the robustness of GCE with the
-flexibility of reliability maps:
+flexibility of reliability maps. Let us first define the key components:
+
+\begin{equation}
+  \mathcal{L}_{GCE}(\mathbf{Y}_r, f(\mathbf{X};\theta)) =
+  \mathbb{E}_{k} \Bigg\{
+    \mathbf{Y}_r \circ \left(
+      \frac{\mathbf{1}_{W\times H \times K} - f(\mathbf{X};\theta)^{\circ
+  q}}{q} \right) \Bigg\}
+\end{equation}
+
+\begin{equation}
+  \mathcal{L}_{prior} = \frac{\mathbf{1}_{W\times H} -
+  \left(\frac{1}{K} \mathbf{1}_{W\times H}\right)^{\circ q}}{q}
+\end{equation}
+
+where $\mathcal{L}_{GCE}$ represents the GCE loss component and
+$\mathcal{L}_{prior}$ represents the uniform prior component. The
+complete TGCE$_{SS}$ loss function is then defined as:
 
 \begin{equation}
   \begin{split}
-    TGCE_{SS}(\mathbf{Y}_r,f(\mathbf X;\theta) | \mathbf{\Lambda}_r
-    (\mathbf X;\theta)) = \mathbb E_{r} \Bigg\{ \mathbb E_{w,h}
-      \Bigg\{ \Lambda_r (\mathbf X; \theta) \circ \mathbb E_k \bigg\{
-          \mathbf Y_r \circ \bigg( \frac{\mathbf 1 _{W\times H \times
-        K} - f(\mathbf X;\theta) ^{\circ q }}{q} \bigg); k \in K  \bigg\}  + \\
-        \left(\mathbf 1 _{W \times H } - \Lambda _r (\mathbf
-        X;\theta)\right) \circ \bigg(   \frac{\mathbf 1_{W\times H} -
-        (\frac {1}{k} \mathbf 1_{W\times H})^{\circ q}}{q} \bigg); w \in
-    W, h \in H \Bigg\};r\in R\Bigg\}
+    TGCE_{SS}(\mathbf{Y}_r,f(\mathbf{X};\theta) |
+    \mathbf{\Lambda}_r(\mathbf{X};\theta)) = \mathbb{E}_{r,w,h} \Bigg\{
+      \\
+      \Lambda_r(\mathbf{X};\theta) \circ
+      \mathcal{L}_{GCE} +
+      \left(\mathbf{1}_{W\times H} -
+      \Lambda_r(\mathbf{X};\theta)\right) \circ \mathcal{L}_{prior};
+      \\
+    w \in W, h \in H ; r \in R \Bigg\}
   \end{split}
 \end{equation}
 
@@ -148,16 +165,12 @@ two main components:
     uniform prior for regions where the annotator is considered unreliable
 \end{itemize}
 
-For a batch containing $N$ samples, the total loss is computed as:
+A summary of the loss function mechanism is shown in Figure
+\ref{fig:loss_mechanism}.
 
-\begin{equation}
-  \mathscr{L}\left(\mathbf{Y}_r[n],f(\mathbf X[n];\theta) |
-  \mathbf{\Lambda}_r (\mathbf X[n];\theta)\right)  = \frac{1}{N}
-  \sum_{n}^N TGCE_{SS}(\mathbf{Y}_r[n],f(\mathbf X[n];\theta) |
-  \mathbf{\Lambda}_r (\mathbf X[n];\theta))
-\end{equation}
+\input{Cap4/Figures/loss_mechanism.tex}
 
-\subsection{Discussion and Conclusions}
+\section{Chapter overview}
 
 This chapter presents a novel approach to handle multiple annotators
 in semantic segmentation tasks through the introduction of the
@@ -206,6 +219,3 @@ where expert knowledge can vary significantly across different
 regions of interest. This work provides a foundation for more
 sophisticated approaches to handling multiple annotators in deep
 learning-based segmentation tasks.
-
-\input{Cap4/Figures/loss_mechanism.tex}
-% \input{Cap4/Figures/step-by-step-loss.tex}

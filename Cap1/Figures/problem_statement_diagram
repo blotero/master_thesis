@@ -8,7 +8,7 @@ in Medical Image Segmentation" fillcolor=lightblue fontcolor=black fontsize=14 h
 	SC2 [label="Bias from Guidelines" fillcolor="#ffcc99" fontsize=12 height=1 shape=ellipse style=filled]
 	C1 [label="Subjectivity in Interpretation" fillcolor="#ffcc99" fontsize=12 height=1 shape=ellipse style=filled]
 	C2 [label="Technical Constraints" fillcolor="#ffcc99" fontsize=12 height=1 shape=ellipse style=filled]
-	E1 [label="Noisy & Inconsistent Labels" fillcolor=peachpuff fontsize=12 height=1 shape=diamond style=filled]
+	E1 [label="Inconsistent Labels" fillcolor=peachpuff fontsize=12 height=1 shape=diamond style=filled]
 	E2 [label="Decreased reliability in CNN models" fillcolor=lightcoral fontsize=12 height=1 shape=diamond style=filled]
 	SC1 -> C1 [label="Leads to" color=black penwidth=1.5 style=dashed]
 	SC2 -> C1 [label="Leads to" color=black penwidth=1.5 style=dashed]

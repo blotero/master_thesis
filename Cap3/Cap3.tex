@@ -3,21 +3,22 @@
 \section{Background and Related Methods}\label{sec:background}
 
 In recent years, several approaches have been proposed to handle
-supervised learning problems in the context of multiple annotators.
+supervised learning problems in the context of multiple annotators
+\cite{Yan2014} \cite{Zhang2022}.
 This section reviews key methods that form the foundation for
 understanding chained Gaussian processes and their application to
 multiple annotator scenarios in regression and classification tasks.
 
-\subsection{Kernel Alignment-Based Annotator Relevance Analysis (KAAR)}
+\subsection{Kernel Alignment-Based Annotator Relevance Analysis}
 
-The \gls{KAAR} method, introduced in \cite{GilEtAlvarez2023CCGPMA},
+The \gls{KAAR} method, introduced in \cite{GilGonzalezEtAl2018},
 addresses the challenge of estimating annotator expertise in
 scenarios where the ground truth is unavailable. The key innovation
 of \gls{KAAR} lies in its use of \gls{CKA} to measure the similarity
 between input features and annotator labels.
 
 Given a dataset with input features $\mat{X}$ and labels from
-multiple annotators $\mat{Y}$, KAAR computes a kernel matrix
+multiple annotators $\mat{Y}$, \gls{KAAR} computes a kernel matrix
 $\mat{K}_{\ve{\nu}}$ as a convex combination of $R$ basis kernels:
 
 \begin{align}
@@ -35,17 +36,18 @@ from the input features:
   \frac{{\langle\mat{\bar{K}_{\ve{\nu}}},\mat{\bar{F}}\rangle_{\texttt{F}}}}{{{\left|\right|\mat{\bar{K}_{\ve{\nu}}}\left|\right|_{\texttt{F}}\left|\right|\mat{\bar{F}}\left|\right|_{\texttt{F}}}}},
 \end{align}
 
-A key advantage of KAAR is its ability to capture dependencies
+A key advantage of \gls{KAAR} is its ability to capture dependencies
 between annotators through the kernel framework, without requiring
 explicit parametric modeling of these relationships.
 
 \subsection{Localized Kernel Alignment-Based Annotator Relevance
-Analysis (LKAAR)}
+Analysis}
 
-LKAAR extends KAAR by introducing locality in the kernel alignment
-framework. Rather than assuming constant annotator performance across
-the input space, LKAAR models the annotator relevance as a function
-of the input features. The kernel combination in LKAAR takes the form:
+In \cite{GilGonzalezEtAl2021} the authors extend \gls{KAAR} by introducing
+locality in the kernel alignment framework. Rather than assuming
+constant annotator performance across the input space, \gls{LKAAR} models
+the annotator relevance as a function of the input features. The
+kernel combination in \gls{LKAAR} takes the form:
 
 \begin{equation}
   \mat{K}_{\ve{q}} =\sum_{r=1}^{R}\mat{Q}_r\mat{K}_r\mat{Q}_r,
@@ -63,16 +65,68 @@ local relevance of annotator $r$. These elements are computed as:
   \end{cases}
 \end{align}
 
-This localized approach allows LKAAR to better model inconsistent
-annotators whose performance varies across different regions of the input space.
+This localized approach allows \gls{LKAAR} to better model inconsistent
+annotators whose performance varies across different regions of the
+input space \cite{GilGonzalezEtAl2021}.
 
-\subsection{Regularized Chained Deep Neural Network (RCDNN)}
+\subsection{Chained Gaussian Processes Model}
 
-RCDNN represents a deep learning approach to multiple annotator
-learning, inspired by the chained Gaussian processes model. The
-method models both the ground truth estimation and annotator
-reliability through a deep neural network architecture. The
-likelihood function in RCDNN takes the form:
+The \gls{CGP} model provides a probabilistic framework for modeling
+multiple outputs through a chain of Gaussian processes \cite{SaulEtAl2016}.
+In the context of multiple annotators, \gls{CGP} can be used to model
+both the ground truth and annotator behavior. The key idea is to model
+a likelihood function with $J$ parameters as in \cite{GiraldoEtAl2022}:
+
+\begin{align}
+  p(\ve{y}|\ve{X},\bm{\theta}) =
+  \prod_{n=1}^{N}p(y_n|\theta_1(\ve{x}_n),\dots , \theta_J(\ve{x}_n)),
+\end{align}
+
+where each parameter $\theta_j(\ve{x})$ is modeled using a separate
+Gaussian process. This framework provides remarkable flexibility in
+modeling complex relationships within the data \cite{GiraldoEtAl2022}.
+The use of Gaussian processes enables natural uncertainty quantification through
+posterior distributions, allowing the model to express varying
+degrees of confidence in its predictions. The framework inherently
+handles missing data through its probabilistic nature, and the
+automatic relevance determination property of GPs helps identify the
+most important features for prediction \cite{GiraldoEtAl2022}.
+
+The \gls{CGP} framework becomes particularly powerful when integrated with
+concepts from \gls{KAAR} and \gls{LKAAR}. By incorporating kernel alignment
+principles, the model can make more informed choices about kernel
+functions, better capturing the underlying structure of the data
+\cite{GiraldoEtAl2022}. The framework can be extended to include
+input-dependent lengthscales, allowing for varying degrees of smoothness
+across the input space \cite{GiraldoEtAl2022}. Furthermore, through
+multi-output \gls{GP} formulations, the model can capture complex dependencies
+capture complex dependencies between different annotators, providing
+a rich representation of how different experts' opinions relate to
+each other.
+
+However, implementing \glspl{CGP} in practice presents several significant
+challenges. The computational complexity of the model scales
+cubically with the dataset size, making it potentially prohibitive
+for large-scale applications \cite{LiuEtAl2020}. The need for
+approximate inference techniques in non-Gaussian likelihood scenarios
+can introduce additional complexity and potential approximation
+errors \cite{RasmussenEtAl2006Chapter3}.
+When dealing with high-dimensional inputs, the model
+may struggle with the curse of dimensionality, requiring careful
+feature selection or dimensionality reduction preprocessing
+\cite{RasmussenEtAl2006Chapter3}.
+Additionally, the selection of appropriate kernel functions remains a
+critical challenge, as it significantly impacts the model's
+performance and its ability to capture relevant patterns in the data
+\cite{RasmussenEtAl2006Chapter9}.
+
+\subsection{Regularized Chained Deep Neural Network}
+
+In \cite{GilGonzalezEtAl2021-RCDNN}, the authors propose a deep
+learning approach to multiple annotator learning, inspired by the
+chained Gaussian processes model. The method models both the ground
+truth estimation and annotator reliability through a deep neural
+network architecture. The likelihood function in \gls{RCDNN} takes the form:
 
 \begin{align}
   p(\ve{Y}|\bm{\theta}) = \prod_{n=1}^{N}\prod_{r\in R_n}
@@ -83,13 +137,14 @@ where $\lambda_n^{(r)}$ represents the reliability of annotator $r$
 for instance $n$, and $\zeta_{n,k}$ is the estimated probability of
 class $k$ for instance $n$.
 
-The RCDNN architecture is built upon a sophisticated multi-layer
-structure that combines several key innovations in deep learning. At
-its core, it employs multiple dense layers with carefully chosen
-activation functions, each designed to capture different aspects of
-the annotator-data relationship. To prevent overfitting, a
-comprehensive regularization strategy is implemented, combining both
-l1 and l2 norms with dropout mechanisms. The network architecture
+The \gls{RCDNN} architecture is built upon a sophisticated multi-layer
+structure that combines several key innovations in deep learning
+\cite{GilGonzalezEtAl2021-RCDNN}. At its core, it employs multiple dense
+layers with carefully chosen activation functions, each designed to
+capture different aspects of the annotator-data relationship. To prevent
+overfitting, a comprehensive regularization strategy is implemented,
+combining both L1 and L2 norms with dropout mechanisms
+\cite{GilGonzalezEtAl2021-RCDNN}. The network architecture
 splits into specialized branches: one dedicated to estimating the
 ground truth labels, and another focused on modeling annotator
 reliability. This dual-branch approach allows the network to
@@ -99,73 +154,26 @@ the implementation of Monte Carlo dropout during prediction provides
 a mechanism for uncertainty estimation, offering not just predictions
 but also confidence measures for those predictions.
 
-\subsection{Chained Gaussian Processes Model}
-
-The Chained Gaussian Processes (CGP) model provides a probabilistic
-framework for modeling multiple outputs through a chain of Gaussian
-processes. In the context of multiple annotators, CGP can be used to
-model both the ground truth and annotator behavior. The key idea is
-to model a likelihood function with $J$ parameters as in
-\cite{GiraldoEtAl2022}:
-
-\begin{align}
-  p(\ve{y}|\ve{X},\bm{\theta}) =
-  \prod_{n=1}^{N}p(y_n|\theta_1(\ve{x}_n),\dots , \theta_J(\ve{x}_n)),
-\end{align}
-
-where each parameter $\theta_j(\ve{x})$ is modeled using a separate
-Gaussian process. This framework provides remarkable flexibility in
-modeling complex relationships within the data. The use of Gaussian
-processes enables natural uncertainty quantification through
-posterior distributions, allowing the model to express varying
-degrees of confidence in its predictions. The framework inherently
-handles missing data through its probabilistic nature, and the
-automatic relevance determination property of GPs helps identify the
-most important features for prediction.
-
-The CGP framework becomes particularly powerful when integrated with
-concepts from KAAR and LKAAR. By incorporating kernel alignment
-principles, the model can make more informed choices about kernel
-functions, better capturing the underlying structure of the data. The
-framework can be extended to include input-dependent lengthscales,
-allowing for varying degrees of smoothness across the input space.
-Furthermore, through multi-output GP formulations, the model can
-capture complex dependencies between different annotators, providing
-a rich representation of how different experts' opinions relate to each other.
-
-However, implementing CGP in practice presents several significant
-challenges. The computational complexity of the model scales
-cubically with the dataset size, making it potentially prohibitive
-for large-scale applications. The need for approximate inference
-techniques in non-Gaussian likelihood scenarios can introduce
-additional complexity and potential approximation errors. When
-dealing with high-dimensional inputs, the model may struggle with the
-curse of dimensionality, requiring careful feature selection or
-dimensionality reduction preprocessing. Additionally, the selection
-of appropriate kernel functions remains a critical challenge, as it
-significantly impacts the model's performance and its ability to
-capture relevant patterns in the data.
-
 \section{Tooling and Implementation}\label{sec:tooling}
 
 The implementation of Chained Gaussian Processes for multiple
 annotator learning requires robust and flexible software tools that
 can handle both the probabilistic nature of Gaussian processes and
-the complexity of deep architectures. In our implementation, we
-leverage two key frameworks: GPflow and GPflux. These tools provide
-the foundation for building scalable and efficient implementations of
-our models while maintaining the theoretical rigor necessary for
-proper uncertainty quantification.
+the complexity of deep architectures \cite{SaulEtAl2016}.
+In this work, two key frameworks are leveraged: GPflow and
+GPflux. These tools provide the foundation for building scalable and
+efficient implementations of our models while maintaining the
+theoretical rigor necessary for proper uncertainty quantification.
 
 The choice of these frameworks is motivated by several factors.
 First, both are built on top of TensorFlow, providing access to
 automatic differentiation and GPU acceleration capabilities. Second,
-they offer a modular design that allows for easy extension and
-modification, which is crucial when implementing novel model
-architectures. Third, they provide robust implementations of various
-Gaussian process models and inference methods, allowing us to focus
-on the specific challenges of multiple annotator learning rather than
-reimplementing basic GP functionality.
+they offer a modular design that allows for
+easy extension and modification, which is crucial when implementing
+novel model architectures. Third, they provide robust
+implementations of various Gaussian process models and inference
+methods, allowing us to focus on the specific challenges of multiple
+annotator learning rather than reimplementing basic GP functionality.
 
 \subsection{GPflow Overview}
 
@@ -178,12 +186,10 @@ efficiency, extensibility, and automatic differentiation. This work
 was originally published in \cite{MatthewsEtAl2016}.
 
 At its core, GPflow provides implementations of various Gaussian
-process models including GPR (Gaussian Process Regression), GPMC
-(Gaussian Process Monte Carlo), SGPR (Sparse Gaussian Process
-Regression), and SGPMC (Sparse Gaussian Process Monte Carlo). These
-implementations are built on top of TensorFlow's computational graph
-framework, allowing for automatic differentiation and GPU
-acceleration where available.
+process models including \gls{GPR}, \gls{GPMC}, \gls{SGPR}, and
+\gls{SGPMC} \cite{MatthewsEtAl2016}. These implementations are built on top of
+TensorFlow's computational graph framework, allowing for automatic
+differentiation and GPU acceleration where available.
 
 The framework's architecture is modular, with clear separation
 between model components such as kernels, likelihoods, and
@@ -230,7 +236,8 @@ For inference, GPflux implements various approximate methods,
 including stochastic variational inference with inducing points,
 which makes it possible to train deep Gaussian process models on
 large datasets. The framework provides built-in support for minibatch
-training, making it practical to work with datasets that don't fit in memory.
+training, making it practical to work with datasets that don't fit in
+memory.
 
 \section{Experimental Setup}\label{sec:experiments}
 
@@ -257,7 +264,7 @@ $n$, the true label is determined by computing three target values:
 
 and assigning the class label as the index $i \in \{1, 2, 3\}$ that
 maximizes $t_{n,i}$. This construction ensures a nontrivial,
-nonlinear decision boundary between the classes.
+nonlinear decision boundary between the classes \cite{GilEtAlvarez2023CCGPMA}.
 
 For evaluation, the test set is generated by extracting 200 equally
 spaced samples from the interval $[0, 1]$, providing a dense coverage
@@ -265,10 +272,10 @@ of the input space to assess generalization performance.
 
 Note that at this point, the fully synthetic dataset does not
 contain real annotator labels. Therefore, it is necessary to simulate
-annotator labels as corrupted versions of the hidden ground truth. In
-these experiments, the simulation is designed to account for: 1)
-dependencies among annotators, and 2) labeler performance that varies
-as a function of the input features.
+annotator labels as corrupted versions of the hidden ground truth.
+In these experiments, the simulation is
+designed to account for: 1) dependencies among annotators, and 2)
+labeler performance that varies as a function of the input features.
 
 To achieve this, an \gls{SLFM}-based approach (termed SLFM-C) is employed,
 which generates annotator labels as follows:
@@ -287,7 +294,7 @@ $\mathbf{X}$, obtained using the t-distributed Stochastic Neighbor
 Embedding (t-SNE) approach.
 \item \textbf{Reliability calculation:} Calculate $\hat{\lambda}^r_n
 = \varsigma(\hat{f}_{l,r,n})$, where $\varsigma(\cdot) \in [0,1]$ is
-the sigmoid function.
+the inverse exponential sigmoid function.
 \item \textbf{Label assignment:} The $r$th annotator's label for the
 $n$th sample is given by
 \[
@@ -434,16 +441,16 @@ hidden ground truth and the annotators' reliabilities across the feature space.}
 
 The evolution of multiple annotator learning methods represents a
 fascinating progression in how we approach the challenge of learning
-from diverse expert opinions. KAAR established a foundation with its
-non-parametric approach through kernel alignment, though it operates
-under the assumption of constant annotator performance across the
-input space. LKAAR advanced this concept by introducing
-input-dependent annotator behavior, recognizing that expert
-performance often varies across different types of inputs. RCDNN
-brought the power and flexibility of deep learning to the problem,
-offering excellent scalability but requiring careful attention to
-regularization and architecture design. CGP represents perhaps the
-most theoretically elegant approach, providing a principled
+from diverse expert opinions. \gls{KAAR} established a
+foundation with its non-parametric approach through kernel alignment,
+though it operates under the assumption of constant annotator
+performance across the input space. \gls{LKAAR} advanced this concept
+by introducing input-dependent annotator behavior, recognizing that
+expert performance often varies across different types of inputs.
+\gls{RCDNN} brought the power and flexibility of deep learning to the
+problem, offering excellent scalability but requiring careful attention
+to regularization and architecture design. \gls{CCGPMA} represents perhaps
+the most theoretically elegant approach, providing a principled
 probabilistic framework, though it faces significant computational
 challenges in practical applications.
 
@@ -454,10 +461,10 @@ scale better than others with increasing data volume. The need for
 uncertainty quantification may favor probabilistic approaches like
 CGP, while computational constraints might push towards more
 efficient methods like KAAR. The presence of input-dependent
-annotator behavior could make LKAAR or RCDNN more appropriate
+annotator behavior could make \gls{LKAAR} or \gls{RCDNN} more appropriate
 choices. Additionally, when interpretability is a key requirement, as
-in many medical applications, methods like KAAR and LKAAR might be
-preferred over the more complex deep learning approaches.
+in many medical applications, methods like \gls{KAAR} and \gls{LKAAR}
+might be preferred over the more complex Deep Learning approaches.
 Table \ref{tab:methods_comparison} provides a comprehensive
 comparison of the key characteristics and capabilities of each method discussed.
 
@@ -467,10 +474,10 @@ comparison of the key characteristics and capabilities of each method discussed.
 \centering
 \resizebox{\textwidth}{!}{
 \begin{tabular}{lcccc}\toprule
-  \textbf{Characteristic} & \textbf{KAAR} \cite{GilGonzalezEtAl2018}
-  & \textbf{LKAAR} \cite{GilGonzalezEtAl2021} &
-  \textbf{RCDNN} \cite{GilGonzalezEtAl2021-RCDNN} & \textbf{CGP}
-  \cite{GilEtAlvarez2023CCGPMA} \\\midrule
+  \textbf{Characteristic} & \textbf{KAAR} & \textbf{LKAAR} &
+  \textbf{RCDNN} & \textbf{CGP} \\
+  & \cite{GilGonzalezEtAl2018} & \cite{GilGonzalezEtAl2021} &
+  \cite{GilGonzalezEtAl2021-RCDNN} & \cite{GilEtAlvarez2023CCGPMA} \\\midrule
   Input-dependent annotator behavior & No & Yes & Yes & Yes \\
   Annotator dependencies modeling & Yes & Yes & Yes & Yes \\
   Uncertainty quantification & No & No & Partial & Yes \\
@@ -483,7 +490,7 @@ comparison of the key characteristics and capabilities of each method discussed.
   Memory requirements & Low & Medium & High & High \\\bottomrule
 \end{tabular}}
 \vspace{0.1cm}
-{\small{\textbf{Note:} Partial uncertainty quantification in RCDNN
+{\small{\textbf{Note:} Partial uncertainty quantification in \gls{RCDNN}
   refers to the use of Monte Carlo dropout for approximate
 uncertainty estimation.}}
 \end{table}
@@ -494,7 +501,8 @@ When implementing Chained Gaussian Processes for multiple annotator
 learning using these tools, several key considerations must be
 addressed. First, the model architecture must be carefully designed
 to capture both the individual annotator characteristics and their
-interdependencies. This requires extending the basic GP layers
+interdependencies \cite{GilEtAlvarez2023CCGPMA}. This requires
+extending the basic \gls{GP} layers
 provided by GPflux to handle multiple output streams - one for each
 annotator's reliability model.
 
@@ -510,8 +518,8 @@ reliability estimates.
 Third, kernel selection and design presents a critical challenge in
 implementing the CGP model. The choice of kernel functions significantly
 impacts the model's ability to capture the underlying structure of the
-data and the relationships between annotators. Several considerations
-must be taken into account:
+data and the relationships between annotators \cite{RasmussenEtAl2006Chapter9}.
+Several considerations must be taken into account:
 
 \begin{itemize}
 \item \textbf{Kernel Complexity}: The model requires multiple kernel
@@ -559,14 +567,17 @@ quantification (see \ref{subsec:bayesian_models}).
 
 While Gaussian Processes have demonstrated remarkable success in
 regression and classification tasks, their application to image
-segmentation presents significant computational challenges. The cubic
+segmentation presents significant computational challenges
+\cite{RasmussenEtAl2006Chapter9}. The cubic
 computational complexity of GPs ($\mathcal{O}(N^3)$), which scales with
 the number of data points, becomes particularly problematic when
 dealing with high-resolution images where each pixel can be considered
-a data point. This limitation makes traditional GP approaches
+a data point \cite{LiuEtAl2020}.
+This limitation makes traditional GP approaches
 impractical for large-scale image segmentation tasks, where the number
 of pixels can easily reach into the millions. Alternative approaches,
 such as deep learning-based segmentation methods, often provide more
 computationally efficient solutions for these high-dimensional
 problems, though at the cost of uncertainty quantification
-capabilities that GPs naturally provide.
+capabilities that GPs naturally provide \cite{KendallEtAl2017}
+\cite{WilsonEtAl2016}.

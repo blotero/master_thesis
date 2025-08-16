@@ -17,11 +17,11 @@ segmentation, however, these datasets present the following challenges:
     hard to evaluate whether the model is overfitting or not at a glance.
 \end{itemize}
 
-For these reasons, multiple datasets were created in the pursuit of
+For these reasons, multiple datasets were created this work in the pursuit of
 an initial evaluation of performance of the models against more traditional
 and familiar images before the focus on histopathology images. Once a
-decent performance in metrics like Dice coefficient was achieved, the
-focus was shifted to histopathology images and further tunings on the models
+satisfactory performance was achieved, the focus was shifted to
+histopathology images and further tunings on the models
 were performed if needed.
 
 In any case, both the emulated noisy annotations datasets and the
@@ -65,12 +65,14 @@ specimens of primary breast cancer patients. This dataset is
 particularly valuable for our work because it contains matched pairs
 of H\&E and IHC-stained tissue sections from the same tumor, with a
 total of 4,212 WSIs from 1,153 patients. The IHC stains include
-important biomarkers such as ER, PGR, HER2, and KI67, which are
-routinely used in breast cancer diagnosis and treatment planning
-(more on staining techniques in Section \ref{sec:staining-techniques}).
+important biomarkers such as ER (Estrogen Receptor), PGR (Progesterone
+Receptor), HER2 (Human Epidermal Growth Factor Receptor 2), and KI67
+(Ki67 Proliferation Marker), which are routinely used in breast cancer
+diagnosis and treatment planning (more on staining techniques in
+Section \ref{sec:staining-techniques}).
 
 The dataset's relevance to our work stems from several key aspects.
-The matched H\&E and IHC stains allow for studying the consistency of
+The matched H\&E and IHC stains allows for studying the consistency of
 segmentation across different staining modalities, which is crucial
 for understanding how different visualization methods affect
 annotation quality. With 1,153 patients, the dataset provides a
@@ -79,7 +81,7 @@ a real-world clinical setting. The inclusion of routine diagnostic
 cases makes the dataset representative of actual clinical practice,
 where variations in staining quality and tissue preparation are
 common. Furthermore, the multiple biomarker stains (ER, PGR, HER2,
-KI67) enable the study of how different tissue characteristics affect
+KI67) enable to study how different tissue characteristics affect
 segmentation performance and annotator agreement.
 
 This dataset serves as an ideal testbed for our crowdsourced

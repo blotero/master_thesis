@@ -1,0 +1,97 @@
+04 de junio de 2025, Medellín - Antioquia
+
+Estimados
+
+Primero que todo, les agradezco el considerarme para la evaluación de este trabajo de grado.
+Quiero felicitarlos por el trabajo propuesto, el cual considero bastante interesante y novedoso. Dicho esto, y dada la revisión realizada, no aconsejo la presentación del trabajo de grado antes de realizar cambios estructurales en el trabajo. Dejo los comentarios a continuación, no duden en preguntarme cualquier cosa.
+
+Observaciones generales
+
+La propuesta es clara desde el resumen y motivación, pero se pierde cohesión desde el planteamiento del problema hacia adelante. Existen problemas estructurales en el trabajo, desde la metodología de la investigación, se menciona problemas y soluciones del estado del arte sin un soporte bibliográfico en varias subsecciones. Además de que estos problemas deberían mencionarse en el planteamiento del problema.
+
+Adicional, no existe un desarrollo que conteste el cómo de la propuesta, como porque el uso de redes basadas en convolucionales y por qué no otro tipo de arquitecturas (atencionales, MAMBA, redes de dilatación, entre otras.).
+
+Se presentan resultados, discusiones y conclusiones en dos diferentes capítulos, donde el primero queda desconectado del para qué de la propuesta y cómo aporta esto a la metodología propuesta.
+
+Por último, aconsejo una reestructuración de documento desde el planteamiento del problema y la presentación de los resultados unificarlas.
+
+Dejo observaciones que extiende lo anterior.
+
+Motivación
+
+Figura 1-1: aumentar tamaño de la letra de esta, no es reconocible en una visual de 100% en relación con las dimensiones del papel.
+
+Figura 1-2: recomiendo aumentar el tamaño de las letras, redimensionar la misma figura para que esta se pueda apreciar en el papel. Además, organizar para que no quede en una sola página con espacios en blanco.
+
+Figura 1-1, líneas 429 y 440: no es claro cómo se obtienen ese porcentaje de frecuencia de usabilidad. ¿Cuál es el universo?
+
+Planteamiento del Problema
+
+Figura 1-3: aumentar tamaño de la fuente, redimensionamiento y acomodación entre texto.
+
+El planteamiento está bien escrito, pero genera recelo en tres puntos:
+
+Se concentra en el problema de múltiples anotadores en imágenes histológicas, pero se dejan de lado otros problemas y propuestas del estado del arte.
+
+Se presenta la pregunta de investigación sin definir una metodología clara para justificar el uso de U-Net en CNNs.
+
+Se descartan rápidamente otros tipos de imágenes sin justificación suficiente.
+
+Objetivos
+
+Recomiendo reformular el objetivo general, comenzando por un verbo en infinitivo.
+
+Dos preocupaciones:
+
+La interpretabilidad mencionada en línea 791 no se refleja en los objetivos específicos.
+
+En línea 792 se plantea una comparación muy fuerte con otros métodos, lo que exigiría un marco experimental más amplio.
+
+Los objetivos específicos no se alinean del todo con el general.
+
+Contribuciones
+
+Recomiendo mover esta sección al final, después de las conclusiones, ya que adelanta demasiado sin presentar las metodologías desarrolladas.
+
+Preliminares
+
+Figura 2-2: mejorar resolución y tamaño.
+
+Figura 2-3: quitar la parte negra de la interfaz, solo mostrar la imagen patológica.
+
+Sección 2.2.2: demasiado vacía, sugiero completar con ejemplos visuales.
+
+Sección 2.3.1: inconsistencia entre etiquetas e íconos, y conexión poco clara entre paradigmas.
+
+Línea 970: aclarar que los paradigmas mencionados son de aprendizaje de máquina en general, no solo de Deep Learning.
+
+Subsection 2.3: demasiado escueta, falta desarrollo y referencias bibliográficas.
+
+Chained Gaussian Processes
+
+Subsections 3.1.2 y 3.1.3: sin soporte bibliográfico.
+
+El orden debería invertirse con la 3.1.4.
+
+Subsection 3.3: poco claro el aporte, parece rezagado.
+
+Tabla 3-1: organizar para mejor visibilidad.
+
+Loss Functions for Multiple Annotators
+
+Ecuación 4-10 demasiado larga, usar funciones intermedias.
+
+Sección 4.1.4: no debería estar allí sin experimentos, mejor fusionar con sección anterior.
+
+Chained Deep Learning And Tgcess Loss For Image Segmentation
+
+Numeración comienza en cero, debe corregirse.
+
+Figuras 5-1 y 5-2 parecen iguales, unificarlas.
+
+Líneas 1627-1629: no queda claro si los términos de regularización son escalares o definidos de otra manera, revisar ecuación 5-1.
+
+Cristian Alfonso Jimenez Castaño, MSc.
+C.C. 1 055 918 346
+Profesor Ocasional
+Universidad de Antioquia
