@@ -30,20 +30,23 @@ errors and stabilizes gradient calculations during training. The
 epsilon value is kept small enough to not significantly impact the
 loss function behavior while providing the necessary numerical safeguards.
 
-\subsubsection{Penalty for extreme reliabilities}
+\subsubsection{Centroid penalty}
 
 Some optimization processes might favor a convergence to extreme reliability
 estimations, by assigning either 0 or 1 to all labelers. To avoid this, a
 regularization term is added to the loss function which penalizes the model
 for assigning extreme reliability values and favoring those around a
 centroid. High scaling values for this regularization term might
-lead to a convergence to a very homogeneous reliability map across all
+convergence to a very homogeneous reliability map across all
 labelers, which is not desired either.
 
 \begin{equation}
   \mathcal{L}_{centroid} = \alpha_{centroid} \cdot
   \mathbb{E}[(\Lambda_r - 0.5)^2]
 \end{equation}
+
+The behavior of this regularization term is shown in Figure
+\ref{fig:regularization_terms} (a).
 
 \subsubsection{Entropy regularization}
 In this case, entropy is useful to ensure that the reliability maps
@@ -60,6 +63,9 @@ less trustworthy annotators.
   +(1 - \Lambda_r) \log(1 + (1 - \Lambda_r))]
 \end{equation}
 
+The behavior of this regularization term is shown in Figure
+\ref{fig:regularization_terms} (b).
+
 \subsubsection{Sum-to-one regularization}
 
 The reliability branch for scalar, pixel and features approaches,
@@ -69,7 +75,7 @@ be forced to sum to one through a softmax operation \footnote{This
 Building API from seg\_tgce}. For the cases in which this sum is not
 forced to be unitary the flexibility of this sum is manageable
 through a regularization term which penalizes the model for not
-summing to one. This was found useful in situations in which the
+adding to one. This was found useful in situations in which the
 reliability maps were not expected to be punctuated (e.g. for the
 scalar reliability) as $1/R$, but rather close to the unit for all of
 them (if all labelers were good). This regularization term was found
@@ -78,17 +84,20 @@ similar levels of expertise.
 
 \begin{equation}
   \mathcal{L}_{sum} = \alpha_{sum} \cdot
-  \mathbb{E}[\sum_{r\in R}( \Lambda_r - 1)^2]
+  \mathbb{E}[( \Lambda_r - 1)^2]
 \end{equation}
 
-\subsubsection{Missing labels penalizing}
-In situations were the datasets has a low labeling rate, the model might
+The behavior of this regularization term is shown in Figure
+\ref{fig:regularization_terms} (c).
+
+\subsubsection{Missing labels penalty}
+In situations were the datasets have a low labeling rate, the model might
 take an optimization shortcut by assigning high reliability values to
 labelers which did not label at all, since the element-wise product with the
-mask would be close to zero, which favors a minimization target,
-which is not desired. To avoid this, a term was added to the loss
-function which penalizes the model for assigning high reliability
-values to unlabeled patches, as follows:
+mask would be close to zero, which favors a minimization target.
+To avoid this, a term was added to the loss function which penalizes
+the model for assigning high reliability values to unlabeled patches,
+as follows:
 
 \begin{equation}
   \mathcal{L}_{\lambda} = \gamma \max \left(0, \sum_{\forall r \in R}
@@ -103,37 +112,127 @@ which control the penalty strength for high and low estimated
 reliabilities, respectively and $\gamma$ is a hyperparameter
 which controls the overall strength of the penalty.
 
+The behavior of this regularization term is shown in Figure
+\ref{fig:regularization_terms} (d).
+
 \begin{figure}[H]
-  \begin{tikzpicture}
-    \begin{axis}[
-        axis lines=middle,
-        xlabel={$z=\Lambda_r - \mu_r$},
-        ylabel={$\mathcal{L}_{\lambda}(z)$},
-        width=10cm, height=7cm,
-        domain=-2:4,
-        samples=400,
-        smooth,
-        thick,
-        ymin=0, ymax=5,         % <-- cap y range
-        xtick={-2,-1,0,1,2,3,4},
-        ytick={0,1,2,3,4,5},
-        every axis x label/.style={at={(ticklabel* cs:1.05)}, anchor=west},
-        every axis y label/.style={at={(ticklabel* cs:1.05)}, anchor=south},
-      ]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[
+          axis lines=middle,
+          xlabel={$\Lambda_r$},
+          ylabel={$\mathcal{L}_{centroid}^r(\Lambda_r)$},
+          width=\textwidth, height=6cm,
+          domain=0:1,
+          samples=200,
+          smooth,
+          thick,
+          ymin=0, ymax=0.25,
+          xtick={0,0.5,1.0},
+          ytick={0,0.1,0.2,0.3},
+          every axis x label/.style={at={(ticklabel* cs:1.05)}, anchor=west},
+          every axis y label/.style={at={(ticklabel* cs:1.05)}, anchor=south},
+        ]
+        % Plot: (x - 0.5)^2
+        \addplot[red,thick] {(x - 0.5)^2};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{$\mathcal{L}_{centroid}^r(\Lambda_r) = (\Lambda_r - 0.5)^2$}
+    \label{fig:centroid_penalty}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[
+          axis lines=middle,
+          xlabel={$\Lambda_r$},
+          ylabel={$\mathcal{L}_{entropy}^r(\Lambda_r)$},
+          width=\textwidth, height=6cm,
+          domain=0:1,
+          samples=200,
+          smooth,
+          thick,
+          ymin=0, ymax=1.4,
+          xtick={0,0.5,1.0},
+          ytick={0,0.5,1.0,1.5},
+          every axis x label/.style={at={(ticklabel* cs:1.05)}, anchor=west},
+          every axis y label/.style={at={(ticklabel* cs:1.05)}, anchor=south},
+        ]
+        % Plot: x*ln(1+x) + (1-x)*ln(1+(1-x))
+        \addplot[green,thick] {x*ln(1+x) + (1-x)*ln(1+(1-x))};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{$\mathcal{L}_{entropy}(\Lambda_r) = \Lambda_r \log(1 +
+    \Lambda_r) + (1 - \Lambda_r) \log(1 + (1 - \Lambda_r))$}
+    \label{fig:entropy_regularization}
+  \end{subfigure}
 
-      % Parameters
-      \def\alphaval{0.2}
-      \def\betaval{1.0}   % <- larger beta keeps growth moderate
+  \vspace{0.5cm}
 
-      % Plot: max(0, expression)
-      \addplot[blue,thick]
-      {max(0, (1/(1-\alphaval))*(x)*exp((x - 1)/\betaval))};
+  \begin{subfigure}[b]{0.48\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[
+          axis lines=middle,
+          xlabel={$\Lambda_r$},
+          ylabel={$\mathcal{L}_{sum}^r(\Lambda_r)$},
+          width=\textwidth, height=6cm,
+          domain=0:2,
+          samples=200,
+          smooth,
+          thick,
+          ymin=0, ymax=1.0,
+          xtick={0,0.5,1.0,1.5,2.0},
+          ytick={0,0.2,0.4,0.6,0.8,1.0},
+          every axis x label/.style={at={(ticklabel* cs:1.05)}, anchor=west},
+          every axis y label/.style={at={(ticklabel* cs:1.05)}, anchor=south},
+        ]
+        % Plot: (x - 1)^2
+        \addplot[purple,thick] {(x - 1)^2};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{$\mathcal{L}_{sum}^r(\Lambda_r) = (\Lambda_r - 1)^2$}
+    \label{fig:sum_to_one_regularization}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \begin{tikzpicture}
+      \begin{axis}[
+          axis lines=middle,
+          xlabel={$z=\Lambda_r - \mu_r$},
+          ylabel={$\mathcal{L}_{\lambda}^r(z)$},
+          width=\textwidth, height=6cm,
+          domain=-2:4,
+          samples=400,
+          smooth,
+          thick,
+          ymin=0, ymax=5,
+          xtick={-2,-1,0,1,2,3,4},
+          ytick={0,1,2,3,4,5},
+          every axis x label/.style={at={(ticklabel* cs:1.05)}, anchor=west},
+          every axis y label/.style={at={(ticklabel* cs:1.05)}, anchor=south},
+        ]
+        % Parameters
+        \def\alphaval{0.2}
+        \def\betaval{1.0}
+        % Plot: max(0, expression)
+        \addplot[blue,thick] {max(0, (1/(1-\alphaval))*(x)*exp((x -
+        1)/\betaval))};
+      \end{axis}
+    \end{tikzpicture}
+    \caption{$\mathcal{L}_{\lambda}^r(z) = \gamma \max(0,
+    \frac{1}{1-\alpha_{\lambda}} z \cdot e^{\frac{z-1}{\beta}})$}
+    \label{fig:missing_labels_penalizing}
+  \end{subfigure}
 
-    \end{axis}
-  \end{tikzpicture}
-  \caption{Example of the $\mathcal{L}_{\lambda}(z)$ function for
-  values of $\alpha_{\lambda}=0.2$ and $\beta=1.0$.}
-  \label{fig:missing_labels_penalizing}
+  \caption{Visualization of the four regularization terms used in the
+    TGCE loss function:
+    (a) centroid penalty for extreme reliabilities, (b) entropy regularization,
+    (c) sum-to-one regularization, and (d) missing labels penalty.
+    Each subplot shows
+    how the respective regularization term behaves as a function of its
+  input variables.}
+  \label{fig:regularization_terms}
 \end{figure}
 
 This function applies no penalty for cases in which  $\Lambda_r <
@@ -145,7 +244,7 @@ values to a labeler which did not label at all. The proportion on how
 high and how quickly (in the space of difference $\Lambda_r - \mu_r$)
 the penalty is applied is controlled by the hyperparameters $\alpha_{\lambda}$
 and $\beta$. The behavior of this term is shown in Figure
-\ref{fig:missing_labels_penalizing}.
+\ref{fig:regularization_terms} (d).
 
 These regularization terms lead to the overall loss function being in the form:
 
