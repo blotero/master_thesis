@@ -1,0 +1,57 @@
+\section{Summary}
+
+The experimental results on both the Oxford-IIIT Pet and \gls{TNBC}
+(Crowd-Seg) datasets provide valuable insights into the performance
+and limitations of our proposed approach. The model demonstrated
+exceptional performance on the Oxford-IIIT Pet dataset, achieving
+competitive Dice and Jaccard scores while successfully capturing
+annotator reliability patterns. The model's ability to simultaneously
+learn segmentation and reliability estimation proved particularly
+valuable, providing insights into annotator behavior that traditional
+approaches like STAPLE and MV cannot offer.
+
+However, the experiments on the \gls{TNBC} dataset revealed significant
+challenges in evaluating semantic segmentation models for
+histopathological images when dealing with unreliable ground truth.
+The morphological inconsistencies in the expert annotations, combined
+with the extremely low label rates (1-12\%) across annotators, made
+it difficult to objectively measure the model's performance. While
+the model showed promising convergence in training, the validation
+metrics remained unstable, suggesting that the current dataset may
+not be suitable for rigorous evaluation of multi-annotator
+segmentation approaches.
+
+These findings highlight the need for more reliable ground truth
+annotations in histopathological image segmentation datasets. Future
+work should focus on:
+\begin{itemize}
+  \item Developing datasets with more consistent and reliable
+    expert annotations
+  \item Implementing stricter quality control measures for ground
+    truth generation
+  \item Exploring alternative evaluation metrics that account for
+    annotation uncertainty
+  \item Investigating methods to handle extremely sparse annotations
+    more effectively
+\end{itemize}
+
+Despite these challenges, the model's performance on the Oxford-IIIT
+Pet dataset demonstrates its effectiveness in handling multiple
+annotators with varying reliability levels. The model
+successfully learned to:
+\begin{itemize}
+  \item Balance the contributions of different annotators based on
+    their reliability
+  \item Provide detailed spatial reliability information through
+    pixel-wise estimation
+  \item Maintain high segmentation accuracy even with missing labels
+  \item Adapt to different noise levels in annotator inputs
+\end{itemize}
+
+These capabilities make the proposed approach particularly valuable
+for real-world applications where multiple annotators with varying
+expertise levels contribute to the dataset. The model's ability to
+simultaneously learn segmentation and reliability estimation provides
+a more comprehensive understanding of the annotation process, which
+could be leveraged to improve the quality of future annotations and
+dataset construction.

@@ -1,0 +1,65 @@
+\section{Reliability Branch}
+
+\subsection{Scalar Reliability Estimation}\label{sec:scalar_model}
+
+The scalar reliability estimation branch is the simplest one, in which
+the reliability branch is a parallel branch to the segmentation branch,
+which leads to a multi-output network. The final output consists of $R$
+reliability maps $\Lambda_r$, one for each annotator, with values
+constrained to the $[0,1]$ range through a sigmoid activation
+function. This design allows the network to learn and adapt to the
+varying reliability of different annotators across different regions
+of the image.
+
+The scalar reliability branch is implemented by taking the bottleneck features
+from the encoder and applying a global average pooling operation followed by
+a dense layer with sigmoid activation. This results in a single reliability
+value per annotator for each input image, making it computationally efficient
+but less spatially aware of reliability variations within the image.
+
+\subsection{Feature-based Reliability Estimation}
+
+The feature-based reliability estimation approach provides a more detailed
+spatial understanding of annotator reliability by operating on the bottleneck
+features of the encoder. This approach maintains the spatial information from
+the encoder's bottleneck while being more computationally efficient than
+pixel-wise reliability estimation.
+
+The feature-based reliability branch is implemented by applying two
+convolutional layers with batch normalization to the bottleneck features:
+\begin{itemize}
+  \item A first convolutional layer with 32 filters to process the
+    bottleneck features
+  \item A second convolutional layer that produces $R$ feature maps,
+    one for each annotator
+\end{itemize}
+
+This approach provides a coarse-grained spatial reliability map that captures
+regional variations in annotator reliability while maintaining computational
+efficiency. The resulting reliability maps have the same spatial dimensions
+as the bottleneck features, providing a middle ground between scalar and
+pixel-wise reliability estimation.
+
+\subsection{Pixel-wise Reliability Estimation}
+
+The pixel-wise reliability estimation approach provides the most detailed
+spatial understanding of annotator reliability by operating on the
+full-resolution
+features from the decoder. This approach allows for fine-grained reliability
+estimation at the pixel level, capturing local variations in annotator
+reliability.
+
+The pixel-wise reliability branch is implemented by applying three convolutional
+layers with batch normalization to the decoder's output features:
+\begin{itemize}
+  \item Two initial convolutional layers with 32 filters each to
+    process the features
+  \item A final convolutional layer that produces $R$ reliability
+    maps, one for each annotator
+\end{itemize}
+
+This approach provides the most detailed spatial reliability information,
+allowing the model to capture pixel-level variations in annotator reliability.
+The resulting reliability maps have the same spatial dimensions as the input
+image, providing the finest granularity of reliability estimation among the
+three approaches.

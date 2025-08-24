@@ -33,8 +33,8 @@ $\mathbf{1} \in \{1\}^K$ being an all-ones vector. In addition, the
 MAE loss can be rewritten for softmax outputs, yielding:
 
 \begin{equation}
-  MAE(\mathbf{y}, f(\mathbf{x})) = 2(1 - \mathbf{1}^\top(\mathbf{y}
-  \odot f(\mathbf{x})))
+  MAE(\mathbf{y}, f(\mathbf{x})) = 2(1 - \mathbf{y}^\top
+  \odot f(\mathbf{x}))
 \end{equation}
 
 where $\odot$ stands for the element-wise product.
@@ -83,14 +83,14 @@ problem with the following data representation:
 
 \begin{equation}
   \mathbf X \in \mathbb{R}^{W \times H}, \{ \mathbf Y_r \in
-  \{0,1\}^{W \times H \times K} \}_{r=1}^R; \;\; \mathbf {\hat Y} \in
-  [0,1]^{W\times H \times K} = f(\mathbf X)
+  \{0,1\}^{W \times H \times K} \}_{r=1}^R; \;\; \hat{\mathbf { Y}} \in
+  [0,1]^{W\times H \times K} = \mathbf{f}(\mathbf X)
 \end{equation}
 
 where the segmentation mask function maps the input to output as:
 
 \begin{equation}
-  f: \mathbb  R ^{W\times H} \to [0,1]^{W\times H\times K}
+  \mathbf f: \mathbb  R ^{W\times H} \to [0,1]^{W\times H\times K}
 \end{equation}
 
 The segmentation masks $\mathbf Y_r$ satisfy the following condition
@@ -106,7 +106,8 @@ The key innovation in our approach is the introduction of reliability
 maps $\Lambda_r$ for each annotator:
 
 \begin{equation}
-  \bigg\{ \Lambda_r (\mathbf X; \theta ) \in [0,1] ^{W\times H} \bigg\}_{r=1}^R
+  \bigg\{ \Lambda_r (\mathbf X; \theta ) \in [0,1] ^{W\times H}
+  \bigg\}_{r=1}^R
 \end{equation}
 
 These reliability maps serve as a mechanism to estimate
@@ -126,14 +127,14 @@ flexibility of reliability maps. Let us first define the key components:
 \begin{equation}
   \mathcal{L}_{GCE}(\mathbf{Y}_r, f(\mathbf{X};\theta)) =
   \mathbb{E}_{k} \Bigg\{
-    \mathbf{Y}_r \circ \left(
-      \frac{\mathbf{1}_{W\times H \times K} - f(\mathbf{X};\theta)^{\circ
+    \mathbf{Y}_r \odot \left(
+      \frac{\mathbf{1}_{W\times H \times K} - f(\mathbf{X};\theta)^{\odot
   q}}{q} \right) \Bigg\}
 \end{equation}
 
 \begin{equation}
   \mathcal{L}_{prior} = \frac{\mathbf{1}_{W\times H} -
-  \left(\frac{1}{K} \mathbf{1}_{W\times H}\right)^{\circ q}}{q}
+  \left(\frac{1}{K} \mathbf{1}_{W\times H}\right)^{\odot q}}{q}
 \end{equation}
 
 where $\mathcal{L}_{GCE}$ represents the GCE loss component and
@@ -145,23 +146,24 @@ complete TGCE$_{SS}$ loss function is then defined as:
     TGCE_{SS}(\mathbf{Y}_r,f(\mathbf{X};\theta) |
     \mathbf{\Lambda}_r(\mathbf{X};\theta)) = \mathbb{E}_{r,w,h} \Bigg\{
       \\
-      \Lambda_r(\mathbf{X};\theta) \circ
+      \Lambda_r(\mathbf{X};\theta) \odot
       \mathcal{L}_{GCE} +
-      \left(\mathbf{1}_{W\times H} -
-      \Lambda_r(\mathbf{X};\theta)\right) \circ \mathcal{L}_{prior};
+      \tilde C \left(\mathbf{1}_{W\times H} -
+      \Lambda_r(\mathbf{X};\theta)\right) \odot \mathcal{L}_{prior};
       \\
     w \in W, h \in H ; r \in R \Bigg\}
   \end{split}
 \end{equation}
 
 where $q \in (0,1)$ controls the \gls{MAE} or \gls{CE} level in the
-same way as in the \gls{GCE} loss function. The loss function consists of
-two main components:
+same way as in the \gls{GCE} loss function. $\tilde C$ controls is an additional
+hyperparameter which controls the tolerance to unreliable annotations.
+The loss function consists of two main components:
 
 \begin{itemize}
   \item The first term weighted by $\Lambda_r$ represents the GCE
     loss for regions where the annotator is considered reliable
-  \item The second term weighted by $(1-\Lambda_r)$ provides a
+  \item The second term weighted by $(1-\Lambda_r)$ and $\tilde C$ provides a
     uniform prior for regions where the annotator is considered unreliable
 \end{itemize}
 
@@ -205,7 +207,8 @@ simultaneously learn the segmentation task while estimating annotator
 reliability in a spatially-aware manner. This represents a
 significant advancement over existing methods that either:
 \begin{itemize}
-  \item Treat all annotators equally without considering their varying expertise
+  \item Treat all annotators equally without considering their
+    varying expertise
   \item Use global reliability scores that don't account for spatial
     variations in annotator performance
   \item Rely on fixed, pre-defined reliability measures rather than

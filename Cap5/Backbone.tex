@@ -1,0 +1,32 @@
+\section{Backbone Architecture}
+
+The model employs a pre-trained ResNet-34 as its encoder backbone,
+leveraging its deep residual learning framework for efficient feature
+extraction. The choice of ResNet-34 provides several key advantages:
+efficient feature extraction through residual connections,
+pre-trained weights that capture rich visual representations, and
+stable gradient flow during training \cite{HeEtAl2015}. The
+ResNet-34 backbone is modified to serve as the encoder in our UNET
+architecture by removing the final fully connected layer and
+utilizing the feature maps from different stages of the network for
+skip connections.
+
+\subsection{U-Net Architecture}
+
+The U-Net architecture follows a traditional encoder-decoder structure
+with skip connections, where the encoder path implements the
+ResNet-34 structure. The decoder path employs transposed convolutions
+for upsampling, creating a symmetrical architecture that effectively
+captures both high-level and low-level features. The architecture
+incorporates four downsampling stages in the encoder, corresponding
+to the ResNet-34 blocks, and four upsampling stages in the decoder.
+These stages are connected through skip connections that bridge
+corresponding encoder and decoder stages, allowing the network to
+preserve fine-grained details. Each convolution operation is followed
+by batch normalization and ReLU activation to ensure stable training
+and effective feature learning.
+
+This U-Net architecture is expected to be coupled with a reliability
+branch which leads to a multi-output network. Three different approaches
+are considered for this branch: \textbf{scalar}, \textbf{features},
+and \textbf{pixel}.

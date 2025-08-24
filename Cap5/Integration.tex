@@ -1,0 +1,180 @@
+\section{Integration with TGCE Loss}
+
+The model produces two distinct outputs: segmentation masks
+$\mathbf{\hat{Y}} = f(\mathbf{X};\theta)$ and reliability maps
+$\{\Lambda_r(\mathbf{X};\theta)\}_{r=1}^R$. These outputs work in
+tandem with the $TGCE_{SS}$ loss function described in Section
+\ref{sec:proposed-loss-functions}. The loss function simultaneously guides the
+learning of both the segmentation masks and reliability maps,
+ensuring that the model learns to balance the contributions of
+different annotators based on their estimated reliability.
+
+The TGCE$_{SS}$ loss function is implemented differently for each reliability
+approach, with specific adaptations to handle the different spatial dimensions
+of the reliability maps. Naturally, the model itself container tunable
+hyperparameters related to the \gls{GCE} - \gls{MAE} trade off behavior
+(also known as $q$ parameter) and the unreliability tolerance $\tilde C$,
+however, some additional hyperpamarameters were added with the purpose of
+regularizing the overall loss for every experiment.
+
+\subsection{Regularization terms}\label{sec:regularizers}
+
+All three implementations include regularization terms to ensure
+proper learning of the reliability maps:
+
+\subsubsection{Numerical stability}
+To ensure numerical stability in the loss function computations,
+particularly in division operations, a small epsilon value $\epsilon$
+is added to denominators. This prevents division by zero
+errors and stabilizes gradient calculations during training. The
+epsilon value is kept small enough to not significantly impact the
+loss function behavior while providing the necessary numerical safeguards.
+
+\subsubsection{Penalty for extreme reliabilities}
+
+Some optimization processes might favor a convergence to extreme reliability
+estimations, by assigning either 0 or 1 to all labelers. To avoid this, a
+regularization term is added to the loss function which penalizes the model
+for assigning extreme reliability values and favoring those around a
+centroid. High scaling values for this regularization term might
+lead to a convergence to a very homogeneous reliability map across all
+labelers, which is not desired either.
+
+\begin{equation}
+  \mathcal{L}_{centroid} = \alpha_{centroid} \cdot
+  \mathbb{E}[(\Lambda_r - 0.5)^2]
+\end{equation}
+
+\subsubsection{Entropy regularization}
+In this case, entropy is useful to ensure that the reliability maps
+are not too homogeneous. The entropy regularization term encourages
+the model to assign more discriminative reliability values by penalizing
+uniform distributions. This prevents the model from converging to
+uninformative reliability estimates where all labelers appear equally
+reliable, thus maintaining meaningful distinctions between more and
+less trustworthy annotators.
+
+\begin{equation}
+  \mathcal{L}_{entropy} = \alpha_{entropy} \cdot \mathbb{E}[\Lambda_r
+    \log(1 + \Lambda_r)
+  +(1 - \Lambda_r) \log(1 + (1 - \Lambda_r))]
+\end{equation}
+
+\subsubsection{Sum-to-one regularization}
+
+The reliability branch for scalar, pixel and features approaches,
+might or might not
+be forced to sum to one through a softmax operation \footnote{This
+  was left as flexible and configurable in the Network Architecture
+Building API from seg\_tgce}. For the cases in which this sum is not
+forced to be unitary the flexibility of this sum is manageable
+through a regularization term which penalizes the model for not
+summing to one. This was found useful in situations in which the
+reliability maps were not expected to be punctuated (e.g. for the
+scalar reliability) as $1/R$, but rather close to the unit for all of
+them (if all labelers were good). This regularization term was found
+particularly useful in situations where labelers have good and
+similar levels of expertise.
+
+\begin{equation}
+  \mathcal{L}_{sum} = \alpha_{sum} \cdot
+  \mathbb{E}[\sum_{r\in R}( \Lambda_r - 1)^2]
+\end{equation}
+
+\subsubsection{Missing labels penalizing}
+In situations were the datasets has a low labeling rate, the model might
+take an optimization shortcut by assigning high reliability values to
+labelers which did not label at all, since the element-wise product with the
+mask would be close to zero, which favors a minimization target,
+which is not desired. To avoid this, a term was added to the loss
+function which penalizes the model for assigning high reliability
+values to unlabeled patches, as follows:
+
+\begin{equation}
+  \mathcal{L}_{\lambda} = \gamma \max \left(0, \sum_{\forall r \in R}
+    \frac{1}{1-\alpha_{\lambda}} \left(\Lambda_r - \mu_r\right) \cdot
+  e^{\frac{\Lambda_r - \mu_r - 1}{\beta}}\right)
+\end{equation}
+
+Where $\Lambda_r$ is the estimated reliability of the labeler $r$ for a
+certain patch, $\mu_r$ is the one hot label mask of the labeler
+$r$ for the same patch, $\alpha_{\lambda}$ and $\beta$ are hyperparameters
+which control the penalty strength for high and low estimated
+reliabilities, respectively and $\gamma$ is a hyperparameter
+which controls the overall strength of the penalty.
+
+\begin{figure}[H]
+  \begin{tikzpicture}
+    \begin{axis}[
+        axis lines=middle,
+        xlabel={$z=\Lambda_r - \mu_r$},
+        ylabel={$\mathcal{L}_{\lambda}(z)$},
+        width=10cm, height=7cm,
+        domain=-2:4,
+        samples=400,
+        smooth,
+        thick,
+        ymin=0, ymax=5,         % <-- cap y range
+        xtick={-2,-1,0,1,2,3,4},
+        ytick={0,1,2,3,4,5},
+        every axis x label/.style={at={(ticklabel* cs:1.05)}, anchor=west},
+        every axis y label/.style={at={(ticklabel* cs:1.05)}, anchor=south},
+      ]
+
+      % Parameters
+      \def\alphaval{0.2}
+      \def\betaval{1.0}   % <- larger beta keeps growth moderate
+
+      % Plot: max(0, expression)
+      \addplot[blue,thick]
+      {max(0, (1/(1-\alphaval))*(x)*exp((x - 1)/\betaval))};
+
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Example of the $\mathcal{L}_{\lambda}(z)$ function for
+  values of $\alpha_{\lambda}=0.2$ and $\beta=1.0$.}
+  \label{fig:missing_labels_penalizing}
+\end{figure}
+
+This function applies no penalty for cases in which  $\Lambda_r <
+\mu_r$, meaning no penalty for assigning any reliability value
+(ranging from 0 to 1) to a labeler who actually labeled a given patch.
+On the other hand, a penalty is indeed applied in cases where
+$\Lambda_r > \mu_r$, meaning a penalty for assigning high reliability
+values to a labeler which did not label at all. The proportion on how
+high and how quickly (in the space of difference $\Lambda_r - \mu_r$)
+the penalty is applied is controlled by the hyperparameters $\alpha_{\lambda}$
+and $\beta$. The behavior of this term is shown in Figure
+\ref{fig:missing_labels_penalizing}.
+
+These regularization terms lead to the overall loss function being in the form:
+
+\begin{align}
+  L_{TGCEreg} &= L_{TGCEss} \\
+  &+\alpha_{reg} \cdot \mathbb{E}[(\Lambda_r - 0.5)^2] \nonumber \\
+  &+\alpha_{entropy} \cdot \mathbb{E}[\Lambda_r \log(1 + \Lambda_r)
+  +(1 - \Lambda_r) \log(1 + (1 - \Lambda_r))] \nonumber \\
+  &+\alpha_{sum} \cdot \mathbb{E}[\sum_{\forall r \in R}(\Lambda_r -
+  1)^2] \nonumber \\
+  &+\gamma \cdot \max \left(0, \sum_{\forall r \in R}
+    \frac{1}{1-\alpha_{\lambda}} \left(\Lambda_r - \mu_r\right) \cdot
+  e^{\frac{\Lambda_r - \mu_r - 1}{\beta}}\right) \nonumber
+\end{align}
+
+For the scalar reliability approach, the loss function operates on
+global reliability values per annotator. The reliability maps are
+expanded to match the spatial dimensions of the predictions through
+tiling operations. This approach is computationally efficient but
+provides the same reliability value across all spatial locations.
+
+The feature-based reliability approach requires additional processing
+to handle the spatial dimensions of the bottleneck features. The
+reliability maps are resized using bilinear interpolation to match
+the spatial dimensions of the predictions. This approach provides
+coarse-grained spatial reliability information while maintaining
+computational efficiency.
+
+The pixel-wise reliability approach operates directly on full-resolution
+reliability maps, requiring no spatial transformations. This approach
+provides the most detailed spatial reliability information but requires
+more computational resources.
