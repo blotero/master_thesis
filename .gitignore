@@ -19,7 +19,8 @@
 **/*.bbl
 **/*.acn
 **/*.fdb_latexmk
-**/*.pdf
-**/*.lyx
+*This is the case of the
+  Oxford PET dataset, where the labelers have good and similar levels
+  of expertise.*/*.lyx
 !Tesis.pdf
 **/*.venv/
