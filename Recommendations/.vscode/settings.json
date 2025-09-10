@@ -1,7 +1,5 @@
 {
-  "latex-workshop.latex.search.rootFiles.include": [
-    "response_to_reviewers.tex"
-  ],
+  "latex-workshop.latex.search.rootFiles.include": ["Recommendations.tex"],
   "latex-workshop.latex.recipes": [
     {
       "name": "lualatexmk",

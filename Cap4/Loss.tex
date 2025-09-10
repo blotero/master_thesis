@@ -155,7 +155,15 @@ complete TGCE$_{SS}$ loss function is then defined as:
   \end{split}
 \end{equation}
 
-where $q \in (0,1)$ controls the \gls{MAE} or \gls{CE} level in the
+where $q \in (0,1)$\footnote{
+  To ensure numerical stability in the loss function computations,
+  particularly in division operations, a small epsilon value $\epsilon$
+  is added to denominators in practical applications. This prevents
+  division by zero errors and stabilizes gradient calculations during
+  training. The epsilon value is kept small enough ($~10^{-6}$) to not
+  significantly impact the loss function behavior while providing the
+  necessary numerical safeguards.
+} controls the \gls{MAE} or \gls{CE} level in the
 same way as in the \gls{GCE} loss function. $\tilde C$ controls is an additional
 hyperparameter which controls the tolerance to unreliable annotations.
 The loss function consists of two main components:

@@ -1,4 +1,5 @@
-\section{Integration with TGCE Loss}
+\section{Applying regularization terms to the TGCE$_{SS}$ loss
+function}\label{sec:regularizers}
 
 The model produces two distinct outputs: segmentation masks
 $\mathbf{\hat{Y}} = f(\mathbf{X};\theta)$ and reliability maps
@@ -17,20 +18,24 @@ hyperparameters related to the \gls{GCE} - \gls{MAE} trade off behavior
 however, some additional hyperpamarameters were added with the purpose of
 regularizing the overall loss for every experiment.
 
-\subsection{Regularization terms}\label{sec:regularizers}
+These additional regularization terms arise from the need to ensure
+consistency in the internal representations of the model, since some
+unregularized experiments showed that the model could sometimes converge to
+low loss values but outputs in the reliability branch with no
+consistency at all, since the model might assign extreme reliability
+values to some labelers and not others. The added regularization terms help the
+model converge to reliability values that are more consistent across
+all labelers, that do not reach extreme values and that maintain high
+reliability scores for scorers that did applied a label in the first
+place and also were considered better labelers \footnote{For this,
+  the Oxford PET dataset with emulated noisy labelers was very
+  useful since the labeler reliability (related to noise levels in encoder
+  layers) was very easy to control, making it possible
+  to debug the model and note if reliability estimations levels were consistent
+  with the labelers considered better. This was the main criteria to
+design and select the regularization terms.}
 
-All three implementations include regularization terms to ensure
-proper learning of the reliability maps:
-
-\subsubsection{Numerical stability}
-To ensure numerical stability in the loss function computations,
-particularly in division operations, a small epsilon value $\epsilon$
-is added to denominators. This prevents division by zero
-errors and stabilizes gradient calculations during training. The
-epsilon value is kept small enough to not significantly impact the
-loss function behavior while providing the necessary numerical safeguards.
-
-\subsubsection{Centroid penalty}
+\subsection{Centroid penalty for extreme reliabilities}
 
 Some optimization processes might favor a convergence to extreme reliability
 estimations, by assigning either 0 or 1 to all labelers. To avoid this, a
@@ -42,13 +47,13 @@ labelers, which is not desired either.
 
 \begin{equation}
   \mathcal{L}_{centroid} = \alpha_{centroid} \cdot
-  \mathbb{E}[(\Lambda_r - 0.5)^2]
+  \mathbb{E}_{r \in R}[(\Lambda_r - 0.5)^2]
 \end{equation}
 
 The behavior of this regularization term is shown in Figure
 \ref{fig:regularization_terms} (a).
 
-\subsubsection{Entropy regularization}
+\subsection{Entropy regularization}
 In this case, entropy is useful to ensure that the reliability maps
 are not too homogeneous. The entropy regularization term encourages
 the model to assign more discriminative reliability values by penalizing
@@ -58,7 +63,7 @@ reliable, thus maintaining meaningful distinctions between more and
 less trustworthy annotators.
 
 \begin{equation}
-  \mathcal{L}_{entropy} = \alpha_{entropy} \cdot \mathbb{E}[\Lambda_r
+  \mathcal{L}_{entropy} = \alpha_{entropy} \cdot \mathbb{E}_{r \in R}[\Lambda_r
     \log(1 + \Lambda_r)
   +(1 - \Lambda_r) \log(1 + (1 - \Lambda_r))]
 \end{equation}
@@ -66,31 +71,37 @@ less trustworthy annotators.
 The behavior of this regularization term is shown in Figure
 \ref{fig:regularization_terms} (b).
 
-\subsubsection{Sum-to-one regularization}
+\subsection{Sum-to-one regularization}
 
 The reliability branch for scalar, pixel and features approaches,
 might or might not
-be forced to sum to one through a softmax operation \footnote{This
+be forced to sum to one depending on the output activation function
+\footnote{This
   was left as flexible and configurable in the Network Architecture
-Building API from seg\_tgce}. For the cases in which this sum is not
-forced to be unitary the flexibility of this sum is manageable
-through a regularization term which penalizes the model for not
-adding to one. This was found useful in situations in which the
-reliability maps were not expected to be punctuated (e.g. for the
+  Building API from seg\_tgce, allowing it to be either softmax or
+sigmoid.}. For the cases in which this sum is not
+forced to be unitary (sigmoid) the flexibility of this sum is manageable
+through a regularization term which mildly penalizes the model for adding
+to values too far from the unit. This was found useful in situations
+in which the reliability maps were not expected to be punctuated (e.g. for the
 scalar reliability) as $1/R$, but rather close to the unit for all of
 them (if all labelers were good). This regularization term was found
 particularly useful in situations where labelers have good and
-similar levels of expertise.
+similar levels of expertise. \footnote{The behavior of this
+  regularization term of focusing in the homogeneity of the
+  reliability maps is mostly covered by the combination of the
+  centroid and entropy regularization terms, which was proven to be
+redundant in section \ref{sec:pretraining-study}.}
 
 \begin{equation}
   \mathcal{L}_{sum} = \alpha_{sum} \cdot
-  \mathbb{E}[( \Lambda_r - 1)^2]
+  \left(\sum_{\forall r \in R} \Lambda_r - 1  \right)^2
 \end{equation}
 
 The behavior of this regularization term is shown in Figure
 \ref{fig:regularization_terms} (c).
 
-\subsubsection{Missing labels penalty}
+\subsection{Missing labels penalty}
 In situations were the datasets have a low labeling rate, the model might
 take an optimization shortcut by assigning high reliability values to
 labelers which did not label at all, since the element-wise product with the
@@ -100,17 +111,17 @@ the model for assigning high reliability values to unlabeled patches,
 as follows:
 
 \begin{equation}
-  \mathcal{L}_{\lambda} = \gamma \max \left(0, \sum_{\forall r \in R}
-    \frac{1}{1-\alpha_{\lambda}} \left(\Lambda_r - \mu_r\right) \cdot
+  \mathcal{L}_{\lambda} = \alpha_{\lambda} \cdot \max \left(0,
+    \sum_{\forall r \in R}
+    \left(\Lambda_r - \mu_r\right) \cdot
   e^{\frac{\Lambda_r - \mu_r - 1}{\beta}}\right)
 \end{equation}
 
-Where $\Lambda_r$ is the estimated reliability of the labeler $r$ for a
-certain patch, $\mu_r$ is the one hot label mask of the labeler
-$r$ for the same patch, $\alpha_{\lambda}$ and $\beta$ are hyperparameters
-which control the penalty strength for high and low estimated
-reliabilities, respectively and $\gamma$ is a hyperparameter
-which controls the overall strength of the penalty.
+Where $\Lambda_r$ is the estimated reliability of the labeler $r$ from the
+reliability branch for a certain patch, $\mu_r$ is the encoded
+presence of the label mask for labeler $r$ for the same patch,
+$\beta$ is a hyperparameter which control the penalty strength for
+high and low estimated reliabilities, respectively.
 
 The behavior of this regularization term is shown in Figure
 \ref{fig:regularization_terms} (d).
@@ -175,7 +186,7 @@ The behavior of this regularization term is shown in Figure
       \begin{axis}[
           axis lines=middle,
           xlabel={$\Lambda_r$},
-          ylabel={$\mathcal{L}_{sum}^r(\Lambda_r)$},
+          ylabel={$\mathcal{L}_{sum}(\sum \Lambda_r)$},
           width=\textwidth, height=6cm,
           domain=0:2,
           samples=200,
@@ -191,7 +202,8 @@ The behavior of this regularization term is shown in Figure
         \addplot[purple,thick] {(x - 1)^2};
       \end{axis}
     \end{tikzpicture}
-    \caption{$\mathcal{L}_{sum}^r(\Lambda_r) = (\Lambda_r - 1)^2$}
+    \caption{$\mathcal{L}_{sum}^r(\sum \Lambda_r) =
+    (\sum \Lambda_r - 1)^2$}
     \label{fig:sum_to_one_regularization}
   \end{subfigure}
   \hfill
@@ -216,12 +228,12 @@ The behavior of this regularization term is shown in Figure
         \def\alphaval{0.2}
         \def\betaval{1.0}
         % Plot: max(0, expression)
-        \addplot[blue,thick] {max(0, (1/(1-\alphaval))*(x)*exp((x -
+        \addplot[blue,thick] {max(0, (x)*exp((x -
         1)/\betaval))};
       \end{axis}
     \end{tikzpicture}
-    \caption{$\mathcal{L}_{\lambda}^r(z) = \gamma \max(0,
-    \frac{1}{1-\alpha_{\lambda}} z \cdot e^{\frac{z-1}{\beta}})$}
+    \caption{$\mathcal{L}_{\lambda}^r(z) = \max(0,
+    z \cdot e^{\frac{z-1}{\beta}})$}
     \label{fig:missing_labels_penalizing}
   \end{subfigure}
 
@@ -250,13 +262,13 @@ These regularization terms lead to the overall loss function being in the form:
 
 \begin{align}
   L_{TGCEreg} &= L_{TGCEss} \\
-  &+\alpha_{reg} \cdot \mathbb{E}[(\Lambda_r - 0.5)^2] \nonumber \\
-  &+\alpha_{entropy} \cdot \mathbb{E}[\Lambda_r \log(1 + \Lambda_r)
+  &+\alpha_{reg} \cdot \mathbb{E}_r[(\Lambda_r - 0.5)^2] \nonumber \\
+  &+\alpha_{entropy} \cdot \mathbb{E}_r[\Lambda_r \log(1 + \Lambda_r)
   +(1 - \Lambda_r) \log(1 + (1 - \Lambda_r))] \nonumber \\
-  &+\alpha_{sum} \cdot \mathbb{E}[\sum_{\forall r \in R}(\Lambda_r -
-  1)^2] \nonumber \\
-  &+\gamma \cdot \max \left(0, \sum_{\forall r \in R}
-    \frac{1}{1-\alpha_{\lambda}} \left(\Lambda_r - \mu_r\right) \cdot
+  &+\alpha_{sum} \cdot (\sum_{\forall r \in R} \Lambda_r -
+  1)^2 \nonumber \\
+  &+\alpha_{\lambda} \cdot \max \left(0, \sum_{\forall r \in R}
+    \left(\Lambda_r - \mu_r\right) \cdot
   e^{\frac{\Lambda_r - \mu_r - 1}{\beta}}\right) \nonumber
 \end{align}
 
@@ -276,4 +288,5 @@ computational efficiency.
 The pixel-wise reliability approach operates directly on full-resolution
 reliability maps, requiring no spatial transformations. This approach
 provides the most detailed spatial reliability information but requires
-more computational resources.
+more computational resources and is more prone to overfitting in
+sparse datasets (low labeling rate).

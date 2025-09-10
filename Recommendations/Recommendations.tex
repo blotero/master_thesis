@@ -1,0 +1,359 @@
+\documentclass[runningheads]{llncs}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+% Carácteres especiales
+\usepackage{fontenc}
+% More advance packages
+
+\usepackage{amssymb,amsbsy,mathrsfs,rotating,float,multirow,upgreek,amsmath,lineno,bm}
+
+\usepackage{listings}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepgfplotslibrary{groupplots}
+\usepackage{longtable}
+\setlength{\LTcapwidth}{6in}
+\usepackage[utf8]{inputenc}
+\usepackage{epsfig,epic,eepic,threeparttable,amscd,here,lscape,tabularx,graphicx
+}
+\usepackage{booktabs}
+\usepackage{tabu,array}
+\usepackage{overpic}
+\usepackage{microtype}
+%%%%%%%%%%%
+%\usepackage{newtxtext,newtxmath}
+
+%%%%%%%%%%%
+\usepackage{caption}
+\usepackage{subcaption}
+% Permite ver y configurar los parámetros de la página
+\usepackage{layout}
+%Hyperref permite ver las secciones del texto
+\usepackage[hidelinks]{hyperref}
+\usepackage[noabbrev,capitalize]{cleveref}
+
+\usepackage{nomencl}
+
+\providecommand{\ppunto}[2]{\langle#1, #2 \rangle}% producto punto
+\providecommand{\promed}[1]{{\mathbb{E}}\left\lbrace
+#1\right\rbrace}% operador de promedio
+\providecommand{\promeddd}[2]{\mathbb{E}_{#1}\!\left\{#2\right\}}%
+% op{\tiny }erador de promedio
+\providecommand{\promedd}[2]{\mathds{E}_{#1}\left\{#2\right\}}%
+% operador de promedio
+\providecommand{\cov}[2]{{\fam=7 cov}\{#1, #2\}}% operador de covarianza
+\providecommand{\gaus}[2]{{\fam=6 N}(#1 #2)} % FDP Gauss
+% Kronecker delta function
+\providecommand{\Kronecker}[2]{\delta_{K}( #1 , #2 )}
+% cardinality
+\providecommand{\Cardinality}[1]{| #1 |}
+
+%%%% custom colors
+\DeclareRobustCommand{\legend}[1]{%
+  \textcolor{#1}{\rule{1ex}{2ex}}%
+}
+\colorlet{color0}{blue!40!gray}% pearson *
+\colorlet{color1}{blue!80!gray} %pearson **
+\colorlet{color2}{red!40!gray} %n-pearson*
+\colorlet{color3}{red!80!gray}%n-pearson**
+\colorlet{color4}{green!40!gray} %plv*
+\colorlet{color5}{green!80!gray}
+
+\definecolor{GII}{RGB}{255,255,107}
+\definecolor{GI}{RGB}{72,197,72}
+\definecolor{GIII}{RGB}{214, 36, 47}
+
+\definecolor{frontal}{RGB}{141, 211, 199}
+\definecolor{frontal_left}{RGB}{255, 237, 111}
+\definecolor{frontal_right}{RGB}{255, 255, 179}
+\definecolor{central_right}{RGB}{251, 128, 114}
+\definecolor{central_left}{RGB}{204, 235, 197}
+\definecolor{posterior_right}{RGB}{253, 180, 98}
+\definecolor{posterior_left}{RGB}{217, 217, 217}
+\definecolor{posterior}{RGB}{179, 222, 105}
+\definecolor{crimson2143940}{RGB}{214,39,40}
+
+%%%%
+\definecolor{darkorange25512714}{RGB}{255,127,14}
+\definecolor{forestgreen4416044}{RGB}{44,160,44}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
+
+\providecommand{\est}[1]{{\widetilde {#1}}}
+\providecommand{\s}[1]{\negthickspace#1\negthickspace}%
+\newcolumntype{C}[1]{>{\centering}m{#1}}
+\newcommand{\subconj}{\negthinspace\subset\negthinspace }
+\newcommand{\en}{\negthinspace\in\negthinspace }
+\newcommand{\igual}{\negthinspace=\negthinspace}
+\newcommand{\dos}{\negthinspace:\negthinspace}
+
+\newcommand{\Real}{\mathbb{R}}
+\newcommand{\Natural}{\mathbb{N}}
+
+\newcommand{\Tr}[1]{Tr \left( #1 \right)}
+\newcommand{\diag}[1]{diag \left( #1 \right)}
+
+\newcommand{\func}[1]{\mathcal {#1}}
+
+\newcommand{\ve}[1]{\bm {#1}}
+\newcommand{\mat}[1]{\bm {#1}}
+
+\newenvironment{reviewer}{\setcounter{pointcounter}{1}}{}
+\newcommand{\changes}[1]{\textcolor[rgb]{1.00,0.00,0.00}{#1}}
+\newcommand{\genaro}[1]{\textcolor[rgb]{0.00,0.00,1.00}{#1}}
+\newcommand{\point}[1]{\medskip \noindent
+  \textsl{{\fontseries{b}\selectfont Point \thepointcounter}.
+\stepcounter{pointcounter} #1}}
+\newcommand{\reply}{\medskip \noindent \textbf{Response}.\ }
+\newcommand{\initresponses}{\newcounter{pointcounter}}
+\newcommand*{\captionsource}[2]{%
+  \caption[{#1}]{%
+    #1%
+    \\\hspace{\linewidth}%
+    \textbf{Source:} #2%
+  }%
+}
+
+\providecommand{\am}[1]{\textcolor{green}{#1}}
+\providecommand{\dg}[1]{\textcolor{blue}{#1}}
+%
+\begin{document}
+
+We would like to extend our heartfelt thanks to each of you for your
+time and effort in reviewing the document. Your input has been
+invaluable in refining and enhancing the quality of the work. For
+your convenience, all changes made to the document are highlighted in
+\changes{red color}. Below, you will find our point-by-point
+responses to each of your comments.\\
+
+\initresponses
+
+\begin{reviewer}
+  \textbf{Dear Dr. Cristian Alfonso Jiménez Castaño}\\
+
+  \textbf{We sincerely thank you for all the valuable comments and
+    recommendations you have provided. Your observations have been
+  fundamental for improving the quality and clarity of the work.}
+
+  \point{Document cohesion from the problem statement onwards.}
+
+  \reply{The document has been restructured to improve
+    cohesion between sections, especially in the methodology and
+  presentation of results.}
+
+  \point{Lack of bibliographic support in several
+  subsubsections of the state of the art.}
+
+  \reply{Appropriate bibliographic references have been
+  added in all subsections that lacked support.}
+
+  \point{Absence of justification for the use of
+  convolutional networks vs. other architectures.}
+
+  \reply{The methodological section has been expanded to
+    include detailed justification for the choice of U-Net architecture
+  and comparison with alternatives.}
+
+  \point{Results and conclusions presented in
+  separate and disconnected chapters.}
+
+  \reply{The results sections have been unified and
+  the connection with the research objectives has been improved.}
+
+  \point{Figure 1-1: font size not recognizable at 100\%.}
+
+  \reply{The font size has been increased and
+  the figure has been resized for better visibility.}
+
+  \point{Figure 1-2: small letters and page organization.}
+
+  \reply{The figure has been resized and the
+  layout has been reorganized to avoid blank spaces.}
+
+  \point{Lines 429 and 440: usability frequency percentage not clear.}
+
+  \reply{The methodology and study universe have been
+  clarified for the calculation of these percentages.}
+
+  \point{Figure 1-3: font size and accommodation.}
+
+  \reply{The font size has been increased and the
+  distribution on the page has been improved.}
+
+  \point{Excessive concentration on multiple annotators
+  without considering other problems.}
+
+  \reply{The section has been expanded to include a
+  broader view of the state-of-the-art problems.}
+
+  \point{Research question without clear methodology
+  to justify U-Net.}
+
+  \reply{The methodological justification
+  for the choice of U-Net has been developed.}
+
+  \point{Quick dismissal of other image types without
+  justification.}
+
+  \reply{Detailed justification has been added for the
+  focus on histological images.}
+
+  \point{General objective does not begin with verb in infinitive.}
+
+  \reply{The general objective has been reformulated to
+  begin with a verb in infinitive.}
+
+  \point{Line 791: interpretability not reflected in
+  specific objectives.}
+
+  \reply{The specific objectives have been reformulated to
+  explicitly include interpretability.}
+
+  \point{Line 792: very strong comparison that requires
+  extensive experimental framework.}
+
+  \reply{The scope of the comparison has been adjusted to
+  be realistic with the available experimental framework.}
+
+  \point{Section advances too much without presenting methodologies.}
+
+  \reply{This section has been moved to the end of the document,
+  after the conclusions.}
+
+  \point{Figure 2-2: improve resolution and size.}
+
+  \reply{The resolution has been improved and the figure
+  has been resized.}
+
+  \point{Figure 2-3: remove black part of the interface.}
+
+  \reply{The image has been cleaned to show only the
+  pathological image.}
+
+  \point{Section 2.2.2: too empty.}
+
+  \reply{It has been completed with visual examples and
+  detailed explanations.}
+
+  \point{Section 2.3.1: inconsistency between labels and icons.}
+
+  \reply{Inconsistencies have been corrected and
+  the connection between paradigms has been improved.}
+
+  \point{Line 970: clarify that they are machine learning
+  paradigms in general.}
+
+  \reply{The scope of the mentioned paradigms has been clarified.}
+
+  \point{Subsection 2.3: too brief.}
+
+  \reply{It has been expanded with additional development and
+  bibliographic references.}
+
+  \point{Subsections 3.1.2 and 3.1.3: without bibliographic support.}
+
+  \reply{Appropriate bibliographic references have been added.}
+
+  \point{Incorrect order of subsections.}
+
+  \reply{It has been reordered to follow the correct logical sequence.}
+
+  \point{Subsection 3.3: contribution not clear.}
+
+  \reply{The purpose and contribution of
+  this section have been clarified.}
+
+  \point{Table 3-1: organize for better visibility.}
+
+  \reply{The table has been reorganized to improve readability.}
+
+  \point{Equation 4-10 too long.}
+
+  \reply{It has been divided into intermediate functions for
+  better readability.}
+
+  \point{Section 4.1.4: should not be there without experiments.}
+
+  \reply{It has been merged with the previous section for
+  better coherence.}
+
+  \point{Numbering begins at zero.}
+
+  \reply{The numbering has been corrected to begin at one.}
+
+  \point{Figures 5-1 and 5-2 seem identical.}
+
+  \reply{The duplicate figures have been unified.}
+
+  \point{Lines 1627-1629: it is not clear if the
+  regularization terms are scalars.}
+
+  \reply{The nature of the regularization terms
+  in equation 5-1 has been clarified.}
+
+\end{reviewer}
+
+\begin{reviewer}
+  \textbf{Dear Dr. Juan Bernardo Gómez Mendoza}\\
+
+  \textbf{We sincerely thank you for your positive evaluation and all
+    the valuable
+    comments and recommendations you have provided. Your observations
+  have been crucial for improving the quality and completeness of the work.}
+
+  \point{Lack of specific tests to illustrate the
+  effect of each proposed modification.}
+
+  \reply{Ablative experiments have been added to
+  demonstrate the individual impact of each component of the solution.}
+
+  \point{Insufficient characterization of the
+  mathematical implications of the cost function.}
+
+  \reply{The mathematical section has been expanded to
+  include detailed analysis of the cost function properties.}
+
+  \point{Lack of clarity in hyperparameter selection.}
+
+  \reply{Optuna was used to select the hyperparameters through all
+    experiments. The scalar experiment in particular was useful for
+    determining the
+  most meaningful hyperparameters for the model with the help of the Optuna B.}
+
+  \point{Improvements in the visual presentation of
+  figures and tables.}
+
+  \reply{All figures and tables have been reviewed and
+  improved for greater clarity.}
+
+  \point{Consistency in mathematical notation.}
+
+  \reply{All mathematical notation in the document has been
+  reviewed and standardized.}
+
+  \point{Improvements in writing and text clarity.}
+
+  \reply{The writing throughout the document has been
+  reviewed and improved for greater clarity.}
+
+\end{reviewer}
+
+\section*{Conclusion}
+
+We have systematically addressed all the comments and
+recommendations provided by both reviewers. The document has
+been significantly improved in terms of:
+
+\begin{itemize}
+  \item Structural cohesion and logical flow
+  \item Bibliographic support and references
+  \item Clarity in methodology and justification of decisions
+  \item Presentation of results and analysis
+  \item Visual quality of figures and tables
+  \item Consistency in notation and writing
+\end{itemize}
+
+We thank you again for your valuable time and constructive feedback,
+which have been fundamental for elevating the quality of
+this research work.
+
+\end{document}
