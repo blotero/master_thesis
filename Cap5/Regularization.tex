@@ -71,36 +71,6 @@ less trustworthy annotators.
 The behavior of this regularization term is shown in Figure
 \ref{fig:regularization_terms} (b).
 
-\subsection{Sum-to-one regularization}
-
-The reliability branch for scalar, pixel and features approaches,
-might or might not
-be forced to sum to one depending on the output activation function
-\footnote{This
-  was left as flexible and configurable in the Network Architecture
-  Building API from seg\_tgce, allowing it to be either softmax or
-sigmoid.}. For the cases in which this sum is not
-forced to be unitary (sigmoid) the flexibility of this sum is manageable
-through a regularization term which mildly penalizes the model for adding
-to values too far from the unit. This was found useful in situations
-in which the reliability maps were not expected to be punctuated (e.g. for the
-scalar reliability) as $1/R$, but rather close to the unit for all of
-them (if all labelers were good). This regularization term was found
-particularly useful in situations where labelers have good and
-similar levels of expertise. \footnote{The behavior of this
-  regularization term of focusing in the homogeneity of the
-  reliability maps is mostly covered by the combination of the
-  centroid and entropy regularization terms, which was proven to be
-redundant in section \ref{sec:pretraining-study}.}
-
-\begin{equation}
-  \mathcal{L}_{sum} = \alpha_{sum} \cdot
-  \left(\sum_{\forall r \in R} \Lambda_r - 1  \right)^2
-\end{equation}
-
-The behavior of this regularization term is shown in Figure
-\ref{fig:regularization_terms} (c).
-
 \subsection{Missing labels penalty}
 In situations were the datasets have a low labeling rate, the model might
 take an optimization shortcut by assigning high reliability values to
@@ -124,7 +94,7 @@ $\beta$ is a hyperparameter which control the penalty strength for
 high and low estimated reliabilities, respectively.
 
 The behavior of this regularization term is shown in Figure
-\ref{fig:regularization_terms} (d).
+\ref{fig:regularization_terms} (c).
 
 \begin{figure}[H]
   \centering
@@ -182,32 +152,7 @@ The behavior of this regularization term is shown in Figure
   \vspace{0.5cm}
 
   \begin{subfigure}[b]{0.48\textwidth}
-    \begin{tikzpicture}
-      \begin{axis}[
-          axis lines=middle,
-          xlabel={$\Lambda_r$},
-          ylabel={$\mathcal{L}_{sum}(\sum \Lambda_r)$},
-          width=\textwidth, height=6cm,
-          domain=0:2,
-          samples=200,
-          smooth,
-          thick,
-          ymin=0, ymax=1.0,
-          xtick={0,0.5,1.0,1.5,2.0},
-          ytick={0,0.2,0.4,0.6,0.8,1.0},
-          every axis x label/.style={at={(ticklabel* cs:1.05)}, anchor=west},
-          every axis y label/.style={at={(ticklabel* cs:1.05)}, anchor=south},
-        ]
-        % Plot: (x - 1)^2
-        \addplot[purple,thick] {(x - 1)^2};
-      \end{axis}
-    \end{tikzpicture}
-    \caption{$\mathcal{L}_{sum}^r(\sum \Lambda_r) =
-    (\sum \Lambda_r - 1)^2$}
-    \label{fig:sum_to_one_regularization}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
     \begin{tikzpicture}
       \begin{axis}[
           axis lines=middle,
@@ -237,10 +182,10 @@ The behavior of this regularization term is shown in Figure
     \label{fig:missing_labels_penalizing}
   \end{subfigure}
 
-  \caption{Visualization of the four regularization terms used in the
+  \caption{Visualization of the three regularization terms used in the
     TGCE loss function:
     (a) centroid penalty for extreme reliabilities, (b) entropy regularization,
-    (c) sum-to-one regularization, and (d) missing labels penalty.
+    and (c) missing labels penalty.
     Each subplot shows
     how the respective regularization term behaves as a function of its
   input variables.}
@@ -262,11 +207,9 @@ These regularization terms lead to the overall loss function being in the form:
 
 \begin{align}
   L_{TGCEreg} &= L_{TGCEss} \\
-  &+\alpha_{reg} \cdot \mathbb{E}_r[(\Lambda_r - 0.5)^2] \nonumber \\
+  &+\alpha_{centroid} \cdot \mathbb{E}_r[(\Lambda_r - 0.5)^2] \nonumber \\
   &+\alpha_{entropy} \cdot \mathbb{E}_r[\Lambda_r \log(1 + \Lambda_r)
   +(1 - \Lambda_r) \log(1 + (1 - \Lambda_r))] \nonumber \\
-  &+\alpha_{sum} \cdot (\sum_{\forall r \in R} \Lambda_r -
-  1)^2 \nonumber \\
   &+\alpha_{\lambda} \cdot \max \left(0, \sum_{\forall r \in R}
     \left(\Lambda_r - \mu_r\right) \cdot
   e^{\frac{\Lambda_r - \mu_r - 1}{\beta}}\right) \nonumber

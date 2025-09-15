@@ -31,84 +31,111 @@ rate of 0.5.
 
 The analysis of hyperparameter importance reveals crucial insights
 about the regularization terms' contributions to model performance.
-As shown in Figure~\ref{fig:optuna_study_combined}, the contour plots
+As shown in Section~\ref{sec:annex-contours}, the contour plots
 visualize the optimization landscape for different regularization
 parameters, providing complementary evidence to the importance
 scores. Table~\ref{tab:hyperparameter_importance_regularizers} presents the
 hyperparameter importance ranking for the regularizers study for each
 reliability estimation approach.
 
-The contour visualizations (Figure \ref{fig:optuna_study_combined}) and
-importance analysis consistently demonstrate that the sum
-regularization ($\alpha_{\text{sum}}$) exhibits the lowest importance
-across all reliability estimation approaches, with scores of 0.0756,
-0.0661, and 0.0219 for pixel, scalar, and features approaches
-respectively. This low importance, combined with the relatively flat
-contour regions observed in the optimization landscape, suggests that
-the sum regularization's contribution might be largely redundant with
-the combination of centroid and entropy regularization terms. This
-finding has significant implications for model design: since sum regularization
-requires sigmoid activation in the output layer, while centroid and
-entropy regularization can work with softmax outputs, eliminating the
-sum regularization term allows for the use of fully softmax outputs
-in subsequent experiments. This simplification reduces the
-hyperparameter search space and potentially improves training
-stability, making the optimization process more efficient for future
-experiments. This is likely to happen because of the combination of entropy
-and centroid regularization terms, which are also related to
-controlling homogeneity or extreme reliability values, leading to an
-undermining of the sum regularization term, in such scenario, the sum
-regularization term would be redundant.
-
 \begin{table}[h]
   \centering
-  \begin{tabular}{lccc}
+  \begin{tabular}{llcccc}
     \toprule
+    \multirow{2}{*}{\textbf{Labeling Rate (lr)}} &
     \multirow{2}{*}{\textbf{Hyperparameter}} &
-    \multicolumn{3}{c}{\textbf{Importance Score}} \\
-    \cmidrule(lr){2-4}
-    & \textbf{Pixel} & \textbf{Scalar} & \textbf{Features} \\
+    \multicolumn{4}{c}{\textbf{Importance Score}} \\
+    \cmidrule(lr){3-6}
+    & & \textbf{Pixel} & \textbf{Scalar} & \textbf{Features} &
+    \textbf{Avg All Exp} \\
     \midrule
-    $\alpha_{\text{sum}}$ & 0.0756 & 0.0661 & 0.0219 \\
-    $\alpha_{\text{entropy}}$ & 0.0268 & 0.1342 & 0.5395 \\
-    $\alpha_{\lambda}$ & 0.0234 & 0.3362 & 0.0282 \\
-    $\beta$ & 0.0200 & 0.2999 & 0.0218 \\
-    $a$ & 0.1738 & 0.1636 & 0.3886 \\
+    \multirow{4}{*}{1.0}
+    & $\alpha_{\text{entropy}}$           & 0.2234 & 0.8168 & 0.5340
+    & 0.524733 \\
+    & $\alpha_{\text{centroid}}$          & 0.2273 & 0.0309 & 0.2134
+    & 0.157200 \\
+    & $a_{\lambda}$                       & 0.3614 & 0.0514 & 0.2109
+    & 0.207900 \\
+    & $\beta$                             & 0.1879 & 0.1009 & 0.0418
+    & 0.110200 \\
+    \midrule
+    \multirow{4}{*}{0.5}
+    & $\alpha_{\text{entropy}}$           & 0.3421 & 0.3080 & 0.9586
+    & 0.536233 \\
+    & $\alpha_{\text{centroid}}$          & 0.0395 & 0.5185 & 0.0021
+    & 0.186700 \\
+    & $a_{\lambda}$                       & 0.1427 & 0.0344 & 0.0038
+    & 0.060300 \\
+    & $\beta$                             & 0.4757 & 0.1391 & 0.0355
+    & 0.216767 \\
+    \midrule
+    \multirow{4}{*}{0.3}
+    & $\alpha_{\text{entropy}}$           & 0.0615 & 0.0865 & 0.8458
+    & 0.331267 \\
+    & $\alpha_{\text{centroid}}$          & 0.2339 & 0.2554 & 0.0285
+    & 0.172600 \\
+    & $a_{\lambda}$                       & 0.2733 & 0.0508 & 0.0745
+    & 0.132867 \\
+    & $\beta$                             & 0.4313 & 0.6073 & 0.0512
+    & 0.363267 \\
     \bottomrule
   \end{tabular}
   \caption{Hyperparameter importance ranking for regularization parameters
-    obtained from Optuna optimization study after 20 iterations for each
-    reliability estimation approach (pixel, scalar, and features). This study
-    used preselected values of $q=0.66$, $\tilde{C}=0.62$, and learning
-    rate $=6.5 \times 10^{-4}$. The importance scores indicate the relative
-    impact of each regularization hyperparameter on the model's performance
-  for each specific approach.}
+    obtained from Optuna optimization study across different labeling rates
+    (lr = 1.0, 0.5, 0.3) and reliability estimation approaches (pixel, scalar,
+    and features). The importance scores indicate the relative impact of each
+    hyperparameter on performance. The "Avg All Exp" column shows the average
+    importance score across all three reliability estimation approaches for each
+  hyperparameter and labeling rate combination.}
   \label{tab:hyperparameter_importance_regularizers}
 \end{table}
 
-\begin{figure}[h!]
+\begin{figure}[h]
   \centering
-  \begin{subfigure}[b]{0.75\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{Cap5/Figures/contours_oxford_features_a_b.png}
-    \caption{Missing labels penalty regularization
-    ($\alpha_{\lambda}$ and $\beta$).}
-    \label{fig:optuna_study_a_b}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}[b]{0.75\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{Cap5/Figures/contours_oxford_features_others.png}
-    \caption{Other regularization terms
-      ($\alpha_{\text{centroid}}$, $\alpha_{\text{sum}}$,
-    $\alpha_{\text{entropy}}$).}
-    \label{fig:optuna_study_others}
-  \end{subfigure}
-  \caption{Contours of the tuner optimization study for the Oxford
-    PET dataset with the best hyperparameters found for the
-  comprehensive hyperparameter optimization study.}
-  \label{fig:optuna_study_combined}
+  \includegraphics[width=0.8\textwidth]{Cap5/Figures/hp_importances_correlations.png}
+  \caption{Correlation heatmap between hyperparameter importance and
+    labeling rates across different experiment types (Features, Pixel,
+    and Scalar). The color scale represents Pearson correlation
+    coefficients, where red indicates strong positive correlations,
+    blue indicates strong negative correlations, and white/light colors
+    indicate weak correlations. This visualization reveals how
+    different hyperparameters' importance varies with labeling rate
+  across the three reliability estimation approaches.}
+  \label{fig:hyperparameter_correlations}
 \end{figure}
+
+The correlation analysis presented in
+Figure~\ref{fig:hyperparameter_correlations} provides additional
+insights into the relationship between hyperparameter importance and
+labeling rates across different experiment types. The heatmap reveals
+several key patterns:
+
+\begin{itemize}
+  \item \textbf{$\alpha_{\text{entropy}}$} shows the strongest
+    correlations: perfect positive correlation (1.000) with Scalar
+    experiments and strong negative correlation (-0.858) with
+    Features experiments, indicating its critical role in scalar
+    reliability estimation but diminishing importance in
+    feature-based approaches.
+
+  \item \textbf{$\alpha_{\text{centroid}}$} demonstrates strong
+    positive correlation (0.923) with Features experiments,
+    suggesting its importance increases with labeling rate in
+    feature-based reliability estimation.
+
+  \item \textbf{$\alpha_{\lambda}$} shows consistent positive
+    correlations across all experiment types, with the strongest
+    correlation (0.812) in Features experiments.
+
+  \item \textbf{$\beta$} exhibits strong negative correlations with
+    Pixel (-0.911) and Scalar (-0.766) experiments, indicating that
+    its importance decreases as labeling rate increases in these approaches.
+\end{itemize}
+
+These correlations complement the importance rankings in
+Table~\ref{tab:hyperparameter_importance_regularizers} and provide a
+more nuanced understanding of how hyperparameter sensitivity varies
+with data availability across different reliability estimation strategies.
 
 \subsection{Training Process Overview}
 
