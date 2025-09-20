@@ -17,6 +17,18 @@ grayscale image can be represented as a 2D matrix $I$ of size $M
 \times N$, where each element $I(i,j)$ represents the intensity at
 position $(i,j)$. The intensity values typically range from 0 (black)
 to 255 (white) in 8-bit images, or from 0 to 65535 in 16-bit images.
+This type of imaging is particularly useful in medical imaging,
+since the it remains helpful to represent 1-dimensional intensities
+of a physical quantity across a 2-dimensional space, like in the case
+of the temperature of a body \footnote{Despite being a 1-dimensional
+  physical quantity, thermal images are usually transformed into an
+  useful palette for easier visualization to the human eye. In any case,
+  when digitally processing these type of  images, the underlying
+  representation preserves the original physical quantity dimension,
+  which is a single scalar (quantized by the resolution of the
+device).}. This type of images is widely popular in medical imaging,
+and provides the advantage of being easily processed by more
+lightweight Machine Learning models. \cite{XieEtAl2018}.
 
 \subsubsection{Color images}
 Color images extend the grayscale concept by representing each pixel
@@ -29,12 +41,36 @@ commonly used in different applications.
 
 \subsubsection{Multispectral images}
 Multispectral images capture information across multiple wavelength
-bands beyond the visible spectrum. These images can be represented as
-a 3D matrix $I$ of size $M \times N \times B$, where $B$ is the
-number of spectral bands. Each band $I(i,j,b)$ represents the
-intensity at position $(i,j)$ for the $b$-th spectral band. This
-representation is particularly useful in medical imaging, remote
-sensing, and several scientific applications.
+bands beyond the visible spectrum, enabling the visualization of
+tissue characteristics that are not apparent in conventional imaging.
+These images can be represented as a 3D matrix $I$ of size $M \times
+N \times B$, where $B$ is the number of spectral bands. Each band
+$I(i,j,b)$ represents the intensity at position $(i,j)$ for the
+$b$-th spectral band.
+
+In medical imaging, multispectral imaging (MSI) has emerged as a
+powerful layer-by-layer imaging technique that provides enhanced
+diagnostic capabilities. The technique detects reflectance signals
+from both normal and pathological tissue, where hyperreflectance or
+hyporeflectance patterns reveal the absorption activity of specific
+pigments such as hemoglobin and melanin, as well as reflections from
+tissue interfaces. This capability makes MSI particularly valuable
+for visualizing a wide array of retinal and choroidal pathologies,
+including retinovascular disorders, retinal pigment epithelial
+changes, and choroidal lesions \cite{MaEtAl2023}.
+
+Recent advances in MSI technology include the creation of retinal
+and choroidal oxy-deoxy maps, which provide insights into blood
+oxygen saturation within lesions and enable better interpretation of
+reflectance phenomena. The technique can distinguish between
+different tissue layers, such as the Sattler and Haller layers in
+the choroid, based on their distinct reflectance characteristics
+\cite{MaEtAl2023}.
+
+This representation is particularly useful in medical imaging, remote
+sensing, and several scientific applications where spectral
+information provides crucial diagnostic or analytical insights
+\cite{MaEtAl2023}.
 
 \subsubsection{3D Images and Volumetric Data}
 Three-dimensional images extend the concept of pixels to voxels
@@ -44,6 +80,20 @@ dimension. Each voxel $V(i,j,k)$ represents the intensity at position
 $(i,j,k)$ in the 3D space. This representation is fundamental in
 medical imaging (CT, MRI), scientific visualization, and computer
 graphics.
+
+The rapid advancements in machine learning and graphics processing
+technologies have led to increased use of deep learning models in
+medical imaging \cite{SinghEtAl2020}. Since the success of AlexNet in 2012,
+convolutional neural networks (CNNs) have been increasingly employed
+in medical image analysis to assist clinicians \cite{SinghEtAl2020}.
+In recent years, three-dimensional (3D) CNNs have emerged as powerful tools
+for analyzing volumetric medical images, extending traditional 2D
+CNN architectures to process 3D data directly \cite{SinghEtAl2020}.
+These networks are applied across various medical imaging tasks including
+classification, segmentation, detection, and localization \cite{SinghEtAl2020}.
+However, 3D CNNs present challenges such as increased computational
+requirements and the need for large amounts of training data
+\cite{SinghEtAl2020}.
 
 \subsection{Mathematical Representations}
 

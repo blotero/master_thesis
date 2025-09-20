@@ -1,47 +1,5 @@
 \section{Results}
 
-Initially, a baseline model (ground truth only) was trained with an
-early stopping mechanism, which stopped the training when the
-validation loss stopped decreasing for 10 epochs, reaching only 20
-epochs of significant training. The results are shown in Figure
-\ref{fig:baseline_segment_20_epochs}.
-
-Then, using the scalar model described in Section
-\ref{sec:scalar_model}, training
-was performed for 20 epochs and Bayesian hyperparameter optimization
-on learning rate,
-decoder dropout rate, for the regularizers described in
-Section \ref{sec:regularizers}. The results are shown in Figure
-\ref{fig:crowd_seg_scalar_model_overfitting}.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[
-  width=0.8\textwidth]{Cap5/Figures/baseline_segment_20_epochs.png}
-  \caption{Segmentation results for baseline model on the \gls{TNBC}
-    (Crowd-Seg) dataset after 20 epochs of training. Even though the
-    segmentation algorithm seems to show progress on its way to capture
-    the underlying target structures ot be segmented, since the ground
-    truth annotation is not expressive enough, the Dice coefficient
-    remains below 0.55, which is not considered a good performance.
-    The baseline model remained with overfitting even after combining
-    techniques of: Bayesian hyperparameter optimization, data
-    augmentation, learning rate scheduling, dataset shuffling, and
-  early stopping.}
-  \label{fig:baseline_segment_20_epochs}
-\end{figure}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[
-  width=0.8\textwidth]{Cap5/Figures/crowd_seg_scalar_model_overfitting.png}
-  \caption{Segmentation results for scalar model on the \gls{TNBC}
-    (Crowd-Seg) dataset after 20 epochs of training. Again, training
-    metrics show a constant grow, but not validation metrics, which
-  shows a combined issue of overfitting and unreliable ground truth.}
-  \label{fig:crowd_seg_scalar_model_overfitting}
-\end{figure}
-
 \subsection{Oxford-IIIT Pet Dataset}
 
 The experimental results on the Oxford-IIIT Pet Dataset demonstrate
@@ -114,18 +72,60 @@ insights into annotator behavior.
   \centering
   \includegraphics[width=0.8\textwidth]{Cap5/Figures/oxford_example_output_pixel.png}
   \caption{Example evaluation of the proposed model in some given
-    epoch (5/50) of training, which demonstrates a quick convergence
+    epoch (15/50) of training, which demonstrates a quick convergence
     of the model for correctly estimating the reliability of the labelers
     masks. An accurate segmentation output is delivered as well
     as pixel-wise reliability estimations from the labelers masks.
     Disturbance signal-to-noise ratios are: $[-20, 0, 10]$ dB from left
-    to right. Best found hyperparameters: learning rate = 0.0027,
-    $q = 0.9$, noise tolerance = 0.2, $\alpha_{reg} = 0.38$,
-  $\alpha_{entropy} = 0.02$, $\alpha_{sum} = 0.42$.}
+    to right. learning rate = 0.00065,
+    $q = 0.66$, $\tilde{C} = 0.64$, $\alpha_{centroid} = 3.6$,
+  $\alpha_{entropy} = 2.3$, $\alpha_{\lambda} = 1.7$, $\beta = 0.77$.}
   \label{fig:oxford_example_output_pixel}
 \end{figure}
 
 \subsection{TNBC Dataset}
+
+Initially, a baseline model (ground truth only) was trained with an
+early stopping mechanism, which stopped the training when the
+validation loss stopped decreasing for 10 epochs, reaching only 20
+epochs of significant training. The results are shown in Figure
+\ref{fig:baseline_segment_20_epochs}.
+
+Then, using the scalar model described in Section
+\ref{sec:scalar_model}, training
+was performed for 20 epochs and Bayesian hyperparameter optimization
+on learning rate,
+decoder dropout rate, for the regularizers described in
+Section \ref{sec:regularizers}. The results are shown in Figure
+\ref{fig:crowd_seg_scalar_model_overfitting}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[
+  width=0.8\textwidth]{Cap5/Figures/baseline_segment_20_epochs.png}
+  \caption{Segmentation results for baseline model on the \gls{TNBC}
+    (Crowd-Seg) dataset after 20 epochs of training. Even though the
+    segmentation algorithm seems to show progress on its way to capture
+    the underlying target structures ot be segmented, since the ground
+    truth annotation is not expressive enough, the Dice coefficient
+    remains below 0.55, which is not considered a good performance.
+    The baseline model remained with overfitting even after combining
+    techniques of: Bayesian hyperparameter optimization, data
+    augmentation, learning rate scheduling, dataset shuffling, and
+  early stopping.}
+  \label{fig:baseline_segment_20_epochs}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[
+  width=0.8\textwidth]{Cap5/Figures/crowd_seg_scalar_model_overfitting.png}
+  \caption{Segmentation results for scalar model on the \gls{TNBC}
+    (Crowd-Seg) dataset after 20 epochs of training. Again, training
+    metrics show a constant grow, but not validation metrics, which
+  shows a combined issue of overfitting and unreliable ground truth.}
+  \label{fig:crowd_seg_scalar_model_overfitting}
+\end{figure}
 
 As mentioned in Section \ref{sec:tnbc_dataset},
 \cite{AmgadEtAl2019} presented
@@ -182,7 +182,7 @@ classes across the labelers is fairly uniform, as shown in Figure
 \begin{figure}[H]
   \centering
   \includegraphics[trim=0pt 0pt 0pt 20pt, clip,
-  width=0.8\textwidth]{Cap5/Figures/labelers_classes_distribution_histologies.jpeg}
+  width=\textwidth]{Cap5/Figures/labelers_classes_distribution_histologies.jpeg}
   \caption{Classes distribution across the labelers for the \gls{TNBC}
     (Crowd-Seg) dataset.
     Most common classes are `Tumor' (class 2),`Other' (class 1) and
@@ -200,7 +200,7 @@ very high levels of disagreement.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\textwidth]{Cap5/Figures/crowd_seg_annotated_vs_dice.png}
+  \includegraphics[width=\textwidth]{Cap5/Figures/crowd_seg_annotated_vs_dice.png}
   \caption{Dice score of the labelers masks against the ground truth
   for the \gls{TNBC} (Crowd-Seg) dataset.}
   \label{fig:crowd_seg_annotated_vs_dice}
@@ -212,6 +212,9 @@ correct, as shown in Figure \ref{fig:ground_truth_odd_geometries}.
 These morphological inconsistencies make an objetive metric for
 evaluating the performance of the proposed model difficult to define,
 since the ground truth is not always correct or expressive enough.
+This is likely due to the way in which the labels were created
+within the HistomicsTK metadata and then exported and cropped to
+the desired size.
 
 \begin{figure}[H]
   \centering
@@ -222,11 +225,71 @@ since the ground truth is not always correct or expressive enough.
   \label{fig:ground_truth_odd_geometries}
 \end{figure}
 
+In table \ref{tab:experimental_results} the dice scores for different
+annotation types are shown. It can be seen that the pixel-wise
+annotation type achieves the highest dice score for the Tumor class,
+while the scalar annotation type achieves the highest dice score for
+the Other and Stroma classes.
+
+In figure \ref{fig:tnbc_all_training_curves} the training curves for
+different model variants are shown. Similar to the experiments seen
+on the Oxford-IIIT Pet Dataset, the features-based model has better
+loss convergence than the scalar model and better numerical stability
+than the pixel-wise model.
+
 \begin{figure}[H]
-  \centering
-  \includegraphics[
-  width=0.8\textwidth]{Cap5/Figures/crowd_seg_baseline_training_curves.png}
-  \caption{Training curves for the baseline model on the \gls{TNBC}
-  (Crowd-Seg) dataset.}
-  \label{fig:tnbc_baseline_training_curves}
+  \begin{subfigure}[b]{0.95\textwidth}
+    \centering
+    \includegraphics[
+    width=0.8\textwidth]{Cap5/Figures/crowd_seg_baseline_training_curves.png}
+    \caption{Baseline model}
+    \label{fig:tnbc_baseline_training_curves}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.80\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Cap5/Figures/crowd_seg_features_curves.png}
+    \caption{Features-based model}
+    \label{fig:tnbc_features_training_curves}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.80\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Cap5/Figures/crowd_seg_scalar_curves.png}
+    \caption{Scalar model}
+    \label{fig:tnbc_scalar_training_curves}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.80\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Cap5/Figures/crowd_seg_pixel_curves.png}
+    \caption{Pixel-wise model}
+    \label{fig:tnbc_pixel_training_curves}
+  \end{subfigure}
+  \caption{Training curves comparison for different model variants on
+    the \gls{TNBC}
+    (Crowd-Seg) dataset: (a) baseline model, (b) features-based
+  model, (c) scalar model, and (d) pixel-wise model.}
+  \label{fig:tnbc_all_training_curves}
 \end{figure}
+
+\begin{table}[h]
+  \centering
+  \caption{Experimental Results: Dice Scores for Different Annotation
+  Types in the \gls{TNBC} (Crowd-Seg) dataset.}
+  \label{tab:experimental_results}
+  \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Annotation Type} & \multicolumn{3}{c}{\textbf{Score per
+    Class}} & \textbf{Mean Dice} \\
+    \cmidrule(lr){2-4}
+    & \textbf{Other} & \textbf{Tumor} & \textbf{Stroma} & \\
+    \midrule
+    Scalar & 0.469 & 0.665 & 0.473 & 0.340 \\
+    \midrule
+    Features & 0.534 & 0.673 & 0.490 & \textbf{0.554} \\
+    \midrule
+    Pixel & 0.015 & 0.324 & 0.281 & 0.415 \\
+    \bottomrule
+  \end{tabular}
+\end{table}

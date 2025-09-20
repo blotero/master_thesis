@@ -23,17 +23,19 @@ segmentation approaches.
 
 These findings highlight the need for more reliable ground truth
 annotations in histopathological image segmentation datasets. Future
-work should focus on:
-\begin{itemize}
-  \item Developing datasets with more consistent and reliable
-    expert annotations
-  \item Implementing stricter quality control measures for ground
-    truth generation
-  \item Exploring alternative evaluation metrics that account for
-    annotation uncertainty
-  \item Investigating methods to handle extremely sparse annotations
-    more effectively
-\end{itemize}
+work should focus on developing datasets with more consistent and reliable
+expert annotations, implementing stricter quality control measures for ground
+truth generation, exploring alternative evaluation metrics that account for
+annotation uncertainty, and investigating methods to handle extremely sparse
+annotations more effectively. Recent work by \cite{LiEtAl2024} has addressed
+the challenge of uncertainty quantification in medical image segmentation,
+particularly focusing on inter-rater variability through the QUBIQ challenge.
+Their comprehensive evaluation across various modalities (MRI, CT) and organs
+(brain, prostate, kidney, pancreas) demonstrates the importance of ensemble
+models and highlights the need for further research in 3D uncertainty
+quantification methods, which could be particularly relevant for improving
+the reliability of crowdsourced medical imaging annotations for segmentation
+tasks.
 
 Despite these challenges, the model's performance on the Oxford-IIIT
 Pet dataset demonstrates its effectiveness in handling multiple

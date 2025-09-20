@@ -3,31 +3,29 @@
 
 \subsection{General Aim}
 
-The main purpose of this work is to adaptively infer the best possible
-segmentation in \gls{ISS} tasks for medical images through a novel
-approach, without needing separate inputs about the labeler while
-offering an interpretable reliability space per labeler and properly
-facing the performance inconsistency across the annotators space and
-the variability of images quality.
+To develop a medical image semantic segmentation framework for
+multi-annotator contexts that encodes expert-specific knowledge,
+manages low-quality data, and addresses annotation variability in
+histopathology applications.
 
 %----------------------------------------------------------------------
 \subsection{Specific Aims}
 
 \begin{itemize}
 
-  \item To develop a novel loss function for \gls{ISS} tasks in
-    medical images, which accurately infers the underlying ground
-    truth segmentation mask without needing separate inputs about the
-    labeler performance.
+  \item To propose a novel loss function for image semantic
+    segmentation that infers the underlying ground-truth mask while
+    modeling sample-dependent annotator reliability, thereby
+    addressing variability and disagreement across annotations.
 
   \item To introduce a tensor map which codifies the reliability of
     each labeler based only on the inputs, allowing the model to
     implicitly weigh the labelers based on their performance across
     the mask and classes space.
 
-  \item To develop and test a deep learning model for \gls{ISS} tasks
-    in medical images, which can learn from inconsistent labels and
-    improve the segmentation performance compared to other solutions
-    in state of the art.
+  \item To implement a deep learning–based approach for image
+    semantic segmentation that integrates the proposed
+    tensor-extended loss function, evaluating its effectiveness on
+    histopathology detection tasks.
 
 \end{itemize}
